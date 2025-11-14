@@ -5,5 +5,4 @@
 #define TOP 1
 
  void FixConsoleWindow();
- void Gotoxy(int x, int y);
  void DrawBoard();
