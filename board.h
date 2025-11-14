@@ -4,16 +4,6 @@
 #define LEFT 3
 #define TOP 1
 
-class Board 
-{
-private:
-    int rows;
-    int cols;
-public:
-    static void FixConsoleWindow();
-    static void Gotoxy(int x, int y);
-
-    Board(int r = BOARD_SIZE, int c = BOARD_SIZE);
-    void DrawBoard();
-    /*void Board::Draw(int, int, int);*/
-};
+ void FixConsoleWindow();
+ void Gotoxy(int x, int y);
+ void DrawBoard();
