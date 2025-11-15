@@ -15,20 +15,18 @@
     extern const int Yi;
 
     void drawTitle();
-    typedef std::vector<int> Y_Start;
-    void VectorInit();
-    void clearMenuBoxData();
-    void drawPlayBox(Y_Start& YY);
-    void drawSavedBox(Y_Start& YY);
-    void drawSettingsBox(Y_Start& YY);
-    void drawAboutBox(Y_Start& YY);
-    void drawExitBox(Y_Start& YY);
-    void drawMenu();
-    void drawIsSelected(int idx, Y_Start& YY, bool isSelected);
+    void drawPlayBox();
+    void drawSavedBox();
+    void drawSettingsBox();
+    void drawAboutBox();
+    void drawExitBox();
+    void drawMenuScreen();
+    void drawIsSelected(int idx, bool isSelected);
     int ControlMenu();
 
-    class Board;
-    void drawCaroBoard(Board& CaroBoard);
+    void drawLoadingScreen();
+
+    void drawCaroBoard();
     bool isClickedButton(int xx, int yy, int X_start, int Y_start);
     void drawExitButton();
     void drawAgainButton();
@@ -36,7 +34,7 @@
     void drawTurnBox(char player, char name1[], char name2[]);
     void drawTimeBox(char min[], char sec[]);
     void drawFilename(std::string filename);
-    void drawGamePlayScreen(Board& CaroBoard, char player, char name1[], char name2[], char min[], char sec[], std::string filename);
+    void drawGamePlayScreen( char player, char name1[], char name2[], char min[], char sec[], std::string filename);
 
     struct GameSettings
     {
@@ -53,3 +51,4 @@
     int ControlSettings();
 
 #endif
+
