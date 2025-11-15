@@ -3,6 +3,7 @@
 #include "board.h"
 #include "Graphics.h"
 #include "Library.h"
+
 using namespace std;
 
 #define backgroundcolor 7 //màu nền xám nhẹ
@@ -33,7 +34,6 @@ struct STATUS
 
 void drawBox(int x, int y, int w, int h, string text)
 {
-    setColor(backgroundcolor, fontcolor);
     setPos(x, y);
 
     cout << char(symbol.Top_Left);
@@ -123,6 +123,44 @@ const int paddingY = (ConsoleHeight - BoardRealHeight)/2;
 const int Xi = paddingX;
 const int Yi = paddingY;
 
+//==================== LOADING... =====================
+
+void drawwLoadingScreen()
+{
+    system("cls");
+    setColor(0, 15);
+
+    string message = "It can takes some seconds";
+    int message_x = (ConsoleWidth - message.length())/2;
+    int message_y = ConsoleHeight/2;
+
+    const int total_cycles = 5 * 5;
+
+    for (int i = 0; i < total_cycles; i++)
+    {
+        setPos(message_x, message_y);
+        cout << message;
+
+        int num_dots = (i % 3) + 1;
+
+        setPos(message_x + message.length(), message_y);
+        string dots = "";
+
+        for (int j = 0; j < num_dots; j++)
+        {
+            dots += ".";
+        }
+        cout << dots;
+
+        if (num_dots == 1)
+            cout << "  "; 
+        else if (num_dots == 2)
+            cout << " ";
+        Sleep(100);
+    }
+    setColor(backgroundcolor,fontcolor);
+}
+
 //==================== MÀN HÌNH CHÍNH ====================
 
     /*
@@ -156,6 +194,8 @@ const int Y_Start_Group = (ConsoleHeight - Group_Height)/2;
 
 const int X_Start_Box = X_Start_Group + (Group_Width - MenuBox_Width)/2;
 
+const int MenuBoxNum = 5;
+int Y_Start_MenuBox[MenuBoxNum];
 
 void drawTitle()
 {
@@ -165,86 +205,66 @@ void drawTitle()
     cout << title;
 }
 
-typedef std::vector<int> Y_Start;
-Y_Start Y_Start_MenuBox;
-
-void VectorInit()
-{
-    const int n = 5;
-    Y_Start_MenuBox.resize(n);
-}
-
-void clearMenuBoxData()
-{
-    Y_Start_MenuBox.clear(); 
-}
-
 const int Y_Start_Play = Y_Start_Group + Title_Height + Title_Box_Gap;
-void drawPlayBox(Y_Start& YY)
+void drawPlayBox()
 {
-    if (YY.size() > 0)
-        YY[0] = Y_Start_Play;
+    Y_Start_MenuBox[0] = Y_Start_Play;
     drawBox(X_Start_Box, Y_Start_Play, MenuBox_Width, MenuBox_Height, "Play Game");
 }
 
 const int Y_Start_Saved = Y_Start_Group + Title_Height + Title_Box_Gap + MenuBox_Height + MenuBox_Gap;
-void drawSavedBox(Y_Start& YY)
+void drawSavedBox()
 {
-    if (YY.size() > 0)
-        YY[1] = Y_Start_Saved;
+    Y_Start_MenuBox[1] = Y_Start_Saved;
     drawBox(X_Start_Box, Y_Start_Saved, MenuBox_Width, MenuBox_Height, "Saved File");
 }
 
 const int Y_Start_Settings = Y_Start_Group + Title_Height + Title_Box_Gap + 2 * MenuBox_Height + 2 * MenuBox_Gap;
-void drawSettingsBox(Y_Start& YY)
+void drawSettingsBox()
 {
-    if (YY.size() > 0)
-        YY[2] = Y_Start_Settings;
+    Y_Start_MenuBox[2] = Y_Start_Settings;
     drawBox(X_Start_Box, Y_Start_Settings, MenuBox_Width, MenuBox_Height, "Settings");
 }
 
 const int Y_Start_About = Y_Start_Group + Title_Height + Title_Box_Gap + 3 * MenuBox_Height + 3 * MenuBox_Gap;
-void drawAboutBox(Y_Start& YY)
+void drawAboutBox()
 {
-    if (YY.size() > 0)
-        YY[3] = Y_Start_About;
+    Y_Start_MenuBox[3] = Y_Start_About;
     drawBox(X_Start_Box, Y_Start_About, MenuBox_Width, MenuBox_Height, "About Us");
 }
 
 const int Y_Start_Exit = Y_Start_Group + Title_Height + Title_Box_Gap + 4 * MenuBox_Height + 4 * MenuBox_Gap;
-void drawExitBox(Y_Start& YY)
+void drawExitBox()
 {
-    if (YY.size() > 0)
-        YY[4] = Y_Start_Exit;
+    Y_Start_MenuBox[4] = Y_Start_Exit;
     drawBox(X_Start_Box, Y_Start_Exit, MenuBox_Width, MenuBox_Height, "Exit");
 }
 
-void drawMenu()
+void drawMenuScreen()
 {
-    VectorInit();
     drawTitle();
-    drawPlayBox(Y_Start_MenuBox);
-    drawSavedBox(Y_Start_MenuBox);
-    drawSettingsBox(Y_Start_MenuBox);
-    drawAboutBox(Y_Start_MenuBox);
-    drawExitBox(Y_Start_MenuBox);
+    drawPlayBox();
+    drawSavedBox();
+    drawSettingsBox();
+    drawAboutBox();
+    drawExitBox();
     setColor(backgroundcolor, fontcolor);
 }
 
 const int Selected_BG = 8;
-const int Selected_FG = 0;
+const int Selected_FG = 7;
 const int Default_BG = backgroundcolor;
 const int Default_FG = fontcolor;
 
 //Nếu được chọn thì ô chọn sẽ có màu đen chữ trắng
-void drawIsSelected(int idx, Y_Start& YY, bool isSelected)
+void drawIsSelected(int idx, bool isSelected)
 {
     if (isSelected)
         setColor(Selected_BG, Selected_FG);
     else
         setColor(Default_BG, Default_FG);
     string content;
-    int Y0 = YY[idx];
+    int Y0 = Y_Start_MenuBox[idx];
     switch (idx)
     {
         case 0: 
@@ -270,16 +290,11 @@ void drawIsSelected(int idx, Y_Start& YY, bool isSelected)
     setColor(Default_BG, Default_FG);
 }
 
-#define BoxNum 5
-
 int ControlMenu()
 {
-    VectorInit();
-    drawMenu();
-
     int present_choice = 0; //Tại nút play
 
-    drawIsSelected(present_choice, Y_Start_MenuBox, true);
+    drawIsSelected(present_choice, true);
 
     int key;
     while(true)
@@ -304,10 +319,10 @@ int ControlMenu()
         switch(toupper(key))
         {
             case 'W': 
-                present_choice = (present_choice - 1 + BoxNum) % BoxNum;
+                present_choice = (present_choice - 1 + MenuBoxNum) % MenuBoxNum;
                 break;
             case 'S': 
-                present_choice = (present_choice + 1) % BoxNum;
+                present_choice = (present_choice + 1) % MenuBoxNum;
                 break;
             case 13: //enter
                 return present_choice + 1; 
@@ -316,11 +331,15 @@ int ControlMenu()
         }
         if (present_choice != past_choice)
         {
-            drawIsSelected(past_choice, Y_Start_MenuBox, false);
-            drawIsSelected(present_choice, Y_Start_MenuBox, true);
+            drawIsSelected(past_choice, false);
+            drawIsSelected(present_choice, true);
         }
     }
 }
+
+//==================== MÀN HÌNH NHẬP TÊN ==========================
+//dang duoc cap nhat...
+
 
 //==================== MÀN HÌNH CHƠI (GamePlayScreen) ====================
 
@@ -344,11 +363,11 @@ int ControlMenu()
     +––––––––––––––––––––––––––––––––––––––––––––––––+
     */
 
-void drawCaroBoard(Board& CaroBoard)
+void drawCaroBoard()
 {
     setColor(backgroundcolor, fontcolor);
-    setPos(Xi, Yi);
-    CaroBoard.DrawBoard();
+    // setPos(Xi, Yi);
+    DrawBoard();
 }
 
 const int buttonWidth = 20;
@@ -433,17 +452,20 @@ void drawFilename(std::string filename)
     cout << filename;
 }
 
-void drawGamePlayScreen(Board& CaroBoard, char player, char name1[], char name2[], char min[], char sec[], std::string filename)
+void drawGamePlayScreen(char player, char name1[], char name2[], char min[], char sec[], std::string filename)
 {
     system("cls");
     setColor(backgroundcolor, fontcolor);
-    drawCaroBoard(CaroBoard);
+    drawCaroBoard();
     drawExitButton();
     drawAgainButton();
     drawTurnBox(player, name1, name2);
     drawTimeBox(min, sec);
     drawFilename(filename);
 }
+
+// SAVED GAME SCREEN
+    //dang duoc cap nhat...
 
 // VẼ SETTINGS GREEN
 const int ToggleBox_Width = 30;
@@ -616,71 +638,78 @@ int ControlSettings()
     }
 }
 
+//ABOUT US SCREEN....
+    // dang duoc cap nhat...
+
 //TEST
 
-int main() 
-{
-    // 1. Khởi tạo và Cố định Cửa sổ
-    fixConsoleWindow(ConsoleWidth, ConsoleHeight); 
+// int main() 
+// {
+//     // 1. Khởi tạo và Cố định Cửa sổ
+//     fixConsoleWindow(ConsoleWidth, ConsoleHeight); 
     
-    // 2. Định nghĩa các biến cần thiết cho game
-    Board caroBoard;
-    char default_player = 'X';
-    char name1[] = "Player 1 (X)";
-    char name2[] = "Player 2 (O)";
-    char min[] = "05";
-    char sec[] = "00";
-    std::string filename = "caro_save_01.txt";
+//     // 2. Định nghĩa các biến cần thiết cho game
+//     char default_player = 'X';
+//     char name1[] = "Player 1 (X)";
+//     char name2[] = "Player 2 (O)";
+//     char min[] = "05";
+//     char sec[] = "00";
+//     std::string filename = "caro_save_01.txt";
 
-    int choice;
+//     int choice;
     
-    // Vòng lặp chính của chương trình để quay lại Menu
-    do {
-        system("cls"); // Xóa màn hình trước khi vẽ Menu
+//     // Vòng lặp chính của chương trình để quay lại Menu
+//     drawwLoadingScreen();
+//     do {
+//         system("cls");
+//         drawMenuScreen();
+//         // Gọi hàm điều khiển Menu và lấy lựa chọn
+//         choice = ControlMenu();
         
-        // Gọi hàm điều khiển Menu và lấy lựa chọn
-        choice = ControlMenu();
-        
-        // 4. Xử lý lựa chọn
-        switch (choice) {
-            case 1: // Play Game
-                // Chuyển sang màn hình chơi game
-                drawGamePlayScreen(caroBoard, default_player, name1, name2, min, sec, filename);
-                break;
+//         // 4. Xử lý lựa chọn
+//         switch (choice) {
+//             case 1: // Play Game
+//                 // Chuyển sang màn hình chơi game
+//                 drawGamePlayScreen(default_player, name1, name2, min, sec, filename);
+//                 break;
                 
-            case 2: // Saved Files
-                system("cls");
-                setPos(Xi, Yi); 
-                cout << "Saved Files: Chuc nang dang phat trien...";
-                cin.ignore(); 
-                cin.get();
-                break;
+//             case 2: // Saved Files
+//                 system("cls");
+//                 setPos(Xi, Yi); 
+//                 cout << "Saved Files: Chuc nang dang phat trien...";
+//                 cin.ignore(); 
+//                 cin.get();
+//                 break;
                 
-            case 3: // Settings
-                // Vào màn hình Settings và điều khiển (ControlSettings trả về 0 khi nhấn BACK)
-                ControlSettings();
-                break;
+//             case 3: // Settings
+//                 // Vào màn hình Settings và điều khiển (ControlSettings trả về 0 khi nhấn BACK)
+//                 ControlSettings();
+//                 break;
                 
-            case 4: // About Us
-                system("cls");
-                setPos(Xi, Yi); 
-                cout << "About Us: Chuc nang dang phat trien...";
-                cin.ignore(); 
-                cin.get();
-                break;
+//             case 4: // About Us
+//                 system("cls");
+//                 setPos(Xi, Yi); 
+//                 cout << "About Us: Chuc nang dang phat trien...";
+//                 cin.ignore(); 
+//                 cin.get();
+//                 break;
 
-            case 5: // Exit
-                // Thoát vòng lặp
-                break;
-        }
+//             case 5: // Exit
+//                 // Thoát vòng lặp
+//                 break;
+//         }
 
 
-    } while (choice != 5); 
+//     } while (choice != 5); 
 
-    system("cls");
-    setPos(0, 0);
-    cout << "Exit Game. Goodbye!" << endl;
-    return 0;
+//     system("cls");
+//     setPos(0, 0);
+//     cout << "Exit Game. Goodbye!" << endl;
+//     return 0;
+// }
+
+
+
 }
 
 
