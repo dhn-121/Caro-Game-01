@@ -1,8 +1,5 @@
 #ifndef _CONSOLE_H_
 #define _CONSOLE_H_
-#include <iostream>
-#include <Windows.h>
-#include <conio.h>
 #include <utility>
 void setPos(int , int );
 int isNextMove();

@@ -1,9 +1,12 @@
 #pragma once
-#include <Windows.h>
+#ifndef _BOARD_H_
+#define _BOARD_H_
 #define BOARD_SIZE 10
-#define LEFT 3
-#define TOP 1
+#define CellWidth 8
+#define CellHeight 3
 
- void FixConsoleWindow();
- void Gotoxy(int x, int y);
- void DrawBoard();
+//void FixConsoleWindow();
+//void Gotoxy(int x, int y);
+void DrawBoard();
+
+#endif

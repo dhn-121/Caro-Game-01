@@ -104,8 +104,6 @@ void fixConsoleWindow(int WIDTH, int HEIGHT) {
 //==================== Các thông số của bảng (đơn vị: ký tự) ====================
 
 //Các thông số ô cờ được lấy từ board.cpp
-#define CellWidth 8
-#define CellHeight 3
 
 //Kích thước thực của bảng cờ được tính theo dạng ký tự (BOARD_SIZE = 15, 16 là viền dọc, ngang )
 const int BoardRealWidth = BOARD_SIZE * CellWidth + 16; 
