@@ -78,7 +78,11 @@ void fixConsoleWindow(int WIDTH, int HEIGHT) {
     LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
     style = style & ~(WS_MAXIMIZEBOX | WS_THICKFRAME);
     SetWindowLong(consoleWindow, GWL_STYLE, style);
+    HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD maxSize = GetLargestConsoleWindowSize(Handle);
 
+    WIDTH = maxSize.X - 2;
+    HEIGHT = maxSize.Y - 2;
     SMALL_RECT r{};
     r.Top = r.Left = 0;
     r.Right = WIDTH - 1;
@@ -87,8 +91,6 @@ void fixConsoleWindow(int WIDTH, int HEIGHT) {
     COORD NewSize{};
     NewSize.X = WIDTH;
     NewSize.Y = HEIGHT;
-
-    HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
     MoveWindow(consoleWindow, 248, 10, NewSize.X, NewSize.Y, TRUE);
     SetConsoleScreenBufferSize(Handle, NewSize);
