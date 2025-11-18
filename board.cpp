@@ -1,7 +1,4 @@
-#include <iostream>
-#include "board.h"
-#include "Console.h"
-#include "Graphics.h"
+#include "Library.h"
 using namespace std;
 
 //Cố định màn hình
@@ -74,13 +71,13 @@ void DrawBoard() {
 }
 
 
-// int main() {
-//     FixConsoleWindow();
-//     DrawBoard();
-//     cout << "\nBan co da ve xong!\n";
-//     cin.get();
-//     return 0;
-// }
+ //int main() {
+ //    FixConsoleWindow();
+ //    DrawBoard();
+ //    cout << "\nban co da ve xong!\n";
+ //    cin.get();
+ //    return 0;
+ //}
 
 
 

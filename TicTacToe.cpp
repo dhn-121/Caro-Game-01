@@ -1,8 +1,4 @@
 #include "Library.h"
-#include "TicTacToe.h"
-#include "Console.h"
-#include "board.h"
-#include "Graphics.h"
 using namespace std;
 
 //Từ vị trí cột x, hàng y, di chuyển đến vị trí bạn muốn 

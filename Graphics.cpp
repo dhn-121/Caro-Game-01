@@ -1,7 +1,3 @@
-#include "Console.h"
-#include "TicTacToe.h"
-#include "board.h"
-#include "Graphics.h"
 #include "Library.h"
 
 using namespace std;
@@ -72,9 +68,7 @@ void drawBox(int x, int y, int w, int h, string text)
     }
 }
 
-//Màn hình Console tôi thấy ổn nhất (có thể thay đổi) gần bằng kích cỡ 10:16
-#define ConsoleWidth 180
-#define ConsoleHeight 60
+
 
 void fixConsoleWindow(int WIDTH, int HEIGHT) {
     // Thường cần #include <windows.h> và #include <iostream> cho system()
@@ -125,7 +119,7 @@ const int Yi = paddingY;
 
 //==================== LOADING... =====================
 
-void drawwLoadingScreen()
+void drawLoadingScreen()
 {
     system("cls");
     setColor(0, 15);
@@ -643,73 +637,72 @@ int ControlSettings()
 
 //TEST
 
-// int main() 
-// {
-//     // 1. Khởi tạo và Cố định Cửa sổ
-//     fixConsoleWindow(ConsoleWidth, ConsoleHeight); 
-    
-//     // 2. Định nghĩa các biến cần thiết cho game
-//     char default_player = 'X';
-//     char name1[] = "Player 1 (X)";
-//     char name2[] = "Player 2 (O)";
-//     char min[] = "05";
-//     char sec[] = "00";
-//     std::string filename = "caro_save_01.txt";
+ //int main() 
+ //{
+ //    // 1. Khởi tạo và Cố định Cửa sổ
+ //    fixConsoleWindow(ConsoleWidth, ConsoleHeight); 
+ //   
+ //    // 2. Định nghĩa các biến cần thiết cho game
+ //    char default_player = 'X';
+ //    char name1[] = "Player 1 (X)";
+ //    char name2[] = "Player 2 (O)";
+ //    char min[] = "05";
+ //    char sec[] = "00";
+ //    std::string filename = "caro_save_01.txt";
 
-//     int choice;
-    
-//     // Vòng lặp chính của chương trình để quay lại Menu
-//     drawwLoadingScreen();
-//     do {
-//         system("cls");
-//         drawMenuScreen();
-//         // Gọi hàm điều khiển Menu và lấy lựa chọn
-//         choice = ControlMenu();
-        
-//         // 4. Xử lý lựa chọn
-//         switch (choice) {
-//             case 1: // Play Game
-//                 // Chuyển sang màn hình chơi game
-//                 drawGamePlayScreen(default_player, name1, name2, min, sec, filename);
-//                 break;
-                
-//             case 2: // Saved Files
-//                 system("cls");
-//                 setPos(Xi, Yi); 
-//                 cout << "Saved Files: Chuc nang dang phat trien...";
-//                 cin.ignore(); 
-//                 cin.get();
-//                 break;
-                
-//             case 3: // Settings
-//                 // Vào màn hình Settings và điều khiển (ControlSettings trả về 0 khi nhấn BACK)
-//                 ControlSettings();
-//                 break;
-                
-//             case 4: // About Us
-//                 system("cls");
-//                 setPos(Xi, Yi); 
-//                 cout << "About Us: Chuc nang dang phat trien...";
-//                 cin.ignore(); 
-//                 cin.get();
-//                 break;
+ //    int choice;
+ //   
+ //    // Vòng lặp chính của chương trình để quay lại Menu
+ //    drawwLoadingScreen();
+ //    do 
+ //    {
+ //        system("cls");
+ //        drawMenuScreen();
+ //        // Gọi hàm điều khiển Menu và lấy lựa chọn
+ //        choice = ControlMenu();
+ //       
+ //        // 4. Xử lý lựa chọn
+ //        switch (choice) {
+ //            case 1: // Play Game
+ //                // Chuyển sang màn hình chơi game
+ //                drawGamePlayScreen(default_player, name1, name2, min, sec, filename);
+ //                break;
+ //               
+ //            case 2: // Saved Files
+ //                system("cls");
+ //                setPos(Xi, Yi); 
+ //                cout << "Saved Files: Chuc nang dang phat trien...";
+ //                cin.ignore(); 
+ //                cin.get();
+ //                break;
+ //               
+ //            case 3: // Settings
+ //                // Vào màn hình Settings và điều khiển (ControlSettings trả về 0 khi nhấn BACK)
+ //                ControlSettings();
+ //                break;
+ //               
+ //            case 4: // About Us
+ //                system("cls");
+ //                setPos(Xi, Yi); 
+ //                cout << "About Us: Chuc nang dang phat trien...";
+ //                cin.ignore(); 
+ //                cin.get();
+ //                break;
 
-//             case 5: // Exit
-//                 // Thoát vòng lặp
-//                 break;
-//         }
+ //            case 5: // Exit
+ //                // Thoát vòng lặp
+ //                break;
+ //        }
+ //    } while (choice != 5); 
 
-
-//     } while (choice != 5); 
-
-//     system("cls");
-//     setPos(0, 0);
-//     cout << "Exit Game. Goodbye!" << endl;
-//     return 0;
-// }
-
+ //    system("cls");
+ //    setPos(0, 0);
+ //    cout << "Exit Game. Goodbye!" << endl;
+ //    return 0;
+ //}
 
 
-}
+
+//}
 
 
