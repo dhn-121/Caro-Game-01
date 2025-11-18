@@ -1,4 +1,6 @@
 #pragma once
+#ifndef _LIBRARY_H_
+#define _LIBRARY_H_
 // Include all necessary headers
 #include "board.h"
 #include "Console.h"
@@ -19,3 +21,6 @@
 #include <cstdlib>
 #include <vector>
 #include <mmsystem.h>
+
+
+#endif

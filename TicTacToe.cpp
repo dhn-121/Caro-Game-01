@@ -4,8 +4,8 @@ using namespace std;
 //Từ vị trí cột x, hàng y, di chuyển đến vị trí bạn muốn 
 #define MoveTo(x,y) (setPos(x, y))
 
-const int CellWidth = 8;
-const int CellHeight = 3;
+//const int CellWidth = 8;
+//const int CellHeight = 3;
 
 //Tạo bảng 17x17 để xử lí các phần ô rìa hoặc góc (trong bảng 15x15 của tụi mình) dễ dàng hơn.
 char board[N][N];

@@ -1,5 +1,5 @@
-﻿#include "Sound.h"
-#include "Library.h"
+﻿#include "Library.h"
+#include "Sound.h"
 void initializeSound() {
     g_sfxEnabled = true;
     g_musicEnabled = true;
