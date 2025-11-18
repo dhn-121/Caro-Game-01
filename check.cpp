@@ -1,88 +1,140 @@
 ﻿#include "Library.h"
 using namespace std;
 bool has_empty_cell = 0;
-bool test_board(char ch, int x1, int y1, char A[N][N])
+void getij(int& i,int& j,int x,int y)
 {
-    int m, n;
-    if (ch == 79) { m = 79; n = 88; }
-    else { m = 88; n = 79; }
-    for (int i = 0; i < 5; i++)
-    {
-        if (A[x1 - 4 + i][y1] == m && A[x1 - 3 + i][y1] == m && A[x1 - 2 + i][y1] == m && A[x1 - 1 + i][y1] == m && A[x1 + i][y1] == m)
-            if (A[x1 - 5 + i][y1] != n || A[x1 + 1 + i][y1] != n) return 1;
-    }
-    for (int i = 0; i < 5; i++)
-    {
-        if (A[x1][y1 - 4 + i] == m && A[x1][y1 - 3 + i] == m && A[x1][y1 - 2 + i] == m && A[x1][y1 - 1 + i] == m && A[x1][y1 + i] == m)
-            if (A[x1][y1 - 5 + i] != n || A[x1][y1 + 1 + i] != n) return 1;
-    }
-    for (int i = 0; i < 5; i++)
-    {
-        if (A[x1 - 5 + i][y1 - 5 + i] != n || A[x1 + 1 + i][y1 + 1 + i] != n) return 1;
-    }
-    for (int i = 0; i < 5; i++)
-    {
-        if (A[x1 + 5 - i][y1 - 5 + i] != n || A[x1 - 1 - i][y1 + 1 + i] != n) return 1;
-    }
-    return 0;
+    i = (x - xbegin) / (CellWidth + 1);
+	j = (y - ybegin) / (CellHeight + 1);
 }
-//int check_game_status(const vector<vector<int>>& board, int size, int k) {
-//    // 8 hướng di chuyển: ngang, dọc, 2 đường chéo
-//    int dr[] = { 0, 1, 1, 1, 0, -1, -1, -1 };
-//    int dc[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
-//
-//    // Vòng lặp kiểm tra từng ô trên bảng
-//    for (int r = 0; r < size; ++r) {
-//        for (int c = 0; c < size; ++c) {
-//            int player = board[r][c];
-//            // Bỏ qua ô trống
-//            if (player == 0) {
-//                continue;
-//            }
-//
-//            // Kiểm tra 4 hướng chính (ngang phải, dọc xuống, chéo phải-xuống, chéo trái-xuống)
-//            // Chỉ cần kiểm tra 4 hướng này, vì các hướng ngược lại sẽ được kiểm tra từ ô khác.
-//            for (int dir = 0; dir < 4; ++dir) {
-//                int count = 1; // Bắt đầu với quân hiện tại
-//
-//                for (int i = 1; i < k; ++i) {
-//                    int nr = r + dr[dir] * i;
-//                    int nc = c + dc[dir] * i;
-//
-//                    if (nr >= 0 && nr < size && nc >= 0 && nc < size && board[nr][nc] == player) {
-//                        count++;
-//                    }
-//                    else {
-//                        break; // Đã ra khỏi biên hoặc gặp quân khác
-//                    }
-//                }
-//
-//                // Nếu đạt đủ số quân liên tiếp (k), thì thắng
-//                if (count >= k) {
-//                    return player; // Trả về 1 hoặc 2
-//                }
-//            }
-//        }
-//    }
+bool check_iswin(int x, int y, char a[N][N])
+{
+	char cur = a[x][y];
+	int dmove[4][2] = { {0,1}, {1,0}, {1,1}, {1,-1} }; // ngang, dọc, chéo phải-xuống, chéo trái-xuống
+	for(auto dir : dmove)
+	{
+		int count = 1;
+		for(int step = 1; step < 5; step++)
+		{
+			// di chuyển theo hướng dir
+			int nx = x + dir[0] * step;
+			int ny = y + dir[1] * step;
+			if(nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && a[nx][ny] == cur)
+				count++;
+			else
+				break;
+		}
+		for(int step = 1; step < 5; step++)
+		{
+			// di chuyển ngược hướng dir
+			int nx = x - dir[0] * step;
+			int ny = y - dir[1] * step;
+			if(nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && a[nx][ny] == cur)
+				count++;
+			else
+				break;
+		}
+		if(count >= 5)
+			return true;
+	}
+	return false;
+}
 
-    // Sau khi kiểm tra hết các ô mà chưa có ai thắng, kiểm tra xem còn ô trống không
-//    bool has_empty_cell = false;
-//    for (int r = 0; r < size; ++r) {
-//        for (int c = 0; c < size; ++c) {
-//            if (board[r][c] == 0) {
-//                has_empty_cell = true;
-//                break;
-//            }
-//        }
-//        if (has_empty_cell) break;
-//    }
-//
-//    // Nếu còn ô trống, game đang tiếp diễn
-//    if (has_empty_cell) {
-//        return 0; // Đang chơi
-//    }
-//    else {
-//        // Hết ô trống mà chưa ai thắng -> Hòa
-//        return -1; // Hòa
-//    }
-//}
+//test xem có ai chiến thắng không
+void main()
+{
+	// 1. Khởi tạo và Cố định Cửa sổ
+	fixConsoleWindow(ConsoleWidth, ConsoleHeight);
+
+	// 2. Định nghĩa các biến cần thiết cho game
+	char default_player = 'X';
+	char name1[] = "Player 1 (X)";
+	char name2[] = "Player 2 (O)";
+	char min[] = "05";
+	char sec[] = "00";
+	std::string filename = "caro_save_01.txt";
+
+	int choice;
+
+	// Vòng lặp chính của chương trình để quay lại Menu
+	int x = xbegin;
+	int y = ybegin;
+	drawLoadingScreen();
+	do
+	{
+		system("cls");
+		drawMenuScreen();
+		// Gọi hàm điều khiển Menu và lấy lựa chọn
+		choice = ControlMenu();
+
+		// 4. Xử lý lựa chọn
+		switch (choice) {
+		case 1: // Play Game
+			// Chuyển sang màn hình chơi game
+			fixConsoleWindow(ConsoleWidth, ConsoleHeight);
+			drawGamePlayScreen(default_player, name1, name2, min, sec, filename);
+
+			setPos(x, y);
+			for (int i = 0; i < N; i++)
+			{
+				for (int j = 0; j < N; j++)
+				{
+					board[i][j] = ' ';
+				}
+			}
+			while (true)
+			{
+				int type = isNextMove();
+				if (type == -1)break;
+				char player_main = check_XO();
+				if (type == 0)
+				{
+					MakeMove(player_main, x , y);
+					int i, j;
+					getij(i, j, x, y);
+					if (check_iswin(i,j,board))
+					{
+						system("cls");
+						setColor(0, 15);
+						cout << player_main << "WIN";
+						//return;
+						break;
+					}
+				}
+				else Movexy(x, y, type);
+			}
+			cin.ignore();
+			choice = 0; // Exit sau khi kết thúc game
+			break;
+
+		case 2: // Saved Files
+			system("cls");
+			setPos(Xi, Yi);
+			cout << "Saved Files: Chuc nang dang phat trien...";
+			cin.ignore();
+			cin.get();
+			break;
+
+		case 3: // Settings
+			// Vào màn hình Settings và điều khiển (ControlSettings trả về 0 khi nhấn BACK)
+			ControlSettings();
+			break;
+
+		case 4: // About Us
+			system("cls");
+			setPos(Xi, Yi);
+			cout << "About Us: Chuc nang dang phat trien...";
+			cin.ignore();
+			cin.get();
+			break;
+
+		case 5: // Exit
+			// Thoát vòng lặp
+			break;
+		}
+	} while (choice != 5);
+
+	system("cls");
+	setPos(0, 0);
+	cout << "Exit Game. Goodbye!" << endl;
+	return;
+}

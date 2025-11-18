@@ -76,9 +76,7 @@ void fixConsoleWindow(int &WIDTH, int &HEIGHT) {
     HWND consoleWindow = GetConsoleWindow();
     HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
-    style = style & ~(WS_MAXIMIZEBOX | WS_THICKFRAME);
-    SetWindowLong(consoleWindow, GWL_STYLE, style);
+    ShowWindow(consoleWindow, SW_MAXIMIZE);
    
     COORD maxSize = GetLargestConsoleWindowSize(Handle);
     
