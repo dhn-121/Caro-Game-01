@@ -26,12 +26,10 @@ bool ValidMove(int row, int col)
 
 void MakeMove(char player, int row, int col)
 {
-    if (!ValidMove(row, col))
-        return;
-    int screen_X = Xi + (col-1) * (CellWidth + 1) + 3;
-    int screen_Y = Yi + (row - 1) * (CellHeight + 1) + 1;
-    board[row][col] = player;
-    setPos(screen_X, screen_Y);
+	int i, j;
+	getij(i, j, row, col);
+    board[i][j] = player;
+    setPos(row, col);
     if (player == player_X)
     {
         cout << "X";

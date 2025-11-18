@@ -1,10 +1,10 @@
 #include "Library.h"
-
 using namespace std;
 
 #define backgroundcolor 7 //màu nền xám nhẹ
 #define fontcolor 0 //màu chữ đen
-
+    int ConsoleWidth=180;
+    int ConsoleHeight=60;
 void setColor(int bgcolor, int fgcolor)
 {
     HANDLE consoleHandler = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -70,23 +70,22 @@ void drawBox(int x, int y, int w, int h, string text)
 
 
 
-void fixConsoleWindow(int WIDTH, int HEIGHT) {
+void fixConsoleWindow(int &WIDTH, int &HEIGHT) {
     // Thường cần #include <windows.h> và #include <iostream> cho system()
     system("COLOR f0");
     HWND consoleWindow = GetConsoleWindow();
-
-    LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
-    style = style & ~(WS_MAXIMIZEBOX | WS_THICKFRAME);
-    SetWindowLong(consoleWindow, GWL_STYLE, style);
     HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD maxSize = GetLargestConsoleWindowSize(Handle);
 
-    WIDTH = maxSize.X - 2;
-    HEIGHT = maxSize.Y - 2;
+    ShowWindow(consoleWindow, SW_MAXIMIZE);
+   
+    COORD maxSize = GetLargestConsoleWindowSize(Handle);
+    
+	WIDTH = min(ConsoleWidth, maxSize.X);
+	HEIGHT = min(ConsoleHeight, maxSize.Y);
     SMALL_RECT r{};
     r.Top = r.Left = 0;
-    r.Right = WIDTH - 1;
-    r.Bottom = HEIGHT - 1;
+    r.Right = WIDTH;
+    r.Bottom = HEIGHT;
 
     COORD NewSize{};
     NewSize.X = WIDTH;
@@ -95,27 +94,11 @@ void fixConsoleWindow(int WIDTH, int HEIGHT) {
     MoveWindow(consoleWindow, 248, 10, NewSize.X, NewSize.Y, TRUE);
     SetConsoleScreenBufferSize(Handle, NewSize);
     SetConsoleWindowInfo(Handle, TRUE, &r);
-    ShowScrollBar(consoleWindow, SB_VERT, FALSE);
-    ShowScrollBar(consoleWindow, SB_HORZ, FALSE);
+    /*ShowScrollBar(consoleWindow, SB_VERT, FALSE);
+    ShowScrollBar(consoleWindow, SB_HORZ, FALSE);*/
+    ShowScrollBar(consoleWindow, SB_BOTH, FALSE);
 }
 
-
-
-//==================== Các thông số của bảng (đơn vị: ký tự) ====================
-
-//Các thông số ô cờ được lấy từ board.cpp
-
-//Kích thước thực của bảng cờ được tính theo dạng ký tự (BOARD_SIZE = 15, 16 là viền dọc, ngang )
-const int BoardRealWidth = BOARD_SIZE * CellWidth + 16; 
-const int BoardRealHeight = BOARD_SIZE * CellHeight + 16;
-
-//Khoảng cách giữa viền bảng cờ và Console
-const int paddingX = (ConsoleWidth - BoardRealWidth)/2;
-const int paddingY = (ConsoleHeight - BoardRealHeight)/2;
-
-// Toạ độ điểm neo được thay đổi thành chỗ bắt đầu vẽ bảng cờ 
-const int Xi = paddingX;
-const int Yi = paddingY;
 
 //==================== LOADING... =====================
 
@@ -364,8 +347,8 @@ void drawCaroBoard()
     DrawBoard();
 }
 
-const int buttonWidth = 20;
-const int buttonHeight = 3;
+//const int buttonWidth = 20;
+//const int buttonHeight = 3;
 
 bool isClickedButton(int xx, int yy, int X_start, int Y_start)
 {
