@@ -3,19 +3,38 @@
 #define _GRAPHIC_H_
     #include <string>
     #include <vector>
+     
+    //==================== Các thông số của bảng (đơn vị: ký tự) ====================
+
+    //Các thông số ô cờ được lấy từ board.cpp
+    //Màn hình Console tôi thấy ổn nhất (có thể thay đổi) gần bằng kích cỡ 10:16
+    extern int ConsoleWidth;
+    extern int ConsoleHeight;
+    //Kích thước thực của bảng cờ được tính theo dạng ký tự (BOARD_SIZE = 15, 16 là viền dọc, ngang )
+    const int BoardRealWidth = BOARD_SIZE * CellWidth + 16;
+    const int BoardRealHeight = BOARD_SIZE * CellHeight + 16;
+
+    //Khoảng cách giữa viền bảng cờ và Console
+    const int paddingX = (ConsoleWidth - BoardRealWidth) / 2;
+    const int paddingY = (ConsoleHeight - BoardRealHeight) / 2;
+    // Toạ độ điểm neo được thay đổi thành chỗ bắt đầu vẽ bảng cờ 
+    const int Xi = paddingX;
+    const int Yi = paddingY;
     
+    //Kích thước nút
+	const int buttonWidth = 20;
+	const int buttonHeight = 3;
+
     class Board;
     //Thay đổi màu sắc của nền và văn bản
     void setColor(int bgcolor, int fgcolor);//fgcolor là dành cho những phần cần "nổi" như chữ...
     void drawBox(int x, int y, int w, int h, std::string text);
     
-    void fixConsoleWindow(int WIDTH, int HEIGHT);
+    void fixConsoleWindow(int &WIDTH, int &HEIGHT);
 
     extern const int Xi;
     extern const int Yi;
-    //Màn hình Console tôi thấy ổn nhất (có thể thay đổi) gần bằng kích cỡ 10:16
-    #define ConsoleWidth 180
-    #define ConsoleHeight 60
+   
     void drawTitle();
     void drawPlayBox();
     void drawSavedBox();

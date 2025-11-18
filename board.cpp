@@ -14,7 +14,6 @@ void DrawBoard() {
     //const int cellWidth = 8;  // tăng khoảng ngang để vuông hơn
     //const int cellHeight = 3; // chiều cao mỗi ô
     int current_Y = Yi;
-
     // Hàng đầu tiên
     setPos(Xi, current_Y);
     cout << char(218);

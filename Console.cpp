@@ -42,14 +42,19 @@ void Movexy(int &x,int &y,int typemove)
 		setPos(x, y);
 		return;
 	}*/
-	int DXX = CellWidth -1;//do dai nhay X
-	int DXY = CellHeight;//do dai nhay Y
+	int DXX = CellWidth +1;//do dai nhay X
+	int DXY = CellHeight +1;//do dai nhay Y
+
+	//di chuyen
 	x += DXX*dxy[typemove - 1].first;
 	y += DXY*dxy[typemove - 1].second;
-	if (x >= (DXX)*(BOARD_SIZE+1))x = xbegin;
-	if (x < xbegin)x = (DXX)*(BOARD_SIZE-1)+ xbegin-1;
-	if (y > DXY * (BOARD_SIZE))y = ybegin;
-	if (y < ybegin)y = (DXY)*(BOARD_SIZE)+ ybegin-1;
+
+	//kiem tra vuot bien
+	if (x > (DXX) * (BOARD_SIZE - 1) + xbegin)x = xbegin;
+	if (x < xbegin)x = (DXX) * (BOARD_SIZE - 1) + xbegin;
+	if (y >= DXY * (BOARD_SIZE)+ybegin)y = ybegin;
+	if (y < ybegin)y = DXY * (BOARD_SIZE - 1) + ybegin;
+	//dat con tro
 	setPos(x, y);
 }
 
@@ -102,11 +107,11 @@ void main()
 					if (type == 0)
 					{
 						MakeMove(player_main, y / CellHeight + 1, x / CellWidth + 1);
-						/**if (!test_board(player_main, y / CellHeight + 1, x / CellWidth + 1, board))
+						if (!test_board(player_main, y / CellHeight + 1, x / CellWidth + 1, board))
 						{
 							cout << player_main << "WIN";
 							return;
-						}*/
+						}
 					}
 					else Movexy(x, y, type);
 				}
