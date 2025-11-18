@@ -13,7 +13,9 @@
 
     extern const int Xi;
     extern const int Yi;
-
+    //Màn hình Console tôi thấy ổn nhất (có thể thay đổi) gần bằng kích cỡ 10:16
+    #define ConsoleWidth 180
+    #define ConsoleHeight 60
     void drawTitle();
     void drawPlayBox();
     void drawSavedBox();
@@ -25,6 +27,7 @@
     int ControlMenu();
 
     void drawLoadingScreen();
+
 
     void drawCaroBoard();
     bool isClickedButton(int xx, int yy, int X_start, int Y_start);

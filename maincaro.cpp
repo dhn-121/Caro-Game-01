@@ -1,10 +1,4 @@
-#include <iostream>
-#include <Windows.h>
-#include <conio.h>
-#include "board.h"
-#include "Console.h"
-#include "Check.h"
-#include "TicTacToe.h"
+#include "Library.h"
 using namespace std;
 
 // int main() {

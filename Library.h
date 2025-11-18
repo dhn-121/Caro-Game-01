@@ -1,5 +1,13 @@
 #pragma once
+// Include all necessary headers
+#include "board.h"
+#include "Console.h"
+#include "Graphics.h"
+#include "TicTacToe.h"
+#include "check.h"
+//#include "Sound.h"
 
+// Standard library headers
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -10,3 +18,4 @@
 #include <cctype>
 #include <cstdlib>
 #include <vector>
+#include <mmsystem.h>
