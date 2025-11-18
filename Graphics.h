@@ -30,7 +30,9 @@
     void setColor(int bgcolor, int fgcolor);//fgcolor là dành cho những phần cần "nổi" như chữ...
     void drawBox(int x, int y, int w, int h, std::string text);
     
-    void fixConsoleWindow(int &WIDTH, int &HEIGHT);
+	void getConsoleSize(int& width, int& height);
+    void fixConsoleWindow(int WIDTH, int HEIGHT);
+    //void fixConsoleWindow(int WIDTH, int HEIGHT);
 
     extern const int Xi;
     extern const int Yi;

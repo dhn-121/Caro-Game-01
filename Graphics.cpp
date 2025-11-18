@@ -69,33 +69,31 @@ void drawBox(int x, int y, int w, int h, string text)
 }
 
 
-
-void fixConsoleWindow(int &WIDTH, int &HEIGHT) {
+void getConsoleSize(int &WIDTH, int &HEIGHT) {
+    HWND consoleWindow = GetConsoleWindow();
+    HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD size = GetLargestConsoleWindowSize(Handle);
+    
+    WIDTH = size.X;
+    HEIGHT = size.Y;
+}
+void fixConsoleWindow(int WIDTH, int HEIGHT) {
     // Thường cần #include <windows.h> và #include <iostream> cho system()
     system("COLOR f0");
     HWND consoleWindow = GetConsoleWindow();
     HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
-
     ShowWindow(consoleWindow, SW_MAXIMIZE);
-   
-    COORD maxSize = GetLargestConsoleWindowSize(Handle);
-    
-	WIDTH = min(ConsoleWidth, maxSize.X);
-	HEIGHT = min(ConsoleHeight, maxSize.Y);
+	getConsoleSize(WIDTH, HEIGHT);
+    COORD NewSize{};
+    NewSize.X = WIDTH;
+    NewSize.Y = HEIGHT;
+    SetConsoleScreenBufferSize(Handle, NewSize);
+    //MoveWindow(consoleWindow, 248, 10, NewSize.X, NewSize.Y, TRUE);
     SMALL_RECT r{};
     r.Top = r.Left = 0;
     r.Right = WIDTH;
     r.Bottom = HEIGHT;
-
-    COORD NewSize{};
-    NewSize.X = WIDTH;
-    NewSize.Y = HEIGHT;
-
-    MoveWindow(consoleWindow, 248, 10, NewSize.X, NewSize.Y, TRUE);
-    SetConsoleScreenBufferSize(Handle, NewSize);
     SetConsoleWindowInfo(Handle, TRUE, &r);
-    /*ShowScrollBar(consoleWindow, SB_VERT, FALSE);
-    ShowScrollBar(consoleWindow, SB_HORZ, FALSE);*/
     ShowScrollBar(consoleWindow, SB_BOTH, FALSE);
 }
 
@@ -423,8 +421,9 @@ void drawTimeBox(char min[], char sec[])
 void drawFilename(std::string filename)
 {
     int length = filename.length();
-    int X_start = Xi + ConsoleWidth/2 - length/2;
-    int Y_start = Yi + BoardRealHeight + paddingY - 1;
+    int X_start = Xi + BoardRealWidth/2 - length/2;
+	//int X_start =1; 
+    int Y_start =BoardRealHeight+Yi/2-1;
     setPos(X_start, Y_start);
     cout << filename;
 }

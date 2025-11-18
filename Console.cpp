@@ -36,12 +36,6 @@ int isNextMove()
 //ham di chuyen
 void Movexy(int &x,int &y,int typemove)
 {
-	/*if (typemove == 0)
-	{
-		cout << 'x';
-		setPos(x, y);
-		return;
-	}*/
 	int DXX = CellWidth +1;//do dai nhay X
 	int DXY = CellHeight +1;//do dai nhay Y
 

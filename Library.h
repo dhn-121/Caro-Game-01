@@ -6,7 +6,7 @@
 #include "Console.h"
 #include "Graphics.h"
 #include "TicTacToe.h"
-#include "check.h"
+#include "checkcaro.h"
 //#include "Sound.h"
 
 // Standard library headers
