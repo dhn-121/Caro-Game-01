@@ -26,8 +26,11 @@ bool ValidMove(int row, int col)
 
 void MakeMove(char player, int row, int col)
 {
-	int i, j;
+    int i, j;
 	getij(i, j, row, col);
+    if(!ValidMove(i, j))
+		return;
+	
     board[i][j] = player;
     setPos(row, col);
     if (player == player_X)
