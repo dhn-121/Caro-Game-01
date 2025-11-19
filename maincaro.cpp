@@ -1,4 +1,9 @@
-#include "Library.h"
+#include"Library.h"
+#include "board.cpp"
+#include "Console.cpp"
+#include "Graphics.cpp"
+#include "TicTacToe.cpp"
+#include "checkcaro.cpp"
 using namespace std;
 
 int main()
@@ -49,7 +54,7 @@ int main()
                     {
                         system("cls");
                         setColor(0, 15);
-                        cout << player_main << "WIN";
+                        cout << player_main << " " << "WIN" << '\n';
                         //return;
                         break;
                     }
