@@ -1,7 +1,7 @@
 #pragma once
 #ifndef _BOARD_H_
 #define _BOARD_H_
-#define BOARD_SIZE 10
+#define BOARD_SIZE 8
 #define CellWidth 8
 #define CellHeight 3
 
