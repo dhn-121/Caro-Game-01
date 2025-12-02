@@ -1,6 +1,7 @@
-﻿#include "Library.h"
+#include "Library.h"
 using namespace std;
 bool has_empty_cell = 0;
+int count_moves = 0;
 void getij(int& i,int& j,int x,int y)
 {
     i = (x - xbegin) / (CellWidth + 1);
@@ -39,12 +40,20 @@ bool check_iswin(int x, int y, char a[N][N])
 	return false;
 }
 
+// Hàm kiểm tra hòa: So sánh số nước đã đi với tổng số ô trên bàn cờ
+bool check_isdraw(int count_moves)
+{
+	// Nếu số nước đi == Tổng số ô (N * N hoặc BOARD_SIZE * BOARD_SIZE)
+	if (count_moves == BOARD_SIZE * BOARD_SIZE)
+		return true;
+	return false;
+}
+
 //test xem có ai chiến thắng không
-void main()
+int main()
 {
 	// 1. Khởi tạo và Cố định Cửa sổ
-	fixConsoleWindow(ConsoleWidth, ConsoleHeight);
-
+	fixviewConsoleWindow();
 	// 2. Định nghĩa các biến cần thiết cho game
 	char default_player = 'X';
 	char name1[] = "Player 1 (X)";
@@ -54,13 +63,13 @@ void main()
 	std::string filename = "caro_save_01.txt";
 
 	int choice;
-
-	// Vòng lặp chính của chương trình để quay lại Menu
 	int x = xbegin;
 	int y = ybegin;
+	// Vòng lặp chính của chương trình để quay lại Menu
 	drawLoadingScreen();
 	do
 	{
+		fixviewConsoleWindow();
 		system("cls");
 		drawMenuScreen();
 		// Gọi hàm điều khiển Menu và lấy lựa chọn
@@ -70,10 +79,13 @@ void main()
 		switch (choice) {
 		case 1: // Play Game
 			// Chuyển sang màn hình chơi game
-			fixConsoleWindow(ConsoleWidth, ConsoleHeight);
+			fixviewConsoleWindow();
 			drawGamePlayScreen(default_player, name1, name2, min, sec, filename);
-
-			setPos(x, y);
+			calculateStartPos();
+			x = xbegin;
+			y = ybegin;
+			
+			//cout << Xi << " " << Yi;
 			for (int i = 0; i < N; i++)
 			{
 				for (int j = 0; j < N; j++)
@@ -81,6 +93,7 @@ void main()
 					board[i][j] = ' ';
 				}
 			}
+			count_moves = 0;
 			while (true)
 			{
 				int type = isNextMove();
@@ -88,6 +101,7 @@ void main()
 				char player_main = check_XO();
 				if (type == 0)
 				{
+					count_moves++;
 					MakeMove(player_main, x , y);
 					int i, j;
 					getij(i, j, x, y);
@@ -99,10 +113,18 @@ void main()
 						//return;
 						break;
 					}
+					else if (check_isdraw(count_moves)) // <--- THÊM KHỐI NÀY
+					{
+						system("cls");
+						setColor(0, 15);
+						cout << "DRAW GAME!" << '\n'; // Thông báo hòa
+						break; // Thoát game
+					}
 				}
 				else Movexy(x, y, type);
 			}
 			cin.ignore();
+			count_moves = 0;
 			choice = 0; // Exit sau khi kết thúc game
 			break;
 
@@ -136,5 +158,5 @@ void main()
 	system("cls");
 	setPos(0, 0);
 	cout << "Exit Game. Goodbye!" << endl;
-	return;
+	return 0;
 }
