@@ -36,6 +36,12 @@
     <ClCompile Include="TicTacToe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="play.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="saveload.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h">
@@ -59,5 +65,34 @@
     <ClInclude Include="TicTacToe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="play.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="saveload.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\sound\click.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="..\sound\gameplay.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="..\sound\lose.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="..\sound\move.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="..\sound\win.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="..\sound\GamePlay_2.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="..\sound\Menu.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

@@ -70,6 +70,7 @@ int main()
 	drawLoadingScreen();
 	do
 	{
+		playBackgroundMusic();
 		fixviewConsoleWindow();
 		system("cls");
 		drawMenuScreen();
@@ -86,7 +87,7 @@ int main()
 			x = xbegin;
 			y = ybegin;
 			stopBackgroundMusic(); // tắt nhạc menu
-			/*playGameplayMusic();*/
+			playGameplayMusic();
 			//cout << Xi << " " << Yi;
 			for (int i = 0; i < N; i++)
 			{
@@ -111,15 +112,17 @@ int main()
 					{
 						system("cls");
 						setColor(0, 15);
-						cout << player_main << "WIN";
+						if (player_main == 'X')
+							drawX_WIN(Xi + 9, Yi - 1);
+						else
+							drawO_WIN(Xi + 9, Yi - 1);
 						//return;
 						break;
 					}
 					else if (check_isdraw(count_moves)) // <--- THÊM KHỐI NÀY
 					{
 						system("cls");
-						setColor(0, 15);
-						cout << "DRAW GAME!" << '\n'; // Thông báo hòa
+						drawDRAW(Xi + 9, Yi - 1);
 						break; // Thoát game
 					}
 				}
@@ -128,12 +131,12 @@ int main()
 			cin.ignore();
 			count_moves = 0;
 			choice = 0; // Exit sau khi kết thúc game
+			stopGameplayMusic();
 			break;
 
 		case 2: // Saved Files
 			system("cls");
-			setPos(Xi, Yi);
-			cout << "Saved Files: Chuc nang dang phat trien...";
+			drawLOAD_GAME(Xi - 8, Yi - 1);
 			cin.ignore();
 			cin.get();
 			break;
@@ -144,9 +147,7 @@ int main()
 			break;
 
 		case 4: // About Us
-			system("cls");
-			setPos(Xi, Yi);
-			cout << "About Us: Chuc nang dang phat trien...";
+			drawAboutUsScreen();
 			cin.ignore();
 			cin.get();
 			break;

@@ -1,10 +1,761 @@
 #include "Library.h"
 using namespace std;
 
-#define backgroundcolor 7 //màu nền xám nhẹ
+#define backgroundcolor 15 //màu nền xám nhẹ
 #define fontcolor 0 //màu chữ đen
-    int ConsoleWidth=180;
-    int ConsoleHeight=60;
+#define co_theme 15,0 //màu chủ đề xanh dương
+int ConsoleWidth = 0;
+int ConsoleHeight = 0;
+
+int BoardRealWidth = 0; 
+int BoardRealHeight = 0;
+
+int Box_Gap = 0; 
+
+// Biến kích thước Box/Menu (Sẽ được tính toán động)
+int buttonWidth = 0;
+int buttonHeight = 0;
+int TurnboxWidth = 0;
+int TurnboxHeight = 0;
+
+int Title_Width = 0;
+int Title_Height = 0;
+
+int ToggleBox_Width = 0;
+int ToggleBox_Height = 0;
+
+// Biến Group (Tính lại mỗi lần kích thước Box thay đổi)
+int Group_Width = 0;
+int Group_Height = 0;
+int SettingsGroup_Height = 0;
+
+// Biến Vị trí
+int paddingX = 0;
+int paddingY = 0;
+int Xi = 0; 
+int Yi = 0;
+int X_Start_Group = 0;
+int Y_Start_Group = 0;
+int X_Start_Box = 0;
+int Y_Start_Play = 0;
+int Y_Start_Saved = 0;
+int Y_Start_Settings = 0;
+int Y_Start_About = 0;
+int Y_Start_Exit = 0;
+int Y_Start_MenuBox[MenuBoxNum];
+int Y_Start_Settings_Group = 0;
+int X_Start_ToggleBox = 0;
+int Content_X = 0;
+int SFX_Y = 0;
+int MUSIC_Y = 0;
+int BackY = 0;
+int STATUS_X = 0;
+
+void drawA(int XX, int YY) { // 6 * 8
+	setPos(XX + 1, YY);
+	setColor(0, 0); cout << "     ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "       ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << "  ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 5);
+	cout << char(200) << char(205) << char(188) << "  " << char(200) << char(205) << char(188);
+}
+
+void drawB(int XX, int YY) { // 6 * 8
+	setPos(XX, YY);
+	setColor(0, 0); for (int i = 0; i < 6; ++i) cout << " ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); for (int i = 0; i < 6; ++i) cout << " ";
+	setColor(co_theme); cout << char(201) << char(188);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); for (int i = 0; i < 6; ++i) cout << " ";
+	setColor(co_theme); cout << char(201) << char(188);
+
+	setPos(XX, YY + 5);
+	cout << char(200);
+	for (int i = 0; i < 5; ++i) cout << char(205);
+	cout << char(188);
+}
+
+void drawC(int XX, int YY) { // 6 * 8
+	setPos(XX + 1, YY);
+	setColor(0, 0); cout << "      ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0);  cout << "  ";
+	setColor(co_theme);
+	cout << char(201);
+	for (int i = 1; i <= 4; ++i) cout << char(205);
+	cout << char(188);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0);  cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0);  cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 4);
+	cout << char(200);
+	setColor(0, 0);  cout << "      ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX + 1, YY + 5);
+	cout << char(200);
+	for (int i = 1; i <= 5; ++i) cout << char(205);
+	cout << char(188);
+}
+
+void drawO(int XX, int YY, int co_txt = 0) { // 6 * 9
+	setPos(XX + 1, YY);
+	setColor(co_txt, 0); cout << "      ";
+	setColor(15, co_txt); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(201) << char(205) << char(205) << char(205);
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(187);
+
+	setPos(XX, YY + 2);
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(186) << "   ";
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(186);
+
+	setPos(XX, YY + 3);
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(186) << "   ";
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(186);
+
+	setPos(XX, YY + 4);
+	cout << char(200);
+	setColor(co_txt, 0); cout << "      ";
+	setColor(15, co_txt); cout << char(201) << char(188);
+
+	setPos(XX + 1, YY + 5);
+	cout << char(200);
+	for (int i = 1; i <= 5; ++i) cout << char(205);
+	cout << char(188);
+	setColor(co_theme);
+}
+
+void drawR(int XX, int YY) { // 6 * 8
+	setPos(XX, YY);
+	setColor(0, 0); cout << "      ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "      ";
+	setColor(co_theme); cout << char(201) << char(188);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << "  ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 5);
+	cout << char(200) << char(205) << char(188) << "  " << char(200) << char(205) << char(188);
+}
+
+void drawU(int XX, int YY) { // 6 * 9
+	setPos(XX, YY);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187) << "   ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << "   ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << "   ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << "   ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 4);
+	cout << char(200);
+	setColor(0, 0); cout << "      ";
+	setColor(co_theme); cout << char(201) << char(188);
+
+	setPos(XX + 1, YY + 5);
+	cout << char(200);
+	for (int i = 1; i <= 5; ++i) cout << char(205);
+	cout << char(188);
+}
+
+void drawT(int XX, int YY) { // 6 * 9
+	setPos(XX, YY);
+	setColor(0, 0);  cout << "        ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	cout << char(200) << char(205) << char(205);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme);  cout << char(201) << char(205) << char(205) << char(188);
+
+	for (int i = 0; i < 3; ++i) {
+		setPos(XX + 3, YY + 2 + i);
+		setColor(0, 0); cout << "  ";
+		setColor(co_theme); cout << char(186);
+	}
+
+	setPos(XX + 3, YY + 5);
+	cout << char(200) << char(205) << char(188);
+}
+
+void drawL(int XX, int YY) {  // 6 * 8
+	setPos(XX, YY);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	for (int i = 1; i <= 3; ++i) {
+		setPos(XX, YY + i);
+		setColor(0, 0); cout << "  ";
+		setColor(co_theme); cout << char(186);
+	}
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); cout << "       ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 5);
+	cout << char(200);
+	for (int i = 0; i < 6; ++i) cout << char(205);
+	cout << char(188);
+}
+
+void drawD(int XX, int YY) {  // 6 * 8
+	setPos(XX, YY);
+	setColor(0, 0); cout << "      ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	for (int i = 2; i <= 3; ++i) {
+		setPos(XX, YY + i);
+		setColor(0, 0); cout << "  ";
+		setColor(co_theme); cout << char(186) << "  ";
+		setColor(0, 0); cout << "  ";
+		setColor(co_theme); cout << char(186);
+	}
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); cout << "      ";
+	setColor(co_theme); cout << char(201) << char(188);
+
+	setPos(XX, YY + 5);
+	cout << char(200);
+	for (int i = 0; i < 5; ++i) cout << char(205);
+	cout << char(188);
+}
+
+void drawG(int XX, int YY) {  // 6 * 9
+	setPos(XX + 1, YY);
+	setColor(0, 0); cout << "      ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201);
+	for (int i = 0; i < 4; ++i) cout << char(205);
+	cout << char(188);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << "  ";
+	setColor(0, 0); cout << "   ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << "   ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 4);
+	cout << char(200);
+	setColor(0, 0); cout << "      ";
+	setColor(co_theme); cout << char(201) << char(188);
+
+	setPos(XX + 1, YY + 5);
+	cout << char(200);
+	for (int i = 0; i < 5; ++i) cout << char(205);
+	cout << char(188);
+}
+
+void drawM(int XX, int YY) {  // 6 * 11
+	setPos(XX, YY);
+	setColor(0, 0); cout << "   ";
+	setColor(co_theme); cout << char(187) << "   ";
+	setColor(0, 0); cout << "   ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "    ";
+	setColor(co_theme); cout << char(187) << " ";
+	setColor(0, 0); cout << "    ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201);
+	setColor(0, 0); cout << "    ";
+	setColor(co_theme); cout << char(201);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << char(200);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(188);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << " " << char(200) << char(205) << char(188) << " ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 5);
+	cout << char(200) << char(205) << char(188) << "     " << char(200) << char(205) << char(188);
+}
+
+void drawE(int XX, int YY) {  // 6 * 8
+	setPos(XX, YY);
+	setColor(0, 0); cout << "       ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201);
+	for (int i = 0; i < 4; ++i) cout << char(205);
+	cout << char(188);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "     ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205) << char(188);
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); cout << "       ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 5);
+	cout << char(200);
+	for (int i = 0; i < 6; ++i) cout << char(205);
+	cout << char(188);
+}
+
+void drawN(int XX, int YY) {  // 6 * 10
+	setPos(XX, YY);
+	setColor(0, 0); cout << "   ";
+	setColor(co_theme); cout << char(187) << "   ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "    ";
+	setColor(co_theme); cout << char(187) << "  ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187) << " ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << char(200);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << " " << char(200);
+	setColor(0, 0); cout << "    ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 5);
+	cout << char(200) << char(205) << char(188) << "  " << char(200);
+	for (int i = 0; i < 3; ++i) cout << char(205);
+	cout << char(188);
+}
+
+void drawW(int XX, int YY) {  // 6 * 10
+	setPos(XX, YY);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187) << "    ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << "    ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << " ";
+	setColor(0, 0); cout << " ";
+	setColor(co_theme); cout << char(187) << " ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+	setColor(0, 0); cout << "   ";
+	setColor(co_theme); cout << char(187);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 4);
+	setColor(co_theme); cout << char(200);
+	setColor(0, 0); cout << "   ";
+	setColor(co_theme); cout << char(201);
+	setColor(0, 0); cout << "   ";
+	setColor(co_theme); cout << char(201) << char(188);
+
+	setPos(XX + 1, YY + 5);
+	cout << char(200) << char(205) << char(205) << char(188) << char(200) << char(205) << char(205) << char(188);
+}
+
+void drawH(int XX, int YY) {  // 6 * 8
+	setPos(XX, YY);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187) << "  ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << "  ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "       ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186) << "  ";
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 5);
+	cout << char(200) << char(205) << char(188) << "  " << char(200) << char(205) << char(188);
+}
+
+void drawP(int XX, int YY) {  // 6 * 8
+	setPos(XX, YY);
+	setColor(0, 0); cout << "      ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "      ";
+	setColor(co_theme); cout << char(201) << char(188);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(201) << char(205) << char(205) << char(205) << char(188);
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 5);
+	cout << char(200) << char(205) << char(188);
+}
+
+void drawX(int XX, int YY, int co_txt = 0) {  // 6 * 8
+	setPos(XX, YY);
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(187) << "  ";
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(187);
+
+	setPos(XX, YY + 1);
+	cout << char(200);
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(187);
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(201) << char(188);
+
+	setPos(XX, YY + 2);
+	cout << " " << char(200);
+	setColor(co_txt, 0); cout << "   ";
+	setColor(15, co_txt); cout << char(201) << char(188);
+
+	setPos(XX, YY + 3);
+	cout << " ";
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(201);
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(187);
+
+	setPos(XX, YY + 4);
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(201) << char(188) << " ";
+	setColor(co_txt, 0); cout << "  ";
+	setColor(15, co_txt); cout << char(187);
+
+	setPos(XX, YY + 5);
+	cout << char(200) << char(205) << char(188) << "  " << char(200) << char(205) << char(188);
+	setColor(co_theme);
+}
+
+void drawI(int XX, int YY) {  // 6 * 3
+	setPos(XX, YY);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(187);
+
+	setPos(XX, YY + 1);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 2);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 3);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 4);
+	setColor(0, 0); cout << "  ";
+	setColor(co_theme); cout << char(186);
+
+	setPos(XX, YY + 5);
+	cout << char(200) << char(205) << char(188);
+}
+
+void drawCARO(int XX, int YY) {
+	drawC(XX, YY);
+	drawA(XX + 8, YY);
+	drawR(XX + 16, YY);
+	drawO(XX + 24, YY);
+}
+
+void drawABOUT(int XX, int YY) {
+	drawA(XX, YY);
+	drawB(XX + 8, YY);
+	drawO(XX + 16, YY);
+	drawU(XX + 25, YY);
+	drawT(XX + 34, YY);
+}
+
+void drawLOAD_GAME(int XX, int YY) {
+	drawL(XX, YY);
+	drawO(XX + 8, YY);
+	drawA(XX + 17, YY);
+	drawD(XX + 25, YY);
+	drawG(XX + 37, YY);
+	drawA(XX + 46, YY);
+	drawM(XX + 54, YY);
+	drawE(XX + 65, YY);
+}
+
+void drawNEW_GAME(int XX, int YY) {
+	drawN(XX, YY);
+	drawE(XX + 10, YY);
+	drawW(XX + 18, YY);
+	drawG(XX + 32, YY);
+	drawA(XX + 41, YY);
+	drawM(XX + 49, YY);
+	drawE(XX + 60, YY);
+}
+
+void drawHELP(int XX, int YY) {
+	drawH(XX, YY);
+	drawE(XX + 8, YY);
+	drawL(XX + 16, YY);
+	drawP(XX + 24, YY);
+}
+
+void drawIN_MATCH(int XX, int YY) {
+	drawI(XX, YY);
+	drawN(XX + 3, YY);
+	drawM(XX + 17, YY);
+	drawA(XX + 28, YY);
+	drawT(XX + 36, YY);
+	drawC(XX + 45, YY);
+	drawH(XX + 53, YY);
+}
+
+void drawX_WIN(int XX, int YY) {
+	drawX(XX, YY);
+	drawW(XX + 12, YY);
+	drawI(XX + 22, YY);
+	drawN(XX + 25, YY);
+}
+
+void drawO_WIN(int XX, int YY) {
+	drawO(XX, YY);
+	drawW(XX + 13, YY);
+	drawI(XX + 23, YY);
+	drawN(XX + 26, YY);
+}
+
+void drawDRAW(int XX, int YY) {
+	drawD(XX, YY);
+	drawR(XX + 8, YY);
+	drawA(XX + 16, YY);
+	drawW(XX + 24, YY);
+}
+
+void drawSETTING(int XX, int YY) {
+	//drawS(XX, YY);
+	drawE(XX + 5, YY);
+	drawT(XX + 13, YY);
+	drawT(XX + 22, YY);
+	drawI(XX + 31, YY);
+	drawN(XX + 34, YY);
+	drawG(XX + 44, YY);
+}
+
+void calculateLayoutParameters()
+{
+    if (ConsoleWidth <= 0 || ConsoleHeight <= 0) return;
+
+    BoardRealWidth = BOARD_SIZE * CellWidth + (BOARD_SIZE + 1); 
+    BoardRealHeight = BOARD_SIZE * CellHeight + (BOARD_SIZE + 1); 
+
+    Box_Gap = max(2, ConsoleHeight / 40); 
+
+    Title_Width = ConsoleWidth * 40 / 100; // 40% ConsoleWidth
+    Title_Height = ConsoleHeight * 10/100;; 
+    buttonWidth = ConsoleWidth * 15 / 100; // 15% ConsoleWidth
+    buttonHeight = ConsoleHeight * 8 / 100;   
+    TurnboxWidth = ConsoleWidth * 10 / 100; // 10% ConsoleWidth
+    TurnboxHeight = ConsoleHeight * 30 / 100;
+    ToggleBox_Width = ConsoleWidth * 20 / 100;
+    ToggleBox_Height = ConsoleHeight * 15 / 100;
+
+    Group_Width = Title_Width; 
+    Group_Height = Title_Height + Box_Gap + MenuBoxNum * buttonHeight + (MenuBoxNum - 1) * Box_Gap;
+    SettingsGroup_Height = Title_Height + Box_Gap + ToggleBox_Height + Box_Gap + buttonHeight;
+
+    paddingX = (ConsoleWidth - BoardRealWidth) / 2;
+    paddingY = (ConsoleHeight - BoardRealHeight) / 2;
+    Xi = paddingX; 
+    Yi = paddingY;
+
+    X_Start_Group = (ConsoleWidth - Group_Width)/2;
+    Y_Start_Group = (ConsoleHeight - Group_Height)/2;
+    X_Start_Box = X_Start_Group + (Group_Width - buttonWidth)/2;
+
+    Y_Start_Play = Y_Start_Group + Title_Height + Box_Gap;
+    Y_Start_Saved = Y_Start_Play + buttonHeight + Box_Gap;
+    Y_Start_Settings = Y_Start_Saved + buttonHeight + Box_Gap;
+    Y_Start_About = Y_Start_Settings + buttonHeight + Box_Gap;
+    Y_Start_Exit = Y_Start_About + buttonHeight + Box_Gap;
+    Y_Start_MenuBox[0] = Y_Start_Play;
+    Y_Start_MenuBox[1] = Y_Start_Saved;
+    Y_Start_MenuBox[2] = Y_Start_Settings;
+    Y_Start_MenuBox[3] = Y_Start_About;
+    Y_Start_MenuBox[4] = Y_Start_Exit;
+
+    Y_Start_Settings_Group = (ConsoleHeight - SettingsGroup_Height) / 2;
+    X_Start_ToggleBox = (ConsoleWidth - ToggleBox_Width) / 2;
+    Content_X = X_Start_ToggleBox + 3;
+    SFX_Y = Y_Start_Settings_Group + Title_Height + Box_Gap + 1; // Nội dung cách viền trên 1 đơn vị
+    MUSIC_Y = SFX_Y + 2;
+    BackY = Y_Start_Settings_Group + Title_Height + Box_Gap + ToggleBox_Height + Box_Gap;
+    STATUS_X = Content_X + 15;
+}
+
 void setColor(int bgcolor, int fgcolor)
 {
     HANDLE consoleHandler = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -69,42 +820,68 @@ void drawBox(int x, int y, int w, int h, string text)
 }
 
 
-void getConsoleSize(int &WIDTH, int &HEIGHT) {
-    HWND consoleWindow = GetConsoleWindow();
-    HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD size = GetLargestConsoleWindowSize(Handle);
-    
-    WIDTH = size.X;
-    HEIGHT = size.Y;
-}
-void fixConsoleWindow(int WIDTH, int HEIGHT) {
-    // Thường cần #include <windows.h> và #include <iostream> cho system()
-    system("COLOR f0");
-    HWND consoleWindow = GetConsoleWindow();
-    HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
-    ShowWindow(consoleWindow, SW_MAXIMIZE);
-	getConsoleSize(WIDTH, HEIGHT);
-    COORD NewSize{};
-    NewSize.X = WIDTH;
-    NewSize.Y = HEIGHT;
-    SetConsoleScreenBufferSize(Handle, NewSize);
-    //MoveWindow(consoleWindow, 248, 10, NewSize.X, NewSize.Y, TRUE);
-    SMALL_RECT r{};
-    r.Top = r.Left = 0;
-    r.Right = WIDTH;
-    r.Bottom = HEIGHT;
-    SetConsoleWindowInfo(Handle, TRUE, &r);
-    ShowScrollBar(consoleWindow, SB_BOTH, FALSE);
-}
+void getConsoleSize(int& WIDTH, int& HEIGHT) {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hOut, &csbi);
 
+    // Lấy kích thước Viewport (Cửa sổ hiển thị)
+    WIDTH = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    HEIGHT = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+}
+void fixConsoleWindow(int WIDTH, int HEIGHT)
+{
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    HWND consoleWindow = GetConsoleWindow();
+    LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
+    DWORD currMode;
+    CONSOLE_FONT_INFOEX fontex;
+
+    // Turn off maximize, resize, horizontal and vertical scrolling
+    style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME) & ~(WS_HSCROLL) &
+        ~(WS_VSCROLL);
+    SetWindowLong(consoleWindow, GWL_STYLE, style);
+
+    // Turn off mouse input
+    GetConsoleMode(hOut, &currMode);
+    SetConsoleMode(
+        hOut,
+        ((currMode | ENABLE_EXTENDED_FLAGS) & ~ENABLE_QUICK_EDIT_MODE &
+            ~ENABLE_MOUSE_INPUT)
+    );
+
+    // Hide scoll bar
+    ShowScrollBar(consoleWindow, SB_BOTH, FALSE);
+    // Set font bold
+    /*fontex.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+    GetCurrentConsoleFontEx(hOut, 0, &fontex);
+    fontex.FontWeight = 800;
+    fontex.dwFontSize.X = 24;
+    fontex.dwFontSize.Y = 24;
+    wcscpy_s(fontex.FaceName, L"Consolas");
+    SetCurrentConsoleFontEx(hOut, NULL, &fontex);*/
+
+    // Faster UI Update
+    std::ios_base::sync_with_stdio(0);
+    std::wcout.tie(0);
+}
+void fixviewConsoleWindow()
+{
+    fixConsoleWindow(ConsoleWidth, ConsoleHeight);
+    getConsoleSize(ConsoleWidth, ConsoleHeight);
+    calculateLayoutParameters();
+    calculateCellSize();
+	calculateStartPos();
+}
 
 //==================== LOADING... =====================
 
 void drawLoadingScreen()
 {
     system("cls");
-    setColor(0, 15);
+    setColor(backgroundcolor, fontcolor);
 
+    setColor(0, 15);
     string message = "It can takes some seconds";
     int message_x = (ConsoleWidth - message.length())/2;
     int message_y = ConsoleHeight/2;
@@ -138,81 +915,40 @@ void drawLoadingScreen()
 
 //==================== MÀN HÌNH CHÍNH ====================
 
-    /*
-    Các đối tượng cơ bản:
-    + Tiêu đề (theo tính toán có kích cỡ rơi vào khoảng cao 5 ký tự, dài 72 ký tự -> dài nhất trong số các đối tượng)
-    + Các nút (cao 3 dài 20):
-        - Play game
-        - Saved Files
-        - Settings
-        - About Us
-        - Exit
-    Khoảng cách:
-        - Giữa các nút là 1 ký tự
-        - Giữa tiêu đề với nút là 2 ký tự
-    Hướng làm: tôi sẽ nhóm các đối tượng lại thành một khối lớn để dễ căn chỉnh
-    */
-
-const  int Title_Width = 72;
-const  int Title_Height = 5;
-const  int Title_Box_Gap = 2; //
-
-const  int MenuBox_Width = 20;
-const  int MenuBox_Height = 3;
-const  int MenuBox_Gap = 1;
-
-const  int Group_Width = Title_Width;
-const  int Group_Height = Title_Height + Title_Box_Gap + 5 * MenuBox_Height + 4 * MenuBox_Gap;
-
-const int X_Start_Group = (ConsoleWidth - Group_Width)/2;
-const int Y_Start_Group = (ConsoleHeight - Group_Height)/2;
-
-const int X_Start_Box = X_Start_Group + (Group_Width - MenuBox_Width)/2;
-
-const int MenuBoxNum = 5;
-int Y_Start_MenuBox[MenuBoxNum];
-
 void drawTitle()
 {
     setColor(backgroundcolor, fontcolor);
-    string title = "CARO GAME";
-    setPos(X_Start_Group, Y_Start_Group);
-    cout << title;
+	drawCARO(Xi + 9,Yi - 1);
 }
 
-const int Y_Start_Play = Y_Start_Group + Title_Height + Title_Box_Gap;
 void drawPlayBox()
 {
     Y_Start_MenuBox[0] = Y_Start_Play;
-    drawBox(X_Start_Box, Y_Start_Play, MenuBox_Width, MenuBox_Height, "Play Game");
+    drawBox(X_Start_Box, Y_Start_Play, buttonWidth, buttonHeight, "Play Game");
 }
 
-const int Y_Start_Saved = Y_Start_Group + Title_Height + Title_Box_Gap + MenuBox_Height + MenuBox_Gap;
 void drawSavedBox()
 {
     Y_Start_MenuBox[1] = Y_Start_Saved;
-    drawBox(X_Start_Box, Y_Start_Saved, MenuBox_Width, MenuBox_Height, "Saved File");
+	drawBox(X_Start_Box, Y_Start_Saved, buttonWidth, buttonHeight, "Load Game");
 }
 
-const int Y_Start_Settings = Y_Start_Group + Title_Height + Title_Box_Gap + 2 * MenuBox_Height + 2 * MenuBox_Gap;
 void drawSettingsBox()
 {
     Y_Start_MenuBox[2] = Y_Start_Settings;
-    drawBox(X_Start_Box, Y_Start_Settings, MenuBox_Width, MenuBox_Height, "Settings");
+    drawBox(X_Start_Box, Y_Start_Settings, buttonWidth, buttonHeight, "Settings");
 }
 
-const int Y_Start_About = Y_Start_Group + Title_Height + Title_Box_Gap + 3 * MenuBox_Height + 3 * MenuBox_Gap;
 void drawAboutBox()
 {
     Y_Start_MenuBox[3] = Y_Start_About;
-    drawBox(X_Start_Box, Y_Start_About, MenuBox_Width, MenuBox_Height, "About Us");
+	drawBox(X_Start_Box, Y_Start_About, buttonWidth, buttonHeight, "Help");
 }
 
-const int Y_Start_Exit = Y_Start_Group + Title_Height + Title_Box_Gap + 4 * MenuBox_Height + 4 * MenuBox_Gap;
 void drawExitBox()
 {
     Y_Start_MenuBox[4] = Y_Start_Exit;
-    drawBox(X_Start_Box, Y_Start_Exit, MenuBox_Width, MenuBox_Height, "Exit");
+    drawBox(X_Start_Box, Y_Start_Exit, buttonWidth, buttonHeight, "Exit");
 }
 
 void drawMenuScreen()
@@ -246,13 +982,13 @@ void drawIsSelected(int idx, bool isSelected)
             content = "Play Game"; 
             break;
         case 1: 
-            content = "Saved File"; 
+			content = "Load Game";
             break;
         case 2: 
             content = "Settings"; 
             break;
         case 3: 
-            content = "About Us"; 
+			content = "Help";
             break;
         case 4: 
             content = "Exit"; 
@@ -261,7 +997,7 @@ void drawIsSelected(int idx, bool isSelected)
             setColor(Default_BG, Default_FG);
             return;
     }
-    drawBox(X_Start_Box, Y0, MenuBox_Width, MenuBox_Height, content);
+    drawBox(X_Start_Box, Y0, buttonWidth, buttonHeight, content);
     setColor(Default_BG, Default_FG);
 }
 
@@ -315,38 +1051,14 @@ int ControlMenu()
 //==================== MÀN HÌNH NHẬP TÊN ==========================
 //dang duoc cap nhat...
 
-
-//==================== MÀN HÌNH CHƠI (GamePlayScreen) ====================
-
-    /*
-    Các đối tượng cơ bản:
-    + Bảng cờ ở chính giữa
-    + Bên trái bảng cờ: hộp Turn
-    + Bên phải bảng cờ: hộp TimesSet
-    + Phía trên bảng cờ lần lượt là: các nút Exit và Play Again (Tui tham khảo thấy hai nút này chỉ hiện lên khi trò chơi kết thúc)
-    + Phía dưới bảng cò là tên file game đang chơi
-    +––––––––––––––––––––––––––––––––––––––––––––––––+
-    |           |  Exit  |    |  Again   |           |
-    |                                                |
-    |                +–––––––––––+                   |
-    |   +––––––––+   |           |   +–––––––––+     |
-    |   | Turn   |   |           |   |  Time.  |     |
-    |   +––––––––+   |           |   +–––––––––+     |
-    |                |           |                   |
-    |                +–––––––––––+                   |
-    |                file_name.txt                   |
-    +––––––––––––––––––––––––––––––––––––––––––––––––+
-    */
+//==================== MÀN HÌNH CHƠI GAME ==========================
 
 void drawCaroBoard()
 {
     setColor(backgroundcolor, fontcolor);
-    // setPos(Xi, Yi);
     DrawBoard();
+    setColor(backgroundcolor, fontcolor);
 }
-
-//const int buttonWidth = 20;
-//const int buttonHeight = 3;
 
 bool isClickedButton(int xx, int yy, int X_start, int Y_start)
 {
@@ -388,15 +1100,11 @@ int checkClicked(int xx, int yy)
     return 0;
 }
 
-
-const int boxWidth = 15;
-const int boxHeight = 5;
-
 void drawTurnBox(char player, char name1[], char name2[])
 {
     setColor(backgroundcolor, fontcolor);
-    int X_start = Xi - (paddingX + boxWidth)/2;
-    int Y_start = Yi + (BoardRealHeight - boxHeight )/2;
+    int X_start = Xi - (paddingX + TurnboxWidth)/2;
+    int Y_start = Yi + (BoardRealHeight - TurnboxHeight )/2;
     string name_player;
     player = check_XO();
     if (player == 'X')
@@ -405,17 +1113,17 @@ void drawTurnBox(char player, char name1[], char name2[])
         name_player = name2;
     string content = "Turn (" + std::string(1, player) + "): " + name_player;
     setPos(X_start, Y_start);
-    drawBox(X_start, Y_start, boxWidth, boxHeight, content);
+    drawBox(X_start, Y_start, TurnboxWidth, TurnboxHeight, content);
 }
 
 void drawTimeBox(char min[], char sec[])
 {
     setColor(backgroundcolor, fontcolor);
-    int X_start = Xi + BoardRealWidth + (paddingX - boxWidth)/2;
-    int Y_start = Yi + (BoardRealHeight - boxHeight)/2;
+    int X_start = Xi + BoardRealWidth + (paddingX - TurnboxWidth)/2;
+    int Y_start = Yi + (BoardRealHeight - TurnboxHeight)/2;
     string content = "Time Set: " + string(min) + ":" + string(sec);
     setPos(X_start, Y_start);
-    drawBox(X_start, Y_start, boxWidth, boxHeight, content);
+    drawBox(X_start, Y_start, TurnboxWidth, TurnboxHeight, content);
 }
 
 void drawFilename(std::string filename)
@@ -423,7 +1131,7 @@ void drawFilename(std::string filename)
     int length = filename.length();
     int X_start = Xi + BoardRealWidth/2 - length/2;
 	//int X_start =1; 
-    int Y_start =BoardRealHeight+Yi/2-1;
+    int Y_start = ConsoleHeight - 1;
     setPos(X_start, Y_start);
     cout << filename;
 }
@@ -444,37 +1152,22 @@ void drawGamePlayScreen(char player, char name1[], char name2[], char min[], cha
     //dang duoc cap nhat...
 
 // VẼ SETTINGS GREEN
-const int ToggleBox_Width = 30;
-const int ToggleBox_Height = 7;
-const int BackBox_Height = 3;
-const int Toggle_Back_Gap = 3;
 
-const int SettingsGroup_Height = Title_Height + Title_Box_Gap + ToggleBox_Height + Toggle_Back_Gap + BackBox_Height;
-const int Y_Start_Settings_Group = (ConsoleHeight - SettingsGroup_Height) / 2;
-const int X_Start_ToggleBox = (ConsoleWidth - ToggleBox_Width) / 2;
-
-GameSettings Default_Set;
+struct GameSettings Default_Set = {true, true};
 
 string getToggleStatus(bool isActive)
 {
     return isActive ? "ON" : "OFF";
 }
 
-const int Content_X = X_Start_ToggleBox + 3;
-const int SFX_Y = Y_Start_Settings_Group + Title_Height + Title_Box_Gap + 1;
-const int MUSIC_Y = SFX_Y + 2;
-
  void drawSettingsTitle()
 {
-    string title = "SETTINGS";
-    int TitleX = X_Start_Group + (Group_Width - 70)/2;
-    setPos(TitleX, Y_Start_Settings_Group);
-    cout << title;
+	drawSETTING(Xi + 9,Yi - 1);
 }
 
 void drawSettingsToggleBox()
 {
-    drawBox(X_Start_ToggleBox, Y_Start_Settings_Group + Title_Height + Title_Box_Gap, ToggleBox_Width, ToggleBox_Height, "");
+    drawBox(X_Start_ToggleBox, Y_Start_Settings_Group + Title_Height + Box_Gap, ToggleBox_Width, ToggleBox_Height, "");
     setColor(backgroundcolor, fontcolor);
     setPos(Content_X, SFX_Y);
     cout << "SFX:           ";
@@ -494,10 +1187,9 @@ void drawSettingsToggleBox()
     setColor(backgroundcolor, fontcolor);
 }
 
-const int BackY = Y_Start_Settings_Group + Title_Height + Title_Box_Gap + ToggleBox_Height + Toggle_Back_Gap;
 void drawSettingsBackBox()
 {
-    drawBox(X_Start_Box, BackY, MenuBox_Width, BackBox_Height, "BACK");
+    drawBox(X_Start_Box, BackY, buttonWidth, buttonHeight, "BACK");
 }
 
 void drawSettingsScreen()
@@ -509,7 +1201,6 @@ void drawSettingsScreen()
     drawSettingsBackBox();
 }
 
-const int STATUS_X = Content_X + 15;
 void drawSettingsHighlight(int idx, bool isSelected)
 {
     int current_BG = Default_BG;
@@ -545,12 +1236,10 @@ void drawSettingsHighlight(int idx, bool isSelected)
     else if (idx == 2)
     {
         setColor(current_BG, current_FG);
-        drawBox(X_Start_Box, BackY, MenuBox_Width, BackBox_Height, "BACK");
+        drawBox(X_Start_Box, BackY, buttonWidth, buttonHeight, "BACK");
     }
     setColor(Default_BG, Default_FG);
 }
-
-#define SettingsBoxNum 3
 
 int ControlSettings()
 {
@@ -615,76 +1304,11 @@ int ControlSettings()
 }
 
 //ABOUT US SCREEN....
+
+void drawAboutUsScreen()
+{
+	system("cls");
+	setColor(backgroundcolor, fontcolor);
+	drawHELP(Xi + 9, Yi - 1);
+}
     // dang duoc cap nhat...
-
-//TEST
-
- //int main() 
- //{
- //    // 1. Khởi tạo và Cố định Cửa sổ
- //    fixConsoleWindow(ConsoleWidth, ConsoleHeight); 
- //   
- //    // 2. Định nghĩa các biến cần thiết cho game
- //    char default_player = 'X';
- //    char name1[] = "Player 1 (X)";
- //    char name2[] = "Player 2 (O)";
- //    char min[] = "05";
- //    char sec[] = "00";
- //    std::string filename = "caro_save_01.txt";
-
- //    int choice;
- //   
- //    // Vòng lặp chính của chương trình để quay lại Menu
- //    drawwLoadingScreen();
- //    do 
- //    {
- //        system("cls");
- //        drawMenuScreen();
- //        // Gọi hàm điều khiển Menu và lấy lựa chọn
- //        choice = ControlMenu();
- //       
- //        // 4. Xử lý lựa chọn
- //        switch (choice) {
- //            case 1: // Play Game
- //                // Chuyển sang màn hình chơi game
- //                drawGamePlayScreen(default_player, name1, name2, min, sec, filename);
- //                break;
- //               
- //            case 2: // Saved Files
- //                system("cls");
- //                setPos(Xi, Yi); 
- //                cout << "Saved Files: Chuc nang dang phat trien...";
- //                cin.ignore(); 
- //                cin.get();
- //                break;
- //               
- //            case 3: // Settings
- //                // Vào màn hình Settings và điều khiển (ControlSettings trả về 0 khi nhấn BACK)
- //                ControlSettings();
- //                break;
- //               
- //            case 4: // About Us
- //                system("cls");
- //                setPos(Xi, Yi); 
- //                cout << "About Us: Chuc nang dang phat trien...";
- //                cin.ignore(); 
- //                cin.get();
- //                break;
-
- //            case 5: // Exit
- //                // Thoát vòng lặp
- //                break;
- //        }
- //    } while (choice != 5); 
-
- //    system("cls");
- //    setPos(0, 0);
- //    cout << "Exit Game. Goodbye!" << endl;
- //    return 0;
- //}
-
-
-
-//}
-
-

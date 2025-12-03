@@ -1,4 +1,4 @@
-#include "Library.h"
+﻿#include "Library.h"
 bool g_sfxEnabled = true;
 bool g_musicEnabled = true;
 bool sfx_active = true;
@@ -37,6 +37,11 @@ void playGameplayMusic() {  //phát nhạc nền khi vào gameplay
 void stopBackgroundMusic() {   
     PlaySound(NULL, NULL, 0);
 }
+
+void stopGameplayMusic() {
+    PlaySound(NULL, NULL, 0);
+}
+
 void setSFX(bool enabled) {
     g_sfxEnabled = enabled;
 }

@@ -12,6 +12,7 @@ void playWinSound();
 void playBackgroundMusic();
 void stopBackgroundMusic();
 void playGameplayMusic();
+void stopGameplayMusic();
 void setSFX(bool enabled);
 void setMusic(bool enabled);
 bool isSFXEnabled();

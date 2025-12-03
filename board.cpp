@@ -1,17 +1,36 @@
 #include "Library.h"
 using namespace std;
 
-//Cố định màn hình
-//void FixConsoleWindow() {
-//    HWND consoleWindow = GetConsoleWindow();
-//    LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
-//    style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
-//    SetWindowLong(consoleWindow, GWL_STYLE, style);
+//void calculateCellSize() 
+//{
+//    const float ASPECT_RATIO_W_H = 2.5f; 
+//    
+//    // Giới hạn không gian cho Bảng cờ (Ví dụ: 85% chiều cao, 70% chiều rộng)
+//    int MaxBoardHeight = ConsoleHeight * 85 / 100;
+//    int MaxBoardWidth = ConsoleWidth * 70 / 100;
+//    
+//    int h_candidate = (MaxBoardHeight - (BOARD_SIZE + 1)) / BOARD_SIZE;
+//    CellHeight = max(1, h_candidate); 
+//    
+//    int w_candidate = (MaxBoardWidth - (BOARD_SIZE + 1)) / BOARD_SIZE;
+//    CellWidth = max(2, w_candidate); 
+//
+//    int required_width = static_cast<int>(CellHeight * ASPECT_RATIO_W_H);
+//    
+//    CellWidth =min(required_width, CellWidth); 
+//    
+//    int required_height = static_cast<int>(CellWidth / ASPECT_RATIO_W_H);
+//
+//    CellHeight = min(CellHeight, required_height);
+//
+//    CellHeight = max(1, CellHeight);
+//    CellWidth = max(2, CellWidth);
 //}
 
-
-void DrawBoard() {
+void DrawBoard()
+{
     int current_Y = Yi;
+    
     // Hàng đầu tiên
     setPos(Xi, current_Y);
     cout << char(218);
@@ -66,20 +85,4 @@ void DrawBoard() {
     cout << char(217);
     setPos(Xi, current_Y);
 }
-
-
- //int main() {
- //    FixConsoleWindow();
- //    DrawBoard();
- //    cout << "\nban co da ve xong!\n";
- //    cin.get();
- //    return 0;
- //}
-
-
-
-
-
-
-
 
