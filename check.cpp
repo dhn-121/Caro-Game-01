@@ -54,7 +54,7 @@ int main()
 {	
 	playBackgroundMusic();  // phát nhạc nền menu
 	// 1. Khởi tạo và Cố định Cửa sổ
-	fixviewConsoleWindow();
+	fixConsoleWindow(ConsoleWidth,ConsoleHeight);
 	// 2. Định nghĩa các biến cần thiết cho game
 	char default_player = 'X';
 	char name1[] = "Player 1 (X)";
@@ -67,10 +67,11 @@ int main()
 	int x = xbegin;
 	int y = ybegin;
 	// Vòng lặp chính của chương trình để quay lại Menu
+	bool isload = false;
 	drawLoadingScreen();
 	do
 	{
-		fixviewConsoleWindow();
+		fixConsoleWindow(ConsoleWidth, ConsoleHeight);
 		system("cls");
 		drawMenuScreen();
 		// Gọi hàm điều khiển Menu và lấy lựa chọn
@@ -80,62 +81,25 @@ int main()
 		switch (choice) {
 		case 1: // Play Game
 			// Chuyển sang màn hình chơi game
-			fixviewConsoleWindow();
-			drawGamePlayScreen(default_player, name1, name2, min, sec, filename);
-			calculateStartPos();
-			x = xbegin;
-			y = ybegin;
-			stopBackgroundMusic(); // tắt nhạc menu
-			/*playGameplayMusic();*/
-			//cout << Xi << " " << Yi;
-			for (int i = 0; i < N; i++)
-			{
-				for (int j = 0; j < N; j++)
-				{
-					board[i][j] = ' ';
-				}
-			}
-			count_moves = 0;
-			while (true)
-			{
-				int type = isNextMove();
-				if (type == -1)break;
-				char player_main = check_XO();
-				if (type == 0)
-				{
-					count_moves++;
-					MakeMove(player_main, x , y);
-					int i, j;
-					getij(i, j, x, y);
-					if (check_iswin(i,j,board))
-					{
-						system("cls");
-						setColor(0, 15);
-						cout << player_main << "WIN";
-						//return;
-						break;
-					}
-					else if (check_isdraw(count_moves)) // <--- THÊM KHỐI NÀY
-					{
-						system("cls");
-						setColor(0, 15);
-						cout << "DRAW GAME!" << '\n'; // Thông báo hòa
-						break; // Thoát game
-					}
-				}
-				else Movexy(x, y, type);
-			}
-			cin.ignore();
-			count_moves = 0;
-			choice = 0; // Exit sau khi kết thúc game
-			break;
+			choice = GamePlay(default_player, name1, name2, min, sec, filename, isload);
 
 		case 2: // Saved Files
 			system("cls");
 			setPos(Xi, Yi);
-			cout << "Saved Files: Chuc nang dang phat trien...";
-			cin.ignore();
-			cin.get();
+			cout << "Load Files: Chuc nang dang phat trien...";
+			drawSaveLoadScreen(ConsoleWidth, ConsoleHeight);
+			cin >> filename;
+			while(checkFileExists(filename) == false)
+			{
+				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 2);
+				cout << "File not found. Try again:          ";
+				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 3);
+				cout << "                              ";
+				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 2);
+				cin >> filename;
+			}
+			//cin.ignore();
+			//cin.get();
 			break;
 
 		case 3: // Settings

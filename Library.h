@@ -6,8 +6,10 @@
 #include "Console.h"
 #include "Graphics.h"
 #include "TicTacToe.h"
-#include "checkcaro.h"
+#include "check.h"
 #include "Sound.h"
+#include "saveload.h"
+#include "play.h"
 
 // Standard library headers
 #include <iostream>

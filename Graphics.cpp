@@ -1,10 +1,9 @@
 #include "Library.h"
 using namespace std;
 
-#define backgroundcolor 7 //màu nền xám nhẹ
-#define fontcolor 0 //màu chữ đen
-    int ConsoleWidth=180;
-    int ConsoleHeight=60;
+
+int ConsoleWidth = 130;
+int ConsoleHeight = 35;
 void setColor(int bgcolor, int fgcolor)
 {
     HANDLE consoleHandler = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -14,7 +13,7 @@ void setColor(int bgcolor, int fgcolor)
 
 // VẼ KHUNG //
 
-struct STATUS 
+struct STATUS
 {
     int Top_Left = 218;
     int Top_Right = 191;
@@ -33,35 +32,35 @@ void drawBox(int x, int y, int w, int h, string text)
     setPos(x, y);
 
     cout << char(symbol.Top_Left);
-    for (int i = 0; i < w-2; i++)
+    for (int i = 0; i < w - 2; i++)
         cout << char(symbol.Hori_Bar);
     cout << char(symbol.Top_Right);
 
-    for (int i = 1; i < h-1; i++) //in các | ở giữa (không tính) 2 bên rìa
+    for (int i = 1; i < h - 1; i++) //in các | ở giữa (không tính) 2 bên rìa
     {
-        setPos(x, y+i);
+        setPos(x, y + i);
         cout << char(symbol.Verti_Bar);
-        setPos(x+w-1, y+i);
+        setPos(x + w - 1, y + i);
         cout << char(symbol.Verti_Bar);
     }
 
     setPos(x, y + h - 1);
     cout << char(symbol.Bot_Left);
-    for (int i = 0; i < w-2; i++)
+    for (int i = 0; i < w - 2; i++)
         cout << char(symbol.Hori_Bar);
     cout << char(symbol.Bot_Right);
 
     //Văn bản (nếu có văn bản thì nó sẽ được căn giữ cho đẹp)
     if (!text.empty())
     {
-        int txtlength = text.length(); 
+        int txtlength = text.length();
         int blank_width = w - 2; //phần trống theo chiều ngang
-        int center = (blank_width - txtlength)/2;
+        int center = (blank_width - txtlength) / 2;
         int textX = x + 1 + center;
 
         int blank_height = h - 2; //phần trống theo chiều dọc
-        int middle = (blank_height - 1)/2;
-        int textY = y + 1 +  middle;
+        int middle = (blank_height - 1) / 2;
+        int textY = y + 1 + middle;
 
         setPos(textX, textY);
         cout << text;
@@ -69,32 +68,50 @@ void drawBox(int x, int y, int w, int h, string text)
 }
 
 
-void getConsoleSize(int &WIDTH, int &HEIGHT) {
+void getConsoleSize(int& WIDTH, int& HEIGHT) {
     HWND consoleWindow = GetConsoleWindow();
     HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD size = GetLargestConsoleWindowSize(Handle);
-    
+
     WIDTH = size.X;
     HEIGHT = size.Y;
 }
-void fixConsoleWindow(int WIDTH, int HEIGHT) {
-    // Thường cần #include <windows.h> và #include <iostream> cho system()
+void fixConsoleWindow(int WIDTH, int HEIGHT)
+{
     system("COLOR f0");
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     HWND consoleWindow = GetConsoleWindow();
-    HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
-    ShowWindow(consoleWindow, SW_MAXIMIZE);
-	getConsoleSize(WIDTH, HEIGHT);
-    COORD NewSize{};
-    NewSize.X = WIDTH;
-    NewSize.Y = HEIGHT;
-    SetConsoleScreenBufferSize(Handle, NewSize);
-    //MoveWindow(consoleWindow, 248, 10, NewSize.X, NewSize.Y, TRUE);
-    SMALL_RECT r{};
-    r.Top = r.Left = 0;
-    r.Right = WIDTH;
-    r.Bottom = HEIGHT;
-    SetConsoleWindowInfo(Handle, TRUE, &r);
+    LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
+    DWORD currMode;
+    CONSOLE_FONT_INFOEX fontex;
+
+    // Turn off maximize, resize, horizontal and vertical scrolling
+    style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME) & ~(WS_HSCROLL) &
+        ~(WS_VSCROLL);
+    SetWindowLong(consoleWindow, GWL_STYLE, style);
+
+    // Turn off mouse input
+    GetConsoleMode(hOut, &currMode);
+    SetConsoleMode(
+        hOut,
+        ((currMode | ENABLE_EXTENDED_FLAGS) & ~ENABLE_QUICK_EDIT_MODE &
+            ~ENABLE_MOUSE_INPUT)
+    );
+
+    // Hide scoll bar
     ShowScrollBar(consoleWindow, SB_BOTH, FALSE);
+    // Set font bold
+    /*fontex.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+    GetCurrentConsoleFontEx(hOut, 0, &fontex);
+    fontex.FontWeight = 800;
+    fontex.dwFontSize.X = 24;
+    fontex.dwFontSize.Y = 24;
+    wcscpy_s(fontex.FaceName, L"Consolas");
+    SetCurrentConsoleFontEx(hOut, NULL, &fontex);*/
+
+    // Faster UI Update
+    std::ios_base::sync_with_stdio(0);
+    std::wcout.tie(0);
 }
 
 
@@ -106,8 +123,8 @@ void drawLoadingScreen()
     setColor(0, 15);
 
     string message = "It can takes some seconds";
-    int message_x = (ConsoleWidth - message.length())/2;
-    int message_y = ConsoleHeight/2;
+    int message_x = (ConsoleWidth - message.length()) / 2;
+    int message_y = ConsoleHeight / 2;
 
     const int total_cycles = 5 * 5;
 
@@ -128,12 +145,12 @@ void drawLoadingScreen()
         cout << dots;
 
         if (num_dots == 1)
-            cout << "  "; 
+            cout << "  ";
         else if (num_dots == 2)
             cout << " ";
         Sleep(100);
     }
-    setColor(backgroundcolor,fontcolor);
+    setColor(backgroundcolor, fontcolor);
 }
 
 //==================== MÀN HÌNH CHÍNH ====================
@@ -164,10 +181,10 @@ const  int MenuBox_Gap = 1;
 const  int Group_Width = Title_Width;
 const  int Group_Height = Title_Height + Title_Box_Gap + 5 * MenuBox_Height + 4 * MenuBox_Gap;
 
-const int X_Start_Group = (ConsoleWidth - Group_Width)/2;
-const int Y_Start_Group = (ConsoleHeight - Group_Height)/2;
+const int X_Start_Group = (ConsoleWidth - Group_Width) / 2;
+const int Y_Start_Group = (ConsoleHeight - Group_Height) / 2;
 
-const int X_Start_Box = X_Start_Group + (Group_Width - MenuBox_Width)/2;
+const int X_Start_Box = X_Start_Group + (Group_Width - MenuBox_Width) / 2;
 
 const int MenuBoxNum = 5;
 int Y_Start_MenuBox[MenuBoxNum];
@@ -242,24 +259,24 @@ void drawIsSelected(int idx, bool isSelected)
     int Y0 = Y_Start_MenuBox[idx];
     switch (idx)
     {
-        case 0: 
-            content = "Play Game"; 
-            break;
-        case 1: 
-            content = "Saved File"; 
-            break;
-        case 2: 
-            content = "Settings"; 
-            break;
-        case 3: 
-            content = "About Us"; 
-            break;
-        case 4: 
-            content = "Exit"; 
-            break;
-        default: 
-            setColor(Default_BG, Default_FG);
-            return;
+    case 0:
+        content = "Play Game";
+        break;
+    case 1:
+        content = "Saved File";
+        break;
+    case 2:
+        content = "Settings";
+        break;
+    case 3:
+        content = "About Us";
+        break;
+    case 4:
+        content = "Exit";
+        break;
+    default:
+        setColor(Default_BG, Default_FG);
+        return;
     }
     drawBox(X_Start_Box, Y0, MenuBox_Width, MenuBox_Height, content);
     setColor(Default_BG, Default_FG);
@@ -272,37 +289,37 @@ int ControlMenu()
     drawIsSelected(present_choice, true);
 
     int key;
-    while(true)
+    while (true)
     {
         key = _getch();
         int past_choice = present_choice;
         if (key == 0 || key == 224)
         {
             key = _getch();
-            switch(key)
+            switch (key)
             {
-                case 72:
-                    key = 'W';
-                    break;
-                case 80:
-                    key = 'S';
-                    break;
-                default:
-                    continue;
-            }
-        }
-        switch(toupper(key))
-        {
-            case 'W': 
-                present_choice = (present_choice - 1 + MenuBoxNum) % MenuBoxNum;
+            case 72:
+                key = 'W';
                 break;
-            case 'S': 
-                present_choice = (present_choice + 1) % MenuBoxNum;
+            case 80:
+                key = 'S';
                 break;
-            case 13: //enter
-                return present_choice + 1; 
             default:
                 continue;
+            }
+        }
+        switch (toupper(key))
+        {
+        case 'W':
+            present_choice = (present_choice - 1 + MenuBoxNum) % MenuBoxNum;
+            break;
+        case 'S':
+            present_choice = (present_choice + 1) % MenuBoxNum;
+            break;
+        case 13: //enter
+            return present_choice + 1;
+        default:
+            continue;
         }
         if (present_choice != past_choice)
         {
@@ -360,8 +377,8 @@ bool isClickedButton(int xx, int yy, int X_start, int Y_start)
 void drawExitButton()
 {
     setColor(backgroundcolor, fontcolor);
-    int X_start = Xi + (BoardRealWidth/2 - buttonWidth)/2 ;
-    int Y_start = Yi - (paddingY + buttonHeight)/2;
+    int X_start = Xi + (BoardRealWidth / 2 - buttonWidth) / 2;
+    int Y_start = Yi - (paddingY + buttonHeight) / 2;
     setPos(X_start, Y_start);
     drawBox(X_start, Y_start, buttonWidth, buttonHeight, "Exit");
 }
@@ -369,18 +386,18 @@ void drawExitButton()
 void drawAgainButton()
 {
     setColor(backgroundcolor, fontcolor);
-    int X_start = Xi + BoardRealWidth/2 + (BoardRealWidth/2 - buttonWidth)/2;
-    int Y_start = Yi - (paddingY + buttonHeight)/2;
+    int X_start = Xi + BoardRealWidth / 2 + (BoardRealWidth / 2 - buttonWidth) / 2;
+    int Y_start = Yi - (paddingY + buttonHeight) / 2;
     setPos(X_start, Y_start);
     drawBox(X_start, Y_start, buttonWidth, buttonHeight, "Play Again");
 }
 
 int checkClicked(int xx, int yy)
 {
-    const int Exit_X = Xi + (BoardRealWidth/2 - buttonWidth)/2;
-    const int Exit_Y = Yi - (paddingY + buttonHeight)/2;
-    const int Again_X = Xi + BoardRealWidth/2 + (BoardRealWidth/2 - buttonWidth)/2;
-    const int Again_Y = Yi - (paddingY + buttonHeight)/2;
+    const int Exit_X = Xi + (BoardRealWidth / 2 - buttonWidth) / 2;
+    const int Exit_Y = Yi - (paddingY + buttonHeight) / 2;
+    const int Again_X = Xi + BoardRealWidth / 2 + (BoardRealWidth / 2 - buttonWidth) / 2;
+    const int Again_Y = Yi - (paddingY + buttonHeight) / 2;
     if (isClickedButton(xx, yy, Exit_X, Exit_Y))
         return 6;
     else if (isClickedButton(xx, yy, Again_X, Again_Y))
@@ -395,8 +412,8 @@ const int boxHeight = 5;
 void drawTurnBox(char player, char name1[], char name2[])
 {
     setColor(backgroundcolor, fontcolor);
-    int X_start = Xi - (paddingX + boxWidth)/2;
-    int Y_start = Yi + (BoardRealHeight - boxHeight )/2;
+    int X_start = Xi - (paddingX + boxWidth) / 2;
+    int Y_start = Yi + (BoardRealHeight - boxHeight) / 2;
     string name_player;
     player = check_XO();
     if (player == 'X')
@@ -411,8 +428,8 @@ void drawTurnBox(char player, char name1[], char name2[])
 void drawTimeBox(char min[], char sec[])
 {
     setColor(backgroundcolor, fontcolor);
-    int X_start = Xi + BoardRealWidth + (paddingX - boxWidth)/2;
-    int Y_start = Yi + (BoardRealHeight - boxHeight)/2;
+    int X_start = Xi + BoardRealWidth + (paddingX - boxWidth) / 2;
+    int Y_start = Yi + (BoardRealHeight - boxHeight) / 2;
     string content = "Time Set: " + string(min) + ":" + string(sec);
     setPos(X_start, Y_start);
     drawBox(X_start, Y_start, boxWidth, boxHeight, content);
@@ -421,9 +438,9 @@ void drawTimeBox(char min[], char sec[])
 void drawFilename(std::string filename)
 {
     int length = filename.length();
-    int X_start = Xi + BoardRealWidth/2 - length/2;
-	//int X_start =1; 
-    int Y_start =BoardRealHeight+Yi/2-1;
+    int X_start = Xi + BoardRealWidth / 2 - length / 2;
+    //int X_start =1; 
+    int Y_start = BoardRealHeight + Yi / 2 - 1;
     setPos(X_start, Y_start);
     cout << filename;
 }
@@ -464,10 +481,10 @@ const int Content_X = X_Start_ToggleBox + 3;
 const int SFX_Y = Y_Start_Settings_Group + Title_Height + Title_Box_Gap + 1;
 const int MUSIC_Y = SFX_Y + 2;
 
- void drawSettingsTitle()
+void drawSettingsTitle()
 {
     string title = "SETTINGS";
-    int TitleX = X_Start_Group + (Group_Width - 70)/2;
+    int TitleX = X_Start_Group + (Group_Width - 70) / 2;
     setPos(TitleX, Y_Start_Settings_Group);
     cout << title;
 }
@@ -561,49 +578,50 @@ int ControlSettings()
     drawSettingsHighlight(present_choice, true);
 
     int key;
-    while(true)
+    while (true)
     {
         key = _getch();
         int past_choice = present_choice;
-        
+
         // Xử lý phím điều hướng
         if (key == 0 || key == 224)
         {
             key = _getch();
-            switch(key)
+            switch (key)
             {
-                case 72: key = 'W'; break; // Lên
-                case 80: key = 'S'; break; // Xuống
-                default: continue;
+            case 72: key = 'W'; break; // Lên
+            case 80: key = 'S'; break; // Xuống
+            default: continue;
             }
         }
 
-        switch(toupper(key))
+        switch (toupper(key))
         {
-            case 'W': 
-                present_choice = (present_choice - 1 + SettingsBoxNum) % SettingsBoxNum; ;
-                break;
-            case 'S': 
-                present_choice = (present_choice + 1) % SettingsBoxNum; ;
-                break;
-            case 13: // Enter
-                if (present_choice == 0) 
-                {
-                    Default_Set.sfx_active = !Default_Set.sfx_active;
-                    drawSettingsHighlight(present_choice, true); 
-                } 
-                else if (present_choice == 1) 
-                {
-                    Default_Set.music_active = !Default_Set.music_active;
-                    drawSettingsHighlight(present_choice, true);
+        case 'W':
+            present_choice = (present_choice - 1 + SettingsBoxNum) % SettingsBoxNum; ;
+            break;
+        case 'S':
+            present_choice = (present_choice + 1) % SettingsBoxNum; ;
+            break;
+        case 13: // Enter
+            if (present_choice == 0)
+            {
+                Default_Set.sfx_active = !Default_Set.sfx_active;
+                drawSettingsHighlight(present_choice, true);
+            }
+            else if (present_choice == 1)
+            {
+                Default_Set.music_active = !Default_Set.music_active;
+                drawSettingsHighlight(present_choice, true);
 
-                } else if (present_choice == 2) {
-                    // BACK
-                    return 0; // Trả về 0 để báo hiệu quay lại Menu chính
-                }
-                continue;
-            default:
-                continue;
+            }
+            else if (present_choice == 2) {
+                // BACK
+                return 0; // Trả về 0 để báo hiệu quay lại Menu chính
+            }
+            continue;
+        default:
+            continue;
         }
 
         if (present_choice != past_choice)
