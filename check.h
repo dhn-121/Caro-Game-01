@@ -9,7 +9,6 @@
 #include "Console.h"
 #include "Check.h"
 #include "TicTacToe.h"
-bool test_board(char, int, int, char [N][N]);
 void getij(int&, int&, int, int);
 bool check_iswin(int, int, char[N][N]);
 bool check_isdraw(int count_moves);

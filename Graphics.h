@@ -6,6 +6,8 @@
      
     //==================== Các thông số của bảng (đơn vị: ký tự) ====================
 
+#define backgroundcolor 7 //màu nền xám nhẹ
+#define fontcolor 0 //màu chữ đen
     //Các thông số ô cờ được lấy từ board.cpp
     //Màn hình Console tôi thấy ổn nhất (có thể thay đổi) gần bằng kích cỡ 10:16
     extern int ConsoleWidth;

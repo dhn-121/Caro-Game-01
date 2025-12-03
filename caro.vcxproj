@@ -124,6 +124,9 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="maincaro.cpp" />
+    <ClCompile Include="play.cpp" />
+    <ClCompile Include="play.h" />
+    <ClCompile Include="saveload.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TicTacToe.cpp" />
   </ItemGroup>
@@ -133,6 +136,7 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Library.h" />
+    <ClInclude Include="saveload.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="TicTacToe.h" />
   </ItemGroup>
