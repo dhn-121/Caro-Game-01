@@ -1,38 +1,42 @@
-﻿#include "Library.h"
-#include "Sound.h"
-void initializeSound() {
-    g_sfxEnabled = true;
-    g_musicEnabled = true;
-}
+#include "Library.h"
+bool g_sfxEnabled = true;
+bool g_musicEnabled = true;
+bool sfx_active = true;
+bool music_active = true;
 
-void playMoveSound() {
+void playMoveSound() {   //phát hiệu ứng âm thanh khi di chuyển
     if (g_sfxEnabled) {
-        PlaySound(TEXT("SystemExclamation"), NULL, SND_ALIAS_ID | SND_ASYNC);
+        PlaySound(TEXT("sound//move.wav"), NULL, SND_FILENAME | SND_ASYNC);
     }
 }
 
-void playClickSound() {
+void playClickSound() {  //phát hiệu ứng âm thanh khi click
     if (g_sfxEnabled) {
-        PlaySound(TEXT("SystemAsterisk"), NULL, SND_ALIAS_ID | SND_ASYNC);
+        PlaySound(TEXT("sound//click.wav"), NULL, SND_FILENAME | SND_ASYNC);
     }
 }
 
-void playWinSound() {
+void playWinSound() {   //phát hiệu ứng âm thanh khi người chơi thắng
     if (g_sfxEnabled) {
-        PlaySound(TEXT("SystemHand"), NULL, SND_ALIAS_ID | SND_ASYNC);
+        PlaySound(TEXT("sound//win.wav"), NULL, SND_FILENAME | SND_ASYNC);
     }
 }
 
-void playBackgroundMusic() {
+void playBackgroundMusic() {  //phát nhạc nền ở menu chính
     if (g_musicEnabled) {
-         PlaySound(TEXT("background.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        PlaySound(TEXT("sound//Menu.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_NOSTOP);
     }
 }
 
-void stopBackgroundMusic() {
+void playGameplayMusic() {  //phát nhạc nền khi vào gameplay
+    if (g_musicEnabled) {
+         PlaySound(TEXT("sound//GamePlay_2.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    }
+}
+
+void stopBackgroundMusic() {   
     PlaySound(NULL, NULL, 0);
 }
-
 void setSFX(bool enabled) {
     g_sfxEnabled = enabled;
 }

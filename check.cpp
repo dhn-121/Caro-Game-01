@@ -51,7 +51,8 @@ bool check_isdraw(int count_moves)
 
 //test xem có ai chiến thắng không
 int main()
-{
+{	
+	playBackgroundMusic();  // phát nhạc nền menu
 	// 1. Khởi tạo và Cố định Cửa sổ
 	fixviewConsoleWindow();
 	// 2. Định nghĩa các biến cần thiết cho game
@@ -84,7 +85,8 @@ int main()
 			calculateStartPos();
 			x = xbegin;
 			y = ybegin;
-			
+			stopBackgroundMusic(); // tắt nhạc menu
+			/*playGameplayMusic();*/
 			//cout << Xi << " " << Yi;
 			for (int i = 0; i < N; i++)
 			{
