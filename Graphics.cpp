@@ -192,9 +192,8 @@ int Y_Start_MenuBox[MenuBoxNum];
 void drawTitle()
 {
     setColor(backgroundcolor, fontcolor);
-    string title = "CARO GAME";
+    drawCARO(XX + 18 , YY );
     setPos(X_Start_Group, Y_Start_Group);
-    cout << title;
 }
 
 const int Y_Start_Play = Y_Start_Group + Title_Height + Title_Box_Gap;
