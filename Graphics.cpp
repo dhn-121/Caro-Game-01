@@ -188,13 +188,14 @@ const int X_Start_Box = X_Start_Group + (Group_Width - MenuBox_Width) / 2;
 
 const int MenuBoxNum = 5;
 int Y_Start_MenuBox[MenuBoxNum];
-int XX = Xi-6;
-int YY = Yi + 1;
+//int XX = Xi-6;
+//int YY = Yi + 1;
 void drawTitle()
 {
     setColor(backgroundcolor, fontcolor);
-    drawCARO(XX + 18 , YY );
+    string title = "CARO GAME";
     setPos(X_Start_Group, Y_Start_Group);
+    cout << title;
 }
 
 const int Y_Start_Play = Y_Start_Group + Title_Height + Title_Box_Gap;
