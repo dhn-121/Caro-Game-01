@@ -2,7 +2,9 @@
 #ifndef _GRAPHIC_H_
 #define _GRAPHIC_H_
 #include <string>
-     
+    
+const int backgroundcolor = 15;
+const int fontcolor = 0;
     //==================== Bảng cờ và Console ====================
     extern int ConsoleWidth;
     extern int ConsoleHeight;

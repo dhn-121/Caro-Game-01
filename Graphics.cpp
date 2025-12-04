@@ -4,8 +4,8 @@ using namespace std;
 #define backgroundcolor 15 //màu nền xám nhẹ
 #define fontcolor 0 //màu chữ đen
 #define co_theme 15,0 //màu chủ đề xanh dương
-int ConsoleWidth = 0;
-int ConsoleHeight = 0;
+int ConsoleWidth = 120;
+int ConsoleHeight = 35;
 
 int BoardRealWidth = 0; 
 int BoardRealHeight = 0;
@@ -872,7 +872,7 @@ void fixviewConsoleWindow()
     fixConsoleWindow(ConsoleWidth, ConsoleHeight);
     getConsoleSize(ConsoleWidth, ConsoleHeight);
     calculateLayoutParameters();
-    calculateCellSize();
+    //calculateCellSize();
 	calculateStartPos();
 }
 
@@ -919,8 +919,11 @@ void drawLoadingScreen()
 
 void drawTitle()
 {
-    setColor(backgroundcolor, fontcolor);
-	drawCARO(Xi + 9,Yi - 1);
+	int Title_Width = 33;
+	int Title_Height = 6;
+	int Title_XX = ConsoleWidth / 2 - Title_Width / 2;
+	int Title_YY = 4;
+	drawCARO(Title_XX, Title_YY);
 }
 
 void drawPlayBox()

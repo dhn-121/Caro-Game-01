@@ -5,7 +5,7 @@
 #define CellWidth 3
 #define CellHeight 1
 
-void calculateCellSize();
+//void calculateCellSize();
 void DrawBoard();
 
 #endif

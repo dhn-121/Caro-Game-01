@@ -9,6 +9,7 @@
 void playMoveSound();
 void playClickSound();
 void playWinSound();
+void playDrawSound();
 void playBackgroundMusic();
 void stopBackgroundMusic();
 void playGameplayMusic();

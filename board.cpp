@@ -30,11 +30,11 @@ using namespace std;
 void DrawBoard()
 {
     int current_Y = Yi;
-    
+
     // Hàng đầu tiên
     setPos(Xi, current_Y);
     cout << char(218);
-    for (int j = 0; j < BOARD_SIZE- 1; j++) {
+    for (int j = 0; j < BOARD_SIZE - 1; j++) {
         for (int k = 0; k < CellWidth; k++) cout << char(196);
         cout << char(194);
     }

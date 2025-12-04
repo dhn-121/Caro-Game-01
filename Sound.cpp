@@ -19,10 +19,15 @@ void playWinSound() {   //phát hiệu ứng âm thanh khi người chơi thắn
         PlaySound(TEXT("sound//win.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_NOSTOP);
     }
 }
+void playDrawSound() {   //phát hiệu ứng âm thanh khi hòa
+    if (g_sfxEnabled) {
+        PlaySound(TEXT("sound//lose.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_NOSTOP);
+    }
+}
 
 void playBackgroundMusic() {  //phát nhạc nền ở menu chính
     if (g_musicEnabled) {
-        PlaySound(TEXT("sound//gameplay.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        PlaySound(TEXT("sound//Menu.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     }
 }
 
