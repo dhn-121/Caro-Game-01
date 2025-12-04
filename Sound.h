@@ -4,14 +4,16 @@
 
 #include <Windows.h>
 #include <mmsystem.h>
-#pragma comment(lib, "winmm.lib")
+// #pragma comment(lib, "winmm.lib")
 
 void playMoveSound();
 void playClickSound();
 void playWinSound();
+void playDrawSound();
 void playBackgroundMusic();
 void stopBackgroundMusic();
 void playGameplayMusic();
+void stopGameplayMusic();
 void setSFX(bool enabled);
 void setMusic(bool enabled);
 bool isSFXEnabled();

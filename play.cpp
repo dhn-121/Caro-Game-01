@@ -1,11 +1,11 @@
-#include "play.h"
-int GamePlay(char default_player, char name1[], char name2[], char min[], char sec[], std::string filename,bool isload)
+#include "Library.h"
+int GamePlay(char default_player, char name1[], char name2[], std::string filename,bool isload)
 {
-	drawGamePlayScreen(default_player, name1, name2, min, sec, filename);
+	drawGamePlayScreen(default_player, name1, name2, filename);
 	int x = xbegin;
 	int y = ybegin;
 	stopBackgroundMusic();
-	/*playGameplayMusic();*/
+	playGameplayMusic();
 	//cout << Xi << " " << Yi;
 	for (int i = 0; i < N; i++)
 	{
@@ -46,29 +46,34 @@ int GamePlay(char default_player, char name1[], char name2[], char min[], char s
 		if (type == 0)
 		{
 			count_moves++;
-			MakeMove(player_main, x, y);
 			int i, j;
+			MakeMove(player_main, x, y);
 			getij(i, j, x, y);
 			if (check_iswin(i, j, board))
 			{
 				system("cls");
-				setColor(0, 15);
-				cout << player_main << "WIN";
-				//return;
+				drawWinStatus(player_main, name1, name2);
+				stopGameplayMusic();
+				playWinSound();
 				break;
 			}
 			else if (check_isdraw(count_moves)) 
 			{
 				system("cls");
-				setColor(0, 15);
-				cout << "DRAW GAME!" << '\n'; 
+				drawDrawStatus();
+				stopGameplayMusic();
+				playDrawSound();
 				break;
 			}
+			char next_player = check_XO();
+			drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
 		}
 		else Movexy(x, y, type);
 	}
 	cin.ignore();
 	count_moves = 0;
 	int choice = 0; // Exit 
+	stopGameplayMusic();
+	playBackgroundMusic();
 	return choice;
 }
