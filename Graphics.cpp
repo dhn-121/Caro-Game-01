@@ -559,6 +559,7 @@ void drawP(int XX, int YY) {  // 6 * 8
 	cout << char(200) << char(205) << char(188);
 }
 
+
 void drawX(int XX, int YY, int co_txt = 0) {  // 6 * 8
 	setPos(XX, YY);
 	setColor(co_txt, 0); cout << "  ";
@@ -695,14 +696,15 @@ void drawDRAW(int XX, int YY) {
 	drawW(XX + 24, YY);
 }
 
-void drawSETTING(int XX, int YY) {
-	//drawS(XX, YY);
+void drawSETTINGS(int XX,int YY){
+	/*drawS(XX, YY);*/
 	drawE(XX + 5, YY);
 	drawT(XX + 13, YY);
 	drawT(XX + 22, YY);
 	drawI(XX + 31, YY);
 	drawN(XX + 34, YY);
 	drawG(XX + 44, YY);
+	/*drawS(XX + 53, YY);*/
 }
 
 void calculateLayoutParameters()
@@ -1031,12 +1033,15 @@ int ControlMenu()
         {
             case 'W': 
                 present_choice = (present_choice - 1 + MenuBoxNum) % MenuBoxNum;
+				playMoveSound();
                 break;
             case 'S': 
                 present_choice = (present_choice + 1) % MenuBoxNum;
+				playMoveSound();
                 break;
             case 13: //enter
-                return present_choice + 1; 
+				playClickSound();
+				return present_choice + 1; 
             default:
                 continue;
         }
@@ -1162,7 +1167,7 @@ string getToggleStatus(bool isActive)
 
  void drawSettingsTitle()
 {
-	drawSETTING(Xi + 9,Yi - 1);
+	 drawSETTINGS(Xi + 9, Yi - 1);
 }
 
 void drawSettingsToggleBox()
@@ -1261,8 +1266,12 @@ int ControlSettings()
             key = _getch();
             switch(key)
             {
-                case 72: key = 'W'; break; // Lên
-                case 80: key = 'S'; break; // Xuống
+                case 72: 
+					key = 'W'; 
+					break; // Lên
+                case 80: 
+					key = 'S'; 
+					break; // Xuống
                 default: continue;
             }
         }
@@ -1276,6 +1285,7 @@ int ControlSettings()
                 present_choice = (present_choice + 1) % SettingsBoxNum; ;
                 break;
             case 13: // Enter
+				playClickSound();
                 if (present_choice == 0) 
                 {
                     Default_Set.sfx_active = !Default_Set.sfx_active;

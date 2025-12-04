@@ -70,7 +70,7 @@
     void drawU(int XX, int YY);
     void drawT(int XX, int YY);
     void drawL(int XX, int YY);
-    void drawL(int XX, int YY);
+    void drawS(int XX, int YY, int co_txt);
     void drawD(int XX, int YY);
     void drawG(int XX, int YY);
     void drawM(int XX, int YY);
@@ -91,7 +91,7 @@
     void drawX_WIN(int XX, int YY);
     void drawO_WIN(int XX, int YY);
     void drawDRAW(int XX, int YY);
-    void drawSETTING(int XX, int YY);
+    void drawSETTINGS(int XX, int YY);
 
     //Thay đổi màu sắc của nền và văn bản
     void setColor(int bgcolor, int fgcolor);//fgcolor là dành cho những phần cần "nổi" như chữ...

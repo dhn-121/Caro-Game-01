@@ -70,7 +70,6 @@ int main()
 	drawLoadingScreen();
 	do
 	{
-		playBackgroundMusic();
 		fixviewConsoleWindow();
 		system("cls");
 		drawMenuScreen();
@@ -132,6 +131,7 @@ int main()
 			count_moves = 0;
 			choice = 0; // Exit sau khi kết thúc game
 			stopGameplayMusic();
+			playBackgroundMusic();
 			break;
 
 		case 2: // Saved Files
