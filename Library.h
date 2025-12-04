@@ -10,6 +10,7 @@
 #include "Sound.h"
 #include "saveload.h"
 #include "play.h"
+#include "draw.h"
 
 // Standard library headers
 #include <iostream>
