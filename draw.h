@@ -1,7 +1,7 @@
 #pragma once
 #ifndef _DRAW_H_
 #define _DRAW_H_
-#include "library.h"
+#include "Library.h"
 using namespace std;
 
 void drawA(int XX, int YY);
