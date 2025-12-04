@@ -188,7 +188,8 @@ const int X_Start_Box = X_Start_Group + (Group_Width - MenuBox_Width) / 2;
 
 const int MenuBoxNum = 5;
 int Y_Start_MenuBox[MenuBoxNum];
-
+int XX = Xi-6;
+int YY = Yi + 1;
 void drawTitle()
 {
     setColor(backgroundcolor, fontcolor);
