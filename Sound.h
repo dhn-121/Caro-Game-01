@@ -6,6 +6,7 @@
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 
+void initializeBGM();
 void playMoveSound();
 void playClickSound();
 void playWinSound();
@@ -16,7 +17,5 @@ void playGameplayMusic();
 void stopGameplayMusic();
 void setSFX(bool enabled);
 void setMusic(bool enabled);
-bool isSFXEnabled();
-bool isMusicEnabled();
 
 #endif

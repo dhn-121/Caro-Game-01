@@ -48,4 +48,3 @@ bool check_isdraw(int count_moves)
 		return true;
 	return false;
 }
-

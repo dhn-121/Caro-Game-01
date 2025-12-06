@@ -1,13 +1,6 @@
 ﻿#include "Library.h"
 using namespace std;
-//bien
-int xbegin;//vi tri bat dau x
-int ybegin;//vi tri bat dau y
-void calculateStartPos()
-{
-	xbegin = Xi + (CellWidth + 1) / 2;
-	ybegin = Yi + (CellHeight + 1) / 2;
-}
+
 //ham dat vi tri con tro
 void setPos(int x, int y)
 {
