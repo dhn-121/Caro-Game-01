@@ -4,7 +4,7 @@
 
 #include <Windows.h>
 #include <mmsystem.h>
-// #pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "winmm.lib")
 
 void playMoveSound();
 void playClickSound();

@@ -49,4 +49,3 @@ bool check_isdraw(int count_moves)
 	return false;
 }
 
-//test xem có ai chiến thắng không

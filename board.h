@@ -5,8 +5,8 @@
 #define CellWidth 3
 #define CellHeight 1
 
-//void FixConsoleWindow();
-//void Gotoxy(int x, int y);
+//void calculateCellSize();
 void DrawBoard();
 
 #endif
+

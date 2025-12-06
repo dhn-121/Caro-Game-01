@@ -1,4 +1,4 @@
-#include "Library.h"
+﻿#include "Library.h"
 bool g_sfxEnabled = true;
 bool g_musicEnabled = true;
 
