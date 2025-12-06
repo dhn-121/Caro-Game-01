@@ -24,28 +24,44 @@ void setColor(int bgcolor, int fgcolor)
 }
 
 void getConsoleSize(int& WIDTH, int& HEIGHT) {
-    // HWND consoleWindow = GetConsoleWindow();
+    HWND consoleWindow = GetConsoleWindow();
     HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD size = GetLargestConsoleWindowSize(Handle);
-
     WIDTH = size.X;
     HEIGHT = size.Y;
 }
 void fixConsoleWindow(int WIDTH, int HEIGHT)
 {
-    system("COLOR f0");
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    // BƯỚC 1: ĐẶT KÍCH THƯỚC BUFFER (Bộ đệm)
+    COORD bufferSize = { (SHORT)WIDTH, (SHORT)HEIGHT };
+    // Lỗi thường xảy ra nếu hàm này được gọi sau khi đặt kích thước cửa sổ
+    SetConsoleScreenBufferSize(hOut, bufferSize);
+
+    // BƯỚC 2: ĐẶT KÍCH THƯỚC CỬA SỔ (Viewport)
+    SMALL_RECT windowSize = { 0, 0, (SHORT)(WIDTH - 1), (SHORT)(HEIGHT - 1) };
+    SetConsoleWindowInfo(hOut, TRUE, &windowSize);
+
+    // ----------------------------------------------------
+    // CÁC THIẾT LẬP KHÁC (Giữ nguyên)
+    // ----------------------------------------------------
+
+    // Đặt Tiêu đề Console
+    SetConsoleTitle(TEXT("Tên Ứng Dụng Của Bạn"));
+
+    // Đặt màu nền và chữ
+    system("COLOR F0");
+
     HWND consoleWindow = GetConsoleWindow();
     LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
     DWORD currMode;
-    // CONSOLE_FONT_INFOEX fontex;
 
-    // Turn off maximize, resize, horizontal and vertical scrolling
-    style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME) & ~(WS_HSCROLL) &
-        ~(WS_VSCROLL);
+    // Tắt maximize, resize, thanh cuộn
+    style &= ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME) & ~(WS_HSCROLL) & ~(WS_VSCROLL);
     SetWindowLong(consoleWindow, GWL_STYLE, style);
 
-    // Turn off mouse input
+    // Tắt input chuột (chế độ Quick Edit)
     GetConsoleMode(hOut, &currMode);
     SetConsoleMode(
         hOut,
@@ -53,12 +69,8 @@ void fixConsoleWindow(int WIDTH, int HEIGHT)
             ~ENABLE_MOUSE_INPUT)
     );
 
-    // Hide scoll bar
+    // Ẩn thanh cuộn
     ShowScrollBar(consoleWindow, SB_BOTH, FALSE);
-
-    // Faster UI Update
-    std::ios_base::sync_with_stdio(0);
-    std::wcout.tie(0);
 }
 
 
@@ -240,10 +252,12 @@ int ControlMenu()
         switch (toupper(key))
         {
         case 'W':
-            present_choice = (present_choice - 1 + 5) % 5; //5 là số nút
+            present_choice = (present_choice - 1 + 5) % 5;
+            playMoveSound(); //5 là số nút
             break;
         case 'S':
             present_choice = (present_choice + 1) % 5;
+            playMoveSound();
             break;
         case 13: //enter
             playClickSound();
@@ -270,25 +284,36 @@ void drawTurnBox(int XX, int YY, int Width, int Height, char player, char name1[
     setColor(backgroundcolor, fontcolor);
     drawBox(XX, YY, Width, Height, "");
     std::string title = "TURN";
-    int title_length = title.length(); 
+    int title_length = title.length();
 
-    setPos(XX + 1 + (Width - 2)/2 - title_length/2, YY + 1);
+    setPos(XX + 1 + (Width - 2) / 2 - title_length / 2, YY + 1);
     cout << title;
 
     DATA Content;
     Content.Height = 6;
-    Content.YY = Yi + 1 + 2;
+    Content.YY = YY + Height / 2 - Content.Height / 2 + 1;
+
+    int clear_XX = XX + 1 + Width / 2 - 9 / 2;
+    int clear_Width = 9;
+
+    setPos(clear_XX, Content.YY);
+    for (int i = 0; i <= Content.Height; i++)
+    {
+        for (int j = 0; j <= (clear_Width); j++)
+            cout << " ";
+        setPos(clear_XX, Content.YY + i);
+    }
 
     if (player == player_X)
     {
         Content.Width = 8;
-        Content.XX = XX + 1 + Width/2 - Content.Width/2;
+        Content.XX = XX + 1 + Width / 2 - Content.Width / 2;
         drawX(Content.XX, Content.YY, 0);
     }
     else
     {
         Content.Width = 9;
-        Content.XX = XX + 1 + Width/2 - Content.Width/2;
+        Content.XX = XX + 1 + Width / 2 - Content.Width / 2;
         drawO(Content.XX, Content.YY, 0);
     }
 }
@@ -300,8 +325,8 @@ void drawScoreBox(int XX, int YY, int Width, int Height, char player)
 {
     setColor(backgroundcolor, fontcolor);
     std::string title = "SCORE OF " + std::string(1, player);
-    int title_length = title.length(); 
-    setPos(XX + 1 + (Width - 2)/2 - title_length/2, YY + 1);
+    int title_length = title.length();
+    setPos(XX + 1 + (Width - 2) / 2 - title_length / 2, YY + 1);
     cout << title;
 
     int current_score = (player == player_X) ? score_X : score_O;
@@ -309,7 +334,7 @@ void drawScoreBox(int XX, int YY, int Width, int Height, char player)
     int content_length = score_content.length();
 
     int contentY = YY + Height - 2;
-    int contentX = XX + 1 + (Width - 2 - content_length)/2;
+    int contentX = XX + 1 + (Width - 2 - content_length) / 2;
 
     //xoá dòng cũ
     setPos(XX + 1, contentY);
@@ -319,7 +344,7 @@ void drawScoreBox(int XX, int YY, int Width, int Height, char player)
     cout << score_content;
 }
 
-int TurnData[4] = {0};
+int TurnData[4] = { 0 };
 
 void drawGamePlayScreen(char player, char name1[], char name2[], std::string filename)
 {
@@ -329,12 +354,12 @@ void drawGamePlayScreen(char player, char name1[], char name2[], std::string fil
     DATA Board;
     Board.XX = Xi;
     Board.YY = Yi;
-    setPos (Board.XX, Board.YY);
+    setPos(Board.XX, Board.YY);
     DrawBoard();
 
     DATA Turn;
-    Turn.Width = ConsoleWidth * 40/100;
-    Turn.Height = ConsoleHeight * 25/100;
+    Turn.Width = ConsoleWidth * 40 / 100;
+    Turn.Height = ConsoleHeight * 35 / 100;
     Turn.YY = Board.YY;
     Turn.XX = ConsoleWidth - Turn.Width - Xi;
     drawTurnBox(Turn.XX, Turn.YY, Turn.Width, Turn.Height, player, name1, name2);
@@ -345,21 +370,21 @@ void drawGamePlayScreen(char player, char name1[], char name2[], std::string fil
     TurnData[3] = Turn.Height;
 
     DATA Score;
-    Score.Width = Turn.Width/2;
-    Score.Height = Turn.Height/2;
+    Score.Width = Turn.Width / 2;
+    Score.Height = Turn.Height / 2;
     Score.XX = Turn.XX;
     Score.YY = Turn.YY + Turn.Height + 1;
 
     //Hộp Score của X
     drawBox(Score.XX, Score.YY, Score.Width, Score.Height, "");
     drawScoreBox(Score.XX, Score.YY, Score.Width, Score.Height, player_X);
-    
+
     //Hộp Score của O
     drawBox(Score.XX + Score.Width, Score.YY, Score.Width, Score.Height, "");
     drawScoreBox(Score.XX + Score.Width, Score.YY, Score.Width, Score.Height, player_O);
 
     int filelength = filename.length();
-    int fileX = ConsoleWidth/2 - filelength/2;
+    int fileX = ConsoleWidth / 2 - filelength / 2;
     int fileY = ConsoleHeight - 2;
     setPos(fileX, fileY);
     cout << filename;
