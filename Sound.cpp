@@ -87,10 +87,15 @@ void playGameplayMusic() {
     }
 }
 
-// Các hàm còn lại giữ nguyên...
 void playMoveSound() {
     if (g_sfxEnabled)
         PlaySound(TEXT("sound\\move.wav"), NULL, SND_FILENAME | SND_ASYNC);
+    else
+        PlaySound(TEXT("sound\\silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
+}
+void playMoveXOSound() {
+    if (g_sfxEnabled)
+        PlaySound(TEXT("sound\\goXO.wav"), NULL, SND_FILENAME | SND_ASYNC);
     else
         PlaySound(TEXT("sound\\silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
 }
@@ -102,6 +107,12 @@ void playClickSound() {
         PlaySound(TEXT("sound\\silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
 }
 
+void playEnterXOSound() {
+    if (g_sfxEnabled)
+        PlaySound(TEXT("sound\\enterXO.wav"), NULL, SND_FILENAME | SND_ASYNC);
+    else
+        PlaySound(TEXT("sound\\silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
+}
 void playWinSound() {
     if (g_sfxEnabled)
         PlaySound(TEXT("sound\\win.wav"), NULL, SND_FILENAME | SND_ASYNC);

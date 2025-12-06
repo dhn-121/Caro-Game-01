@@ -53,6 +53,7 @@ int GamePlay(char default_player, char name1[], char name2[], std::string filena
 			{
 				system("cls");
 				drawWinStatus(player_main, name1, name2);
+				stopGameplayMusic();
 				playWinSound();
 				break;
 			}
@@ -60,6 +61,7 @@ int GamePlay(char default_player, char name1[], char name2[], std::string filena
 			{
 				system("cls");
 				drawDrawStatus();
+				stopGameplayMusic();
 				playDrawSound();
 				break;
 			}
