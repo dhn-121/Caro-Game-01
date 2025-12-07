@@ -30,7 +30,7 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 			loadproductfile(filename, board, currentPlayer, score_X, score_O);
 		}
 	}
-	//else is game continue
+	//GAME CONTINUE IS TYPEGAME==3
 	setPos(x, y);
 	while (true)
 	{
@@ -110,6 +110,8 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 		Sleep(2000);
 		GamePlay(default_player, name1, name2, filename, 3);
 	}
+	cin.ignore();
+	ControlGaming();
 	stopGameplayMusic();
 	playBackgroundMusic();
 }
