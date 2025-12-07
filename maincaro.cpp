@@ -17,7 +17,9 @@ int main()
 	// int x = xbegin;
 	// int y = ybegin;
 	// Vòng lặp chính của chương trình để quay lại Menu
-	bool isload = false;
+	std::string load_filename;
+	int score_X = 0;
+	int score_O = 0;
 	drawLoadingScreen();
 	do
 	{
@@ -31,23 +33,17 @@ int main()
 		switch (choice) {
 		case 1: // Play Game
 			// Chuyển sang màn hình chơi game
-			GamePlay(default_player, name1, name2,filename, isload);
+			GamePlay(default_player, name1, name2,filename, 3);
 			break;
 
 		case 2: // Saved Files
 			system("cls");
-			setPos(Xi, Yi);
-			cout << "Load Files: Chuc nang dang phat trien...";
-			drawSaveLoadScreen(ConsoleWidth, ConsoleHeight);
-			cin >> filename;
-			while(checkFileExists(filename) == false)
+			if (loadactive(load_filename, board, default_player, score_X, score_O))
 			{
-				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 2);
-				cout << "File not found. Try again:          ";
 				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 3);
-				cout << "                              ";
-				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 2);
-				cin >> filename;
+				cout << "Game loaded successfully! Returning to game...";
+				Sleep(2000);
+				GamePlay(default_player, name1, name2, load_filename, 1);
 			}
 			//cin.ignore();
 			//cin.get();

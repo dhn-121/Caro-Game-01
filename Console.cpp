@@ -45,8 +45,16 @@ int isNextMove()
 			if (key == 'A' || key == 'a') return 2;
 			if (key == 'S' || key == 's') return 3;
 			if (key == 'D' || key == 'd') return 4;
-			}
 		}
+		if (key == 'l' || key == 'L')
+		{
+			return 5; // luu game
+		}
+		if (key == 'T' || key == 'T')
+		{
+			return 6; // tai game
+		}
+	}
 }
 //ham di chuyen
 void Movexy(int &x,int &y,int typemove) {
