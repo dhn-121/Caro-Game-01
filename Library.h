@@ -1,3 +1,4 @@
+#pragma comment(lib, "winmm.lib")
 #pragma once
 #ifndef _LIBRARY_H_
 #define _LIBRARY_H_
@@ -10,7 +11,7 @@
 #include "Sound.h"
 #include "saveload.h"
 #include "play.h"
-#include "draw.h"
+#include "Character.h"
 
 // Standard library headers
 #include <iostream>
@@ -24,6 +25,7 @@
 #include <cstdlib>
 #include <vector>
 #include <mmsystem.h>
+#include <cstring>
 
 
 #endif
