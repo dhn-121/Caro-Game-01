@@ -72,7 +72,7 @@ int isNextMove()
 		{
 			return 5; // luu game
 		}
-		if (key == 'T' || key == 'T')
+		if (key == 't' || key == 'T')
 		{
 			return 6; // tai game
 		}
@@ -93,6 +93,7 @@ void Movexy(int &x,int &y,int typemove) {
 	//dat con tro
 	setPos(x, y);
 }
+
 
 
 
