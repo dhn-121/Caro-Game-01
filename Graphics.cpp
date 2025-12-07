@@ -23,13 +23,13 @@ void setColor(int bgcolor, int fgcolor)
     SetConsoleTextAttribute(consoleHandler, color);
 }
 
-/*void getConsoleSize(int& WIDTH, int& HEIGHT) {
+void getConsoleSize(int& WIDTH, int& HEIGHT) {
     HWND consoleWindow = GetConsoleWindow();
     HANDLE Handle = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD size = GetLargestConsoleWindowSize(Handle);
     WIDTH = size.X;
     HEIGHT = size.Y;
-}*/
+}
 void fixConsoleWindow(int WIDTH, int HEIGHT)
 {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
