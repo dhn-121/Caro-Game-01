@@ -1,7 +1,7 @@
 #include "Library.h"
 using namespace std;
 
-int ConsoleWidth = 130;
+int ConsoleWidth = 120;
 int ConsoleHeight = 35;
 
 const int backgroundcolor = 15;
@@ -165,10 +165,10 @@ void drawMenuScreen()
     Title.Width = 33 ;
     Title.Height = 6 ;
     Title.XX = ConsoleWidth/2 - Title.Width/2;
-    Title.YY = 4;
+    Title.YY = 2;
     drawCARO(Title.XX, Title.YY);
     
-    int Play_YY = Title.YY + Title.Height + 3;
+    int Play_YY = Title.YY + Title.Height + 2;
     MenuButton[0] = Play_YY;
     int Load_YY = Play_YY + buttonHeight + 1;
     MenuButton[1] = Load_YY;
@@ -392,71 +392,240 @@ void drawGamePlayScreen(char player, char name1[], char name2[], std::string fil
 
 //Hiệu ứng thắng/thua/hoà
 
+// Hàm cập nhật điểm
+void updateScore(char winner) {
+    if (winner == 'X') {
+        score_X++;
+    }
+    else if (winner == 'O') {
+        score_O++;
+    }
+}
+
+// Hàm reset điểm (nếu cần)
+void resetScores() {
+    score_X = 0;
+    score_O = 0;
+}
+
 void drawWinStatus(char player, char name1[], char name2[])
 {
-        char name_player[50];
-        int length = 0;
-        
-        DATA Status;
-        Status.Height = 6;
-        Status.YY = ConsoleHeight * 40 / 100;
+    char name_player[50];
+    int length = 0;
 
-        if (player == player_X)
-        {
-            Status.Width = 35;
-            Status.XX = ConsoleWidth/2 - Status.Width/2;
-            drawX_WIN(Status.XX, Status.YY);
-            std::strcpy(name_player, name1);
-            length = std::strlen(name1);
-        }
-        else if (player == player_O)
-        {
-            Status.Width = 36;
-            Status.XX = ConsoleWidth/2 - Status.Width/2;
-            drawO_WIN(Status.XX, Status.YY);
-            std::strcpy(name_player, name2);
-            length = std::strlen(name2);
-        }
+    DATA Status;
+    Status.Height = 6;
+    Status.YY = 4;
 
-        setColor(backgroundcolor, fontcolor);
-        setPos(ConsoleWidth / 2 - length / 2, Status.YY + Status.Height + 1);
-        std::cout << name_player;
+    if (player == player_X)
+    {
+        Status.Width = 35;
+        Status.XX = ConsoleWidth / 2 - Status.Width / 2;
+        drawX_WIN(Status.XX, Status.YY);
+        strcpy(name_player, name1);
+        length = strlen(name1);
+    }
+    else if (player == player_O)
+    {
+        Status.Width = 36;
+        Status.XX = ConsoleWidth / 2 - Status.Width / 2;
+        drawO_WIN(Status.XX, Status.YY);
+        strcpy(name_player, name2);
+        length = strlen(name2);
+    }
 
-        int Again_X = ConsoleWidth/2 - (2*buttonWidth + 2)/2;
-        int Again_Y = ConsoleHeight * 60/100;
-        drawBox(Again_X, Again_Y, buttonWidth, buttonHeight, "AGAIN");
+    setColor(backgroundcolor, fontcolor);
+    setPos(ConsoleWidth / 2 - length / 2, Status.YY + Status.Height + 1);
+    cout << name_player;
 
-        int Exit_X = Again_X + buttonWidth + 2;
-        int Exit_Y = Again_Y;
-        drawBox(Exit_X, Exit_Y, buttonWidth, buttonHeight, "EXIT");
+    // Hiển thị điểm
+    std::string score_display = "Score: " + std::to_string(score_X) + " - " + std::to_string(score_O);
+    int score_length = score_display.length();
+    setPos(ConsoleWidth / 2 - score_length / 2, Status.YY + Status.Height + 3);
+    cout << score_display;
 }
 
 void drawDrawStatus()
 {
-        DATA Status;
-        Status.Width = 34;
-        Status.Height = 6;
-        Status.XX = ConsoleWidth/2 - Status.Width/2;
-        Status.YY = ConsoleHeight * 40/100;
-        drawDRAW(Status.XX, Status.YY);
+    DATA Status;
+    Status.Width = 34;
+    Status.Height = 6;
+    Status.XX = ConsoleWidth / 2 - Status.Width / 2;
+    Status.YY = 4;
+    drawDRAW(Status.XX, Status.YY);
 
-        std::string message = "You two are evenly matched!";
-        int messageX = ConsoleWidth/2 - message.length()/2;
-        int messageY = Status.YY + Status.Height + 2;
-        setColor(backgroundcolor, fontcolor); // Đảm bảo màu sắc hiển thị đúng
-        setPos(messageX, messageY);
+    std::string message = "You two are evenly matched!";
+    int messageX = ConsoleWidth / 2 - message.length() / 2;
+    int messageY = Status.YY + Status.Height + 2;
+    setColor(backgroundcolor, fontcolor);
+    setPos(messageX, messageY);
+    cout << message;
 
-        int Again_X = ConsoleWidth/2 - (2*buttonWidth + 2)/2;
-        int Again_Y = ConsoleHeight * 60/100;
-        drawBox(Again_X, Again_Y, buttonWidth, buttonHeight, "AGAIN");
-
-        int Exit_X = Again_X + buttonWidth + 2;
-        int Exit_Y = Again_Y;
-        drawBox(Exit_X, Exit_Y, buttonWidth, buttonHeight, "EXIT");
+    // Hiển thị điểm
+    std::string score_display = "Score: " + std::to_string(score_X) + " - " + std::to_string(score_O);
+    int score_length = score_display.length();
+    setPos(ConsoleWidth / 2 - score_length / 2, messageY + 2);
+    cout << score_display;
 }
 
+bool isGameSelected(int idx, bool isSelected)
+{
+    if (isSelected)
+        setColor(Selected_BG, Selected_FG);
+    else
+        setColor(backgroundcolor, fontcolor);
+    std::string content;
 
+    // Tính toán vị trí X cho từng nút (nằm ngang)
+    int totalWidth = 2 * buttonWidth + 2; // 2 nút + khoảng cách 2 ký tự
+    int startX = ConsoleWidth / 2 - totalWidth / 2;
 
+    // Vị trí Y cố định cho cả hai nút
+    int button_Y = ConsoleHeight * 60 / 100;
+
+    int button_X;
+    switch (idx)
+    {
+        case 0:
+        content = "   PLAY AGAIN   ";
+        button_X = startX;
+        break;
+        case 1:
+        content = "     EXIT       ";
+        button_X = startX + buttonWidth + 2; // Cách nút đầu tiên 2 khoảng trắng
+        break;
+        default:
+        setColor(15, 0);
+    }
+    drawBox(button_X, button_Y, buttonWidth, buttonHeight, content);
+    setColor(backgroundcolor, fontcolor);
+    return true;
+}
+
+int ControlGaming()
+{
+    // Hiển thị tiêu đề và điểm số
+    system("cls");
+    setColor(backgroundcolor, fontcolor);
+
+    // Tiêu đề GAME OVER
+    std::string title = "GAME OVER";
+    int titleX = ConsoleWidth / 2 - title.length() / 2;
+    int titleY = ConsoleHeight * 30 / 100;
+    setPos(titleX, titleY);
+    cout << title;
+
+    // Hiển thị điểm số
+    std::string score_display = "FINAL SCORE: " + std::to_string(score_X) + " - " + std::to_string(score_O);
+    int scoreX = ConsoleWidth / 2 - score_display.length() / 2;
+    int scoreY = titleY + 2;
+    setPos(scoreX, scoreY);
+    cout << score_display;
+
+    // Hiển thị người chiến thắng (nếu có)
+    if (score_X > score_O)
+    {
+        std::string winner_msg = "PLAYER X WINS THE MATCH!";
+        int winnerX = ConsoleWidth / 2 - winner_msg.length() / 2;
+        setPos(winnerX, scoreY + 1);
+        setColor(14, 0); // Màu vàng
+        cout << winner_msg;
+        setColor(backgroundcolor, fontcolor);
+    }
+    else if (score_O > score_X)
+    {
+        std::string winner_msg = "PLAYER O WINS THE MATCH!";
+        int winnerX = ConsoleWidth / 2 - winner_msg.length() / 2;
+        setPos(winnerX, scoreY + 1);
+        setColor(14, 0); // Màu vàng
+        cout << winner_msg;
+        setColor(backgroundcolor, fontcolor);
+    }
+    else
+    {
+        std::string draw_msg = "MATCH ENDS IN A DRAW!";
+        int drawX = ConsoleWidth / 2 - draw_msg.length() / 2;
+        setPos(drawX, scoreY + 1);
+        setColor(11, 0); // Màu xanh nhạt
+        cout << draw_msg;
+        setColor(backgroundcolor, fontcolor);
+    }
+
+    int present_choice = 0; // Bắt đầu ở AGAIN
+
+    // Vẽ tất cả các nút (ban đầu không được chọn)
+    for (int i = 0; i < 2; i++) {
+        isGameSelected(i, (i == present_choice));
+    }
+
+    int key;
+    while (true)
+    {
+        key = _getch();
+        int past_choice = present_choice;
+
+        // Xử lý phím điều hướng (trái/phải)
+        if (key == 0 || key == 224)
+        {
+            key = _getch();
+            switch (key)
+            {
+            case 75: // Mũi tên trái
+                present_choice = (present_choice - 1 + 2) % 2;
+                playMoveSound();
+                break;
+            case 77: // Mũi tên phải
+                present_choice = (present_choice + 1) % 2;
+                playMoveSound();
+                break;
+            default:
+                continue;
+            }
+        }
+        else
+        {
+            switch (toupper(key))
+            {
+            case 'A': // Phím A (trái)
+                present_choice = (present_choice - 1 + 2) % 2;
+                playMoveSound();
+                break;
+            case 'D': // Phím D (phải)
+                present_choice = (present_choice + 1) % 2;
+                playMoveSound();
+                break;
+            case 13: // Enter
+                playClickSound();
+                if (present_choice == 0) // PLAY AGAIN
+                {
+                    GamePlay(Default_Set.sfx_active ? player_X : player_O,
+                        "Player 1 (X)", "Player 2 (O)",
+                        "caro_save_01.txt", false);
+                    return 1; // Trả về 1 để báo hiệu chơi lại
+                }
+                else if (present_choice == 1) // EXIT
+                {
+                    return 0; // Trả về 0 để báo hiệu thoát
+                }
+                break;
+            case 27: // ESC
+                playClickSound();
+                return 0;
+            default:
+                continue;
+            }
+        }
+
+        // Nếu có thay đổi lựa chọn, cập nhật giao diện
+        if (present_choice != past_choice)
+        {
+            // Bỏ chọn nút cũ
+            isGameSelected(past_choice, false);
+            // Chọn nút mới
+            isGameSelected(present_choice, true);
+        }
+    }
+}
 // LOAD GAME SCREEN
 
 // void drawLoadGameScreen()

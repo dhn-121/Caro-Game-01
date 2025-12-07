@@ -27,12 +27,8 @@
     //Thay đổi màu sắc của nền và văn bản
     void setColor(int bgcolor, int fgcolor);//fgcolor là dành cho những phần cần "nổi" như chữ...
     void drawBox(int x, int y, int w, int h, std::string text);
-    
     void fixConsoleWindow(int WIDTH, int HEIGHT);
-    //void fixConsoleWindow(int WIDTH, int HEIGHT);
-   
     void drawLoadingScreen();
-
     void drawMenuScreen();
     void drawIsSelected(int idx, bool isSelected);
     int ControlMenu();
@@ -46,7 +42,9 @@
 
     void drawWinStatus(char player, char name1[], char name2[]);
     void drawDrawStatus();
-
+    int ControlGaming();
+	bool isGameSelected(int idx, bool isSelected);
+	void updateScore(char player);
     struct GameSettings
     {
         bool sfx_active = true;

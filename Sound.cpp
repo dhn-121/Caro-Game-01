@@ -1,7 +1,6 @@
 #include "Library.h"
 #include <windows.h>
 #include <mmsystem.h>
-#include <shlwapi.h>  // Để dùng PathFileExists
 #include <direct.h>   // Để dùng _getcwd
 #include <stdio.h>
 
@@ -13,62 +12,19 @@ bool g_musicEnabled = true;
 bool g_bgmInitialized = false;  // Thêm biến kiểm tra đã khởi tạo chưa
 
 void initializeBGM() {
-    //// Debug: Hiển thị thư mục hiện tại
-    //char currentDir[1024];
-    //_getcwd(currentDir, sizeof(currentDir));
-    //char debugMsg[2048];
-    //sprintf_s(debugMsg, "Thư mục hiện tại:\n%s\n\n", currentDir);
-
-    //// Kiểm tra file
-    //if (PathFileExists(TEXT("sound\\Menu.wav"))) {
-    //    strcat_s(debugMsg, "✓ Tìm thấy Menu.wav\n");
-    //}
-    //else {
-    //    strcat_s(debugMsg, "✗ KHÔNG tìm thấy Menu.wav\n");
-    //}
-
-    //if (PathFileExists(TEXT("sound\\GamePlay_2.wav"))) {
-    //    strcat_s(debugMsg, "✓ Tìm thấy GamePlay_2.wav\n");
-    //}
-    //else {
-    //    strcat_s(debugMsg, "✗ KHÔNG tìm thấy GamePlay_2.wav\n");
-    //}
-
-    //MessageBoxA(NULL, debugMsg, "Debug Info", MB_OK);
-
     // Mở file âm thanh
     MCIERROR error;
-
     // Thử cả hai cách viết đường dẫn
     error = mciSendString(TEXT("open \"sound\\Menu.wav\" type mpegvideo alias bgm_menu"), NULL, 0, 0);
     if (error != 0) {
         // Thử cách khác
-        error = mciSendString(TEXT("open \"Menu.wav\" type mpegvideo alias bgm_menu"), NULL, 0, 0);
+    error = mciSendString(TEXT("open \"Menu.wav\" type mpegvideo alias bgm_menu"), NULL, 0, 0);
     }
-
-    //if (error != 0) {
-    //    TCHAR errorMsg[256];
-    //    mciGetErrorString(error, errorMsg, 256);
-    //    MessageBox(NULL, errorMsg, TEXT("Lỗi mở file Menu.wav"), MB_OK | MB_ICONERROR);
-    //    g_bgmInitialized = false;
-    //    return;
-    //}
-
     error = mciSendString(TEXT("open \"sound\\GamePlay_2.wav\" type mpegvideo alias bgm_game"), NULL, 0, 0);
     if (error != 0) {
         error = mciSendString(TEXT("open \"GamePlay_2.wav\" type mpegvideo alias bgm_game"), NULL, 0, 0);
     }
-
-//    if (error != 0) {
-//        TCHAR errorMsg[256];
-//        mciGetErrorString(error, errorMsg, 256);
-//        MessageBox(NULL, errorMsg, TEXT("Lỗi mở file GamePlay_2.wav"), MB_OK | MB_ICONERROR);
-//        g_bgmInitialized = false;
-//        return;
-//    }
-//
     g_bgmInitialized = true;
-//    MessageBox(NULL, TEXT("Khởi tạo BGM thành công!"), TEXT("Thông báo"), MB_OK);
 }
 
 void playBackgroundMusic(){

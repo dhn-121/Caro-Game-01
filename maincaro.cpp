@@ -31,7 +31,7 @@ int main()
 		switch (choice) {
 		case 1: // Play Game
 			// Chuyển sang màn hình chơi game
-			choice = GamePlay(default_player, name1, name2,filename, isload);
+			GamePlay(default_player, name1, name2,filename, isload);
 			break;
 
 		case 2: // Saved Files
