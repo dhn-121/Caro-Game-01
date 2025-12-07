@@ -9,6 +9,7 @@
 bool saveGame(const std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O);
 bool loadGame(const std::string& filename, char board[][15], char& currentPlayer, int& score_X, int& score_O);
 void drawSaveLoadScreen(int Width, int Height);
+bool customInput(std::string& result);
 bool checkFileExists(const std::string& filename);
 bool getfilename(std::string& filename);
 void loadproductfile(std::string& filename, char board[][15], char& currentPlayer, int score_X, int score_O);

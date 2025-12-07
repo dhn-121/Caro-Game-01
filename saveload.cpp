@@ -12,7 +12,7 @@ bool saveGame(const std::string& filename, char board[][15], char currentPlayer,
 
 	ofstream outFile(fullPath.c_str()); // .c_str() to convert string to const char*
 	if (!outFile) {
-		cerr << "Loi: Khong the tao file tai " << fullPath << endl;
+		cerr << "Error creating file " << fullPath << endl;
 		return 0;
 	}
 
@@ -26,7 +26,7 @@ bool saveGame(const std::string& filename, char board[][15], char currentPlayer,
 	outFile << score_X << " " << score_O << endl;
 	outFile.close();
 
-	cout << "Da luu game tai: " << fullPath << endl;
+	cout << "Game saved successfully to " << fullPath << endl;
 	return true;
 }
 
@@ -37,7 +37,7 @@ bool loadGame(const std::string& filename, char board[][15], char& currentPlayer
 
 	ifstream inFile(fullPath.c_str());
 	if (!inFile) {
-		cerr << "Khong tim thay file save: " << fullPath << endl;
+		cerr << "file not found" << fullPath << endl;
 		return false;
 	}
 
@@ -54,6 +54,7 @@ bool loadGame(const std::string& filename, char board[][15], char& currentPlayer
 
 void drawSaveLoadScreen(int Width, int Height)
 {
+	system("cls");
 	setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 - 2);
 	cout << "Enter the filename to load/save ";
 	setColor(backgroundcolor, fontcolor);
@@ -71,37 +72,90 @@ bool checkFileExists(const std::string& filename)
 	ifstream inFile(fullPath.c_str());
 	return inFile.good();
 }
-
-bool getfilename(std::string& filename)
-{
-	setPos((ConsoleWidth - 20) / 2 + 2, (ConsoleHeight) / 2 + 1);
+bool customInput(string& result) {
 	char ch;
-	filename.clear();
-	while (true)
-	{
-		ch = _getch();
-		if (ch == 13) // Enter key
-			break;
-		else if (ch == 8) // Backspace key
-		{
-			if (!filename.empty())
-			{
-				filename.pop_back();
-				setPos((ConsoleWidth - 20) / 2 + 2 + filename.length(), (ConsoleHeight) / 2 + 1);
-				cout << " ";
-				setPos((ConsoleWidth - 20) / 2 + 2 + filename.length(), (ConsoleHeight) / 2 + 1);
+	result = ""; 
+	int index = 0; // positions in the string
+
+	//save starting cursor position
+	COORD startPos = getCursorPos();
+
+	while (true) {
+		ch = _getch(); // get character without echoing
+
+		// escape key to cancel 
+		if (ch == 27) {
+			return false; 
+		}
+
+		// enter key to finish input
+		else if (ch == 13) {
+			return true;
+		}
+
+		// 3. backspace key to delete
+		else if (ch == 8) {
+			if (index > 0 && result.length() > 0) {
+				// delete character before index
+				result.erase(index - 1, 1);
+				index--;
+
+				// update display
+				// step a: clear and reprint
+				setPos(startPos.X, startPos.Y);
+				cout << result << " "; // print extra space to clear last char
+
+				// step b: reposition cursor
+				setPos(startPos.X + index, startPos.Y);
 			}
 		}
-		else if (isprint(ch) && filename.length() < 18) // Printable characters
-		{
-			filename += ch;
-			cout << ch;
-		}else if(ch==27) // ESC key to cancel
-		{
-			return 0;
+
+		// arrow keys for left/right movement
+		// and other special keys
+		else if (ch == -32 || ch == 0 || ch == 224) {
+			ch = _getch(); 
+
+			switch (ch) {
+			case 75: // arrow left
+				if (index > 0) {
+					index--;
+					setPos(startPos.X + index, startPos.Y);
+				}
+				break;
+			case 77: // arrow right
+				if (index < result.length()) {
+					index++;
+					setPos(startPos.X + index, startPos.Y);
+				}
+				break;
+			}
+		}
+
+		// printable characters
+		else if (isprint(ch)) {
+			// insert character at current index
+			result.insert(index, 1, ch);
+			index++;
+
+			// print updated string
+			setPos(startPos.X, startPos.Y);
+			cout << result;
+
+			// move cursor back to correct position
+			setPos(startPos.X + index, startPos.Y);
 		}
 	}
-	return 1;
+}
+bool getfilename(std::string& filename)
+{
+	setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 2);
+	cout << "File not found. Try again:          ";
+	setPos(22, (ConsoleHeight - 3) / 2 + 1);
+	cout << "                                                                                       ";
+	setPos(22, (ConsoleHeight-3) / 2 + 1);
+	char ch;
+	filename.clear();
+	return customInput(filename);
 }
 
 void loadproductfile(std::string& filename, char board[][15], char& currentPlayer, int score_X, int score_O)
@@ -128,17 +182,12 @@ void loadproductfile(std::string& filename, char board[][15], char& currentPlaye
 bool loadactive(std::string& filename, char board[][15], char& currentPlayer, int score_X, int score_O)
 {
 	drawSaveLoadScreen(ConsoleWidth, ConsoleHeight);
-	//getfilename(filename);
 	if(getfilename(filename) == 0)
 		return 0;
 	while (checkFileExists(filename) == false)
 	{
-		setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 2);
-		cout << "File not found. Try again:          ";
-		setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 3);
-		cout << "                              ";
-		setPos((ConsoleWidth - 20) / 2 + 2, (ConsoleHeight) / 2 + 1);
-		cin >> filename;
+		if(getfilename(filename) == 0)
+			return 0;
 	}
 	return 1;
 }
