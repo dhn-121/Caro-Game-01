@@ -148,10 +148,6 @@ bool customInput(string& result) {
 }
 bool getfilename(std::string& filename)
 {
-	setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 2);
-	cout << "File not found. Try again:          ";
-	setPos(22, (ConsoleHeight - 3) / 2 + 1);
-	cout << "                                                                                       ";
 	setPos(22, (ConsoleHeight-3) / 2 + 1);
 	char ch;
 	filename.clear();
@@ -186,6 +182,10 @@ bool loadactive(std::string& filename, char board[][15], char& currentPlayer, in
 		return 0;
 	while (checkFileExists(filename) == false)
 	{
+		setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 2);
+		cout << "File not found. Try again:          ";
+		setPos(22, (ConsoleHeight - 3) / 2 + 1);
+		cout << "                                                                                       ";
 		if(getfilename(filename) == 0)
 			return 0;
 	}
