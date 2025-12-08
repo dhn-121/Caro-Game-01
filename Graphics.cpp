@@ -427,6 +427,7 @@ void resetScores() {
 
 void drawWinStatus(char player, char name1[], char name2[])
 {
+    ShowConsoleCursor(false);
     char name_player[50];
     int length = 0;
 
@@ -464,6 +465,7 @@ void drawWinStatus(char player, char name1[], char name2[])
 
 void drawDrawStatus()
 {
+    ShowConsoleCursor(false);
     DATA Status;
     Status.Width = 34;
     Status.Height = 6;
@@ -624,6 +626,7 @@ int ControlGaming()
                 }
                 else if (present_choice == 1) // EXIT
                 {
+                    resetScores();
                     return 0; // Trả về 0 để báo hiệu thoát
                 }
                 break;
@@ -815,6 +818,9 @@ int ControlSettings()
                 return 0; // Trả về 0 để báo hiệu quay lại Menu chính
             }
             continue;
+        case 27: // ESC
+            playClickSound();
+			return 0; // Trả về 0 để báo hiệu quay lại Menu chính
         default:
             continue;
         }
@@ -860,7 +866,7 @@ void drawGameModeScreen(int choice)
     int startY = titleY + 3;
 
     // List of mode buttons
-    std::string modes[] = { "   PvP MODE   ", "   PvE MODE   ", "     BACK     " };
+    std::string modes[] = { "   PvP MODE   ", "   PvE MODE   ", "    <<BACK    " };
 
     for (int i = 0; i < 3; i++)
     {
@@ -924,6 +930,7 @@ int ControlGameMode()
                 playClickSound();
                 return choice; // Returns 0 (PvP), 1 (PvE), or 2 (Back)
             case 27: // ESC key -> Treat as Back
+                playMoveSound();
                 return 2;
             }
         }
@@ -1030,6 +1037,7 @@ int ControlDifficulty()
                 playClickSound();
                 return selection;
             case 27: // Esc -> Back
+                playMoveSound();
                 return 3;
             }
         }

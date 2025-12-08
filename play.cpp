@@ -12,6 +12,7 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 	int score_X = 0;
 	int score_O = 0;
 	int type = 0;
+	int difficulty = 4;
 	stopBackgroundMusic();
 	playGameplayMusic();
 	if (typegame == 0)
@@ -25,11 +26,11 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 	{
 		// load game
 		
-		bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O,name1,name2);
+		bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O,name1,name2, difficulty);
 		if (loadSuccess)
 		{
 			// Redraw the loaded board
-			loadproductfile(filename, board, currentPlayer, score_X, score_O,name1,name2);
+			loadproductfile(filename, board, currentPlayer, score_X, score_O,name1,name2, difficulty);
 		}
 	}else {
 		for (int i = 0; i <N; i++)
@@ -93,19 +94,18 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 		else Movexy(x, y, type);
 	}
 	count_moves = 0;
-	//cin.ignore();
+	cin.ignore();
 	if (type == -1)
 	{
 		ControlGaming();
 	}else if(type==6)
 	{
-		loadGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
+		loadGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
 	}
 	else if(type==5)
 	{
-		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
+		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
 	}
-	ControlGaming();
 	stopGameplayMusic();
 	playBackgroundMusic();
 }
@@ -137,11 +137,11 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 	else if (typegame == 1)
 	{
 		// load game
-		bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O, name1, name2);
+		bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
 		if (loadSuccess)
 		{
 			// Redraw the loaded board
-			loadproductfile(filename, board, currentPlayer, score_X, score_O, name1, name2);
+			loadproductfile(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
 		}
 	}
 	else {
@@ -254,20 +254,19 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 		}
 	}
 	count_moves = 0;
-	//cin.ignore();
+	cin.ignore();
 	if (type == -1)
 	{
 		ControlGaming();
 	}
 	else if (type == 6)
 	{
-		loadGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
+		loadGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
 	}
 	else if (type == 5)
 	{
-		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
+		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
 	}
-	ControlGaming();
 	stopGameplayMusic();
 	playBackgroundMusic();
 }
