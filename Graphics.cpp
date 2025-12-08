@@ -338,28 +338,42 @@ void drawTurnBox(int XX, int YY, int Width, int Height, char player, char name1[
 int score_X = 0;
 int score_O = 0;
 
-void drawScoreBox(int XX, int YY, int Width, int Height, char player)
+void drawScoreBox(int XX, int YY, int Width, int Height)
 {
-    setColor(backgroundcolor, fontcolor);
-    std::string title = "SCORE OF " + std::string(1, player);
-    int title_length = title.length();
-    setPos(XX + 1 + (Width - 2) / 2 - title_length / 2, YY + 1);
-    cout << title;
+    std::string titleX = "SCORE OF X";
+    std::string scoreX_str = std::to_string(score_X);
 
-    int current_score = (player == player_X) ? score_X : score_O;
-    std::string score_content = std::to_string(current_score);
-    int content_length = score_content.length();
+    std::string titleO = "SCORE OF O";
+    std::string scoreO_str = std::to_string(score_O);
 
-    int contentY = YY + Height - 2;
-    int contentX = XX + 1 + (Width - 2 - content_length) / 2;
+    // ===== TÍNH VỊ TRÍ CĂN GIỮA =====
+    int titleX_x = XX + 1 + (Width - 2 - titleX.length()) / 2;
+    int scoreX_x = XX + 1 + (Width - 2 - scoreX_str.length()) / 2;
 
-    //xoá dòng cũ
-    setPos(XX + 1, contentY);
-    cout << std::string(Width - 2, ' ');
+    int titleO_x = XX + 1 + (Width - 2 - titleO.length()) / 2;
+    int scoreO_x = XX + 1 + (Width - 2 - scoreO_str.length()) / 2;
 
-    setPos(contentX, contentY);
-    cout << score_content;
+    // ===== VỊ TRÍ Y =====
+    int y_titleX = YY + 2;
+    int y_scoreX = y_titleX + 1 ;
+
+    int y_titleO = YY + Height - 4;
+    int y_scoreO = y_titleO + 1;
+
+    // ===== IN NỘI DUNG =====
+    setPos(titleX_x, y_titleX);
+    cout << titleX;
+
+    setPos(scoreX_x, y_scoreX);
+    cout << scoreX_str;
+
+    setPos(titleO_x, y_titleO);
+    cout << titleO;
+
+    setPos(scoreO_x, y_scoreO);
+    cout << scoreO_str;
 }
+
 
 int TurnData[4] = { 0 };
 
@@ -375,10 +389,10 @@ void drawGamePlayScreen(char player, char name1[], char name2[], std::string fil
     DrawBoard();
 
     DATA Turn;
-    Turn.Width = ConsoleWidth * 40 / 100;
+    Turn.Width = ConsoleWidth * 20 / 100;
     Turn.Height = ConsoleHeight * 35 / 100;
     Turn.YY = Board.YY;
-    Turn.XX = ConsoleWidth - Turn.Width - Xi;
+    Turn.XX = Board.XX + BoardRealWidth + 4;
     drawTurnBox(Turn.XX, Turn.YY, Turn.Width, Turn.Height, player, name1, name2);
 
     TurnData[0] = Turn.XX;
@@ -387,18 +401,14 @@ void drawGamePlayScreen(char player, char name1[], char name2[], std::string fil
     TurnData[3] = Turn.Height;
 
     DATA Score;
-    Score.Width = Turn.Width / 2;
-    Score.Height = Turn.Height / 2;
-    Score.XX = Turn.XX;
-    Score.YY = Turn.YY + Turn.Height + 1;
+    Score.Width = Turn.Width;
+    Score.Height = Turn.Height;
+    Score.XX = Turn.XX + Turn.Width + 2;
+    Score.YY = Turn.YY;
 
-    //Hộp Score của X
+    //Hộp Score
     drawBox(Score.XX, Score.YY, Score.Width, Score.Height, "");
-    drawScoreBox(Score.XX, Score.YY, Score.Width, Score.Height, player_X);
-
-    //Hộp Score của O
-    drawBox(Score.XX + Score.Width, Score.YY, Score.Width, Score.Height, "");
-    drawScoreBox(Score.XX + Score.Width, Score.YY, Score.Width, Score.Height, player_O);
+    drawScoreBox(Score.XX, Score.YY, Score.Width, Score.Height);
 
     int filelength = filename.length();
     int fileX = ConsoleWidth / 2 - filelength / 2;
