@@ -12,6 +12,7 @@
 #include "saveload.h"
 #include "play.h"
 #include "Character.h"
+#include "AI.h"
 
 // Standard library headers
 #include <iostream>
@@ -26,6 +27,6 @@
 #include <vector>
 #include <mmsystem.h>
 #include <cstring>
-
+#include <algorithm>
 
 #endif

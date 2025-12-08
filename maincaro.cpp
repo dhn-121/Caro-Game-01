@@ -33,8 +33,21 @@ int main()
 		switch (choice) {
 		case 1: // Play Game
 			// Chuyển sang màn hình chơi game
-			GamePlay(default_player, name1, name2,filename, 0);
-			break;
+		{
+			// Call the mode selection menu
+			int mode = ControlGameMode();
+
+			if (mode == 0) // PvP
+			{
+				GamePlay(default_player, name1, name2, filename, 0);
+			}
+			else if (mode == 1) // PvE
+			{
+				// Call the AI Game Play function
+				AiGamePlay(default_player, name1, "COMPUTER", filename, 0);
+			}
+		}
+		break;
 
 		case 2: // Saved Files
 			system("cls");

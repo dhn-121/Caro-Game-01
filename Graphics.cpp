@@ -30,6 +30,22 @@ void getConsoleSize(int& WIDTH, int& HEIGHT) {
     WIDTH = size.X;
     HEIGHT = size.Y;
 }
+
+// Function to show or hide the console cursor
+void ShowConsoleCursor(bool showFlag)
+{
+    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+
+    GetConsoleCursorInfo(out, &cursorInfo);
+
+    cursorInfo.bVisible = showFlag; // Visible or Hidden
+
+    cursorInfo.dwSize = 20;
+
+    SetConsoleCursorInfo(out, &cursorInfo);
+}
+
 void fixConsoleWindow(int WIDTH, int HEIGHT)
 {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -223,6 +239,7 @@ void drawIsSelected(int idx, bool isSelected)
 
 int ControlMenu()
 {
+    ShowConsoleCursor(false);
     int present_choice = 0; //Tại nút play
 
     drawIsSelected(present_choice, true);
@@ -505,6 +522,7 @@ bool isGameSelected(int idx, bool isSelected)
 
 int ControlGaming()
 {
+    ShowConsoleCursor(false);
     // Hiển thị tiêu đề và điểm số
     system("cls");
     setColor(backgroundcolor, fontcolor);
@@ -737,6 +755,7 @@ void drawSettingsHighlight(int idx, bool isSelected)
 
 int ControlSettings()
 {
+    ShowConsoleCursor(false);
     drawSettingsScreen();
     int present_choice = 0; // Bắt đầu ở SFX
 
@@ -818,4 +837,104 @@ void drawHelpScreen()
     Title.XX = ConsoleWidth/2 - Title.Width/2;
     Title.YY = ConsoleHeight * 20/100;
     drawHELP(Title.XX, Title.YY);
+}
+
+// Function to draw the game mode selection menu
+// choice = 0 (PvP), 1 (PvE), 2 (Back)
+void drawGameModeScreen(int choice)
+{
+    system("cls"); // Clear the console screen
+    setColor(backgroundcolor, fontcolor);
+
+    // Draw the title
+    std::string title = "SELECT GAME MODE";
+    int titleX = (ConsoleWidth - title.length()) / 2;
+    int titleY = ConsoleHeight * 30 / 100; // Position 30% down from the top
+    setPos(titleX, titleY);
+    std::cout << title;
+
+    int boxW = 20; // Button width
+    int boxH = 3;  // Button height
+    int startX = (ConsoleWidth - boxW) / 2;
+    int startY = titleY + 3;
+
+    // List of mode buttons
+    std::string modes[] = { "   PvP MODE   ", "   PvE MODE   ", "     BACK     " };
+
+    for (int i = 0; i < 3; i++)
+    {
+        int currentY = startY + i * (boxH + 1); // Calculate Y position for each button
+
+        // Highlight the selected button (Black background, white foreground)
+        if (i == choice)
+            setColor(Selected_BG, Selected_FG);
+        else
+            setColor(backgroundcolor, fontcolor);
+
+        drawBox(startX, currentY, boxW, boxH, modes[i]);
+    }
+
+    // Restore default colors
+    setColor(backgroundcolor, fontcolor);
+}
+
+// Function to control the game mode selection menu logic
+int ControlGameMode()
+{
+    ShowConsoleCursor(false);
+    int choice = 0; // Default selection is the first button (PvP)
+    drawGameModeScreen(choice); // Initial drawing
+
+    int key;
+    while (true)
+    {
+        key = _getch(); // Get user input (key press)
+        int old_choice = choice; // Store old choice for comparison
+
+        // Handle arrow keys (Up/Down) or W/S
+        if (key == 0 || key == 224)
+        {
+            key = _getch();
+            switch (key)
+            {
+            case 72: // Up arrow
+                choice--;
+                playMoveSound();
+                break;
+            case 80: // Down arrow
+                choice++;
+                playMoveSound();
+                break;
+            }
+        }
+        else
+        {
+            switch (toupper(key))
+            {
+            case 'W':
+                choice--;
+                playMoveSound();
+                break;
+            case 'S':
+                choice++;
+                playMoveSound();
+                break;
+            case 13: // ENTER key -> Confirm selection
+                playClickSound();
+                return choice; // Returns 0 (PvP), 1 (PvE), or 2 (Back)
+            case 27: // ESC key -> Treat as Back
+                return 2;
+            }
+        }
+
+        // Wrap around logic (if moving up from 0, go to 2; if moving down from 2, go to 0)
+        if (choice < 0) choice = 2;
+        if (choice > 2) choice = 0;
+
+        // If selection changed, redraw the menu to update highlights
+        if (choice != old_choice)
+        {
+            drawGameModeScreen(choice);
+        }
+    }
 }

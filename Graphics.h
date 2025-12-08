@@ -27,6 +27,7 @@
     //Thay đổi màu sắc của nền và văn bản
     void setColor(int bgcolor, int fgcolor);//fgcolor là dành cho những phần cần "nổi" như chữ...
     void drawBox(int x, int y, int w, int h, std::string text);
+    void ShowConsoleCursor(bool showFlag);
     void fixConsoleWindow(int WIDTH, int HEIGHT);
     void drawLoadingScreen();
     void drawMenuScreen();
@@ -59,5 +60,10 @@
     int ControlSettings();
 
     void drawHelpScreen();
+
+    // Function to control the Game Mode selection menu
+    int ControlGameMode();
+    // Function to draw the Game Mode screen
+    void drawGameModeScreen(int choice);
 
 #endif

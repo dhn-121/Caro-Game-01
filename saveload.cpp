@@ -79,6 +79,7 @@ bool checkFileExists(const std::string& filename)
 	return inFile.good();
 }
 bool customInput(string& result) {
+	ShowConsoleCursor(true);
 	char ch;
 	result = ""; 
 	int index = 0; // positions in the string
@@ -195,4 +196,45 @@ bool loadactive(std::string& filename, char board[][15], char currentPlayer, int
 			return 0;
 	}
 	return 1;
+}
+
+void loadGameScreen(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[])
+{
+	// load game
+	std::string load_filename;
+	//loadactive(load_filename, board, default_player, score_X, score_O);
+	if (loadactive(load_filename, board, currentPlayer, score_X, score_O, name1, name2))
+	{
+		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 3);
+		cout << "Game loaded successfully! Returning to game...";
+		Sleep(2000);
+		GamePlay(currentPlayer, name1, name2, load_filename, 1);
+	}
+	else
+	{
+		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 3);
+		cout << "Failed to load game. Returning to current game...";
+		Sleep(2000);
+		GamePlay(currentPlayer, name1, name2, filename, 3);
+	}
+}
+
+void saveGameScreen(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[])
+{
+	// save game
+	std::string save_filename;
+	drawSaveLoadScreen(ConsoleWidth, ConsoleHeight);
+	//getfilename(save_filename);
+	if (getfilename(save_filename) == 0)
+	{
+		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
+		cout << "Save cancelled. Returning to game...";
+		Sleep(2000);
+		GamePlay(currentPlayer, name1, name2, filename, 3);
+	}
+	saveGame(save_filename, board, check_XO(), score_X, score_O, name1, name2);
+	setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
+	cout << "Game saved successfully! Returning to menu...";
+	Sleep(2000);
+	GamePlay(currentPlayer, name1, name2, filename, 3);
 }
