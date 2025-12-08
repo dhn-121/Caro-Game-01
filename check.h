@@ -10,6 +10,7 @@
 #include "Check.h"
 #include "TicTacToe.h"
 void getij(int&, int&, int, int);
+void getxy(int&, int&, int, int);
 bool check_iswin(int, int, char[N][N]);
 bool check_isdraw(int count_moves);
 extern bool has_empty_cell;

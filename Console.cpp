@@ -9,6 +9,13 @@ void setPos(int x, int y)
 	coord.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+COORD getCursorPos() {
+	CONSOLE_SCREEN_BUFFER_INFO cbsi;
+	if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cbsi)) {
+		return cbsi.dwCursorPosition;
+	}
+	return { 0, 0 };
+}
 //ham kiem tra key nhap vao
 int isNextMove()
 {
@@ -40,17 +47,32 @@ int isNextMove()
 				playMoveXOSound();
 				return 4;			// Right
 			}
-			// WASD
-			if (key == 'W' || key == 'w') return 1;
-			if (key == 'A' || key == 'a') return 2;
-			if (key == 'S' || key == 's') return 3;
-			if (key == 'D' || key == 'd') return 4;
+			
+		}
+		// WASD
+		if (key == 'W' || key == 'w')
+		{
+			playMoveXOSound();
+			return 1;
+		}
+		if (key == 'A' || key == 'a')
+		{
+			playMoveXOSound();
+			return 2;
+		}
+		if (key == 'S' || key == 's') {
+			playMoveXOSound();
+			return 3;
+		}
+		if (key == 'D' || key == 'd') {
+			playMoveXOSound();
+			return 4;
 		}
 		if (key == 'l' || key == 'L')
 		{
 			return 5; // luu game
 		}
-		if (key == 'T' || key == 'T')
+		if (key == 't' || key == 'T')
 		{
 			return 6; // tai game
 		}
@@ -71,6 +93,7 @@ void Movexy(int &x,int &y,int typemove) {
 	//dat con tro
 	setPos(x, y);
 }
+
 
 
 

@@ -3,9 +3,11 @@
 #include <utility>
 #include <conio.h>
 #include "Graphics.h"
+#include <Windows.h>
 void setPos(int , int );
 int isNextMove();
 void Movexy(int&, int&, int);
+COORD getCursorPos();;
 // mang di chuyen xy
 const std::pair<int, int> dxy[4] = {{0,-1},{-1,0},{0,1},{1,0}};
 //const int xbegin = Xi+(CellWidth+2)/2;//vi tri bat dau x

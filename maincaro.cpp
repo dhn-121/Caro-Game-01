@@ -33,12 +33,12 @@ int main()
 		switch (choice) {
 		case 1: // Play Game
 			// Chuyển sang màn hình chơi game
-			GamePlay(default_player, name1, name2,filename, 3);
+			GamePlay(default_player, name1, name2,filename, 0);
 			break;
 
 		case 2: // Saved Files
 			system("cls");
-			if (loadactive(load_filename, board, default_player, score_X, score_O))
+			if (loadactive(load_filename, board, default_player, score_X, score_O,name1,name2))
 			{
 				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 3);
 				cout << "Game loaded successfully! Returning to game...";
