@@ -1,5 +1,5 @@
 #include "Library.h"
-void GamePlay(char default_player, char name1[], char name2[], std::string filename,int typegame)
+void GamePlay(char default_player, char name1[], char name2[], std::string filename,int typegame )
 {
 	ShowConsoleCursor(true);
 	system("cls");
@@ -110,7 +110,7 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 	playBackgroundMusic();
 }
 
-void AiGamePlay(char default_player, char name1[], char name2[], std::string filename, int typegame)
+void AiGamePlay(char default_player, char name1[], char name2[], std::string filename, int typegame, int difficulty)
 {
 	ShowConsoleCursor(true);
 	// Implementation for AI gameplay mode
@@ -176,7 +176,22 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 		if(currentPlayer == player_O)
 		{
 			int ai_row, ai_col;
-			getBestMove(board, ai_row, ai_col, player_O);
+			if (currentPlayer == player_O) // AI's turn
+			{
+
+				// Choose the brain based on difficulty level
+				if (difficulty == 0) {
+					getEasyMove(board, ai_row, ai_col); // Easy Mode: Random
+				}
+				else if (difficulty == 1) {
+					getBestMove(board, ai_row, ai_col, player_O); // Normal Mode: Heuristic/Greedy
+				}
+				else {
+					getSmartMove(board, ai_row, ai_col, player_O); // Hard Mode: Minimax/Alpha-Beta
+				}
+
+				// ... (MakeMove, CheckWin, DrawTurnBox logic follows) ...
+			}
 			int row, col;
 			getxy(row, col, ai_row, ai_col);
 			x = row;

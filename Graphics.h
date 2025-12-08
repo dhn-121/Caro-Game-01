@@ -65,5 +65,8 @@
     int ControlGameMode();
     // Function to draw the Game Mode screen
     void drawGameModeScreen(int choice);
+	void drawdifficultyHighlight(int idx, bool isSelected);
+	int ControlDifficulty();
+
 
 #endif

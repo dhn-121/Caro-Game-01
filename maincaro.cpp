@@ -41,10 +41,17 @@ int main()
 			{
 				GamePlay(default_player, name1, name2, filename, 0);
 			}
-			else if (mode == 1) // PvE
+			else if (mode == 1) // PvE Mode
 			{
-				// Call the AI Game Play function
-				AiGamePlay(default_player, name1, "COMPUTER", filename, 0);
+				int diff = ControlDifficulty();
+
+				// Nếu chọn Easy(0), Normal(1), hoặc Hard(2) thì vào game
+				// Nếu chọn Back(3) thì không làm gì (tự quay lại vòng lặp menu)
+				if (diff != 3)
+				{
+					// Truyền độ khó (diff) vào hàm AI
+					AiGamePlay(default_player, name1, "COMPUTER", filename, 0, diff);
+				}
 			}
 		}
 		break;

@@ -628,6 +628,7 @@ int ControlGaming()
                 }
                 break;
             case 27: // ESC
+				resetScores(); // Reset điểm khi thoát
                 playClickSound();
                 return 0;
             default:
@@ -938,3 +939,110 @@ int ControlGameMode()
         }
     }
 }
+
+void drawDifficultyScreen(int selection)
+{
+    system("cls"); // Clear screen
+    setColor(backgroundcolor, fontcolor);
+
+    // 1. Draw Title
+    std::string title = "SELECT DIFFICULTY LEVEL";
+    int titleX = (ConsoleWidth - title.length()) / 2;
+    int titleY = ConsoleHeight * 25 / 100; // 25% from top
+    setPos(titleX, titleY);
+    std::cout << title;
+
+    // 2. Setup Buttons
+    int boxW = 24; // Width of the button
+    int boxH = 3;  // Height of the button
+    int startX = (ConsoleWidth - boxW) / 2;
+    int startY = titleY + 3;
+
+    // Labels for buttons
+    std::string levels[] = {
+        "        EASY        ",//(RANDOM)
+        "       NORMAL       ",//(BASIC)
+        "        HARD        ",//(STRATEGY)
+        "      << BACK       "
+    };
+
+    // 3. Draw Buttons
+    for (int i = 0; i < 4; i++)
+    {
+        int currentY = startY + i * (boxH + 1); // Calculate Y for each button
+
+        // Highlight the selected button
+        if (i == selection)
+            setColor(Selected_BG, Selected_FG);
+        else
+            setColor(backgroundcolor, fontcolor);
+
+        drawBox(startX, currentY, boxW, boxH, levels[i]);
+    }
+
+    // Reset color
+    setColor(backgroundcolor, fontcolor);
+}
+
+// Function to control Difficulty Selection
+// Returns: 0=Easy, 1=Normal, 2=Hard, 3=Back
+int ControlDifficulty()
+{
+    ShowConsoleCursor(false); // Hide cursor for better UI look
+    int selection = 0;
+    drawDifficultyScreen(selection);
+
+    int key;
+    while (true)
+    {
+        key = _getch();
+        int old_selection = selection;
+
+        // Handle Arrow Keys or W/S
+        if (key == 0 || key == 224)
+        {
+            key = _getch();
+            switch (key)
+            {
+            case 72: // Up
+                selection--;
+                playMoveSound();
+                break;
+            case 80: // Down
+                selection++;
+                playMoveSound();
+                break;
+            }
+        }
+        else
+        {
+            switch (toupper(key))
+            {
+            case 'W':
+                selection--;
+                playMoveSound();
+                break;
+            case 'S':
+                selection++;
+                playMoveSound();
+                break;
+            case 13: // Enter
+                playClickSound();
+                return selection;
+            case 27: // Esc -> Back
+                return 3;
+            }
+        }
+
+        // Loop selection (0 -> 3 -> 0)
+        if (selection < 0) selection = 3;
+        if (selection > 3) selection = 0;
+
+        // Redraw only if selection changed
+        if (selection != old_selection)
+        {
+            drawDifficultyScreen(selection);
+        }
+    }
+}
+
