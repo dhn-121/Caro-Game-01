@@ -14,5 +14,7 @@ bool checkFileExists(const std::string& filename);
 bool getfilename(std::string& filename);
 void loadproductfile(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[]);
 bool loadactive(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[]);
+void loadGameScreen(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[]);
+void saveGameScreen(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[]);
 #endif
 // progame savedgame caro
