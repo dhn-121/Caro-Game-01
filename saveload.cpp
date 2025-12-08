@@ -2,7 +2,7 @@
 
 using namespace std;
 
-bool saveGame(const std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O)
+bool saveGame(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O,char name1[],char name2[])
 {
 	//create directory "save" if not exist
 	_mkdir("save");
@@ -11,26 +11,29 @@ bool saveGame(const std::string& filename, char board[][15], char currentPlayer,
 	string fullPath = "save/" + filename;
 
 	ofstream outFile(fullPath.c_str()); // .c_str() to convert string to const char*
+	setPos((ConsoleWidth) / 2-20, (ConsoleHeight) / 2 + 3);
+
 	if (!outFile) {
 		cerr << "Error creating file " << fullPath << endl;
 		return 0;
 	}
 
-	for (int i = 0; i < 15; ++i) {
-		for (int j = 0; j < 15; ++j) {
+	for (int i = 0; i <N; ++i) {
+		for (int j = 0; j < N; ++j) {
 			outFile << board[i][j];
 		}
 		outFile << endl;
 	}
 	outFile << currentPlayer << endl;
 	outFile << score_X << " " << score_O << endl;
+	outFile << name1 << endl;
+	outFile << name2 << endl;
 	outFile.close();
-
 	cout << "Game saved successfully to " << fullPath << endl;
 	return true;
 }
 
-bool loadGame(const std::string& filename, char board[][15], char& currentPlayer, int& score_X, int& score_O)
+bool loadGame(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[])
 {
 	// when loading, add path "save/" to filename
 	string fullPath = "save/" + filename;
@@ -41,13 +44,16 @@ bool loadGame(const std::string& filename, char board[][15], char& currentPlayer
 		return false;
 	}
 
-	for (int i = 0; i < 15; ++i) {
-		for (int j = 0; j < 15; ++j) {
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < N; ++j) {
 			inFile >> board[i][j];
 		}
 	}
 	inFile >> currentPlayer;
 	inFile >> score_X >> score_O;
+	inFile.ignore(); // ignore the newline character after score_O
+	inFile.getline(name1, 50);
+	inFile.getline(name2, 50);
 	inFile.close();
 	return true;
 }
@@ -154,28 +160,27 @@ bool getfilename(std::string& filename)
 	return customInput(filename);
 }
 
-void loadproductfile(std::string& filename, char board[][15], char& currentPlayer, int score_X, int score_O)
+void loadproductfile(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O,char name1[],char name2[])
 {
-	bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O);
+	bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O,name1,name2);
 	if (loadSuccess)
 	{
 		// Redraw the loaded board
-		for (int i = 1; i <= BOARD_SIZE; i++)
+		for (int i = 0; i < N; i++)
 		{
-			for (int j = 1; j <= BOARD_SIZE; j++)
+			for (int j = 0; j < N; j++)
 			{
-				if (board[i][j] != ' ')
-				{
-					int row, col;
-					getij(row, col, Xi + (j - 1) * CellWidth + CellWidth / 2 + 1, Yi + (i - 1) * CellHeight + CellHeight / 2 + 1);
-					MakeMove(board[i][j], row, col);
-				}
+				if (board[i][j] == '-')continue;
+				int row, col;
+				getxy(row, col, i, j);
+				setPos(row, col);
+				cout << board[i][j];
 			}
 		}
 	}
 }
 
-bool loadactive(std::string& filename, char board[][15], char& currentPlayer, int score_X, int score_O)
+bool loadactive(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[])
 {
 	drawSaveLoadScreen(ConsoleWidth, ConsoleHeight);
 	if(getfilename(filename) == 0)

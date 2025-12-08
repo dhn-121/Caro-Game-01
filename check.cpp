@@ -7,6 +7,11 @@ void getij(int& i,int& j,int x,int y)
     i = (x - xbegin) / (CellWidth + 1);
 	j = (y - ybegin) / (CellHeight + 1);
 }
+void getxy(int& x, int& y, int i, int j)
+{
+	x = xbegin + i * (CellWidth + 1);
+	y = ybegin + j * (CellHeight + 1);
+}
 bool check_iswin(int x, int y, char a[N][N])
 {
 	char cur = a[x][y];

@@ -8,7 +8,7 @@ const int backgroundcolor = 15;
 const int fontcolor = 0;
 
 int Xi = 5;
-int Yi = ConsoleHeight/2 - BoardRealHeight/2;
+int Yi = ConsoleHeight/2 - BoardRealHeight/2-2;
 
 const int buttonWidth = 20;
 const int buttonHeight = 3;
@@ -483,23 +483,24 @@ bool isGameSelected(int idx, bool isSelected)
     // Vị trí Y cố định cho cả hai nút
     int button_Y = ConsoleHeight * 60 / 100;
 
-    int button_X;
+    int button_X = 0;
     switch (idx)
     {
-        case 0:
-        content = "   PLAY AGAIN   ";
+    case 0:
+        content = "    PLAY AGAIN    ";
         button_X = startX;
         break;
-        case 1:
-        content = "     EXIT       ";
+    case 1:
+        content = "       EXIT       ";
         button_X = startX + buttonWidth + 2; // Cách nút đầu tiên 2 khoảng trắng
         break;
-        default:
+    default:
         setColor(15, 0);
     }
     drawBox(button_X, button_Y, buttonWidth, buttonHeight, content);
     setColor(backgroundcolor, fontcolor);
     return true;
+
 }
 
 int ControlGaming()
