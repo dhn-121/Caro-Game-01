@@ -133,6 +133,8 @@ void GamePlay(int typegame)
 		
 	}
 	Sleep(300);
+	count_O = 0;
+	count_X = 0;
 	if (type == -1)ControlGaming(1);
 	else ControlGaming(0);
 	stopGameplayMusic();
@@ -301,10 +303,13 @@ void AiGamePlay(int typegame)
 		
 	}
 	Sleep(300);
+	count_O = 0;
+	count_X = 0;
 	if (type == -1)AiControlGaming(1);
 	else AiControlGaming(0);
 	stopGameplayMusic();
 	playBackgroundMusic();
 		return;
 	
+
 }
