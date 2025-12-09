@@ -2,7 +2,7 @@
 
 using namespace std;
 
-bool saveGame(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O,char name1[],char name2[],int difficult)
+bool saveGame()
 {
 	//create directory "save" if not exist
 	_mkdir("save");
@@ -28,13 +28,13 @@ bool saveGame(std::string& filename, char board[][15], char currentPlayer, int s
 	outFile << score_X << " " << score_O << endl;
 	outFile << name1 << endl;
 	outFile << name2 << endl;
-	outFile << difficult << endl;
+	outFile << difficulty << endl;
 	outFile.close();
 	cout << "Game saved successfully to " << fullPath << endl;
 	return true;
 }
 
-bool loadGame(std::string& filename, char board[][15], char& currentPlayer, int& score_X, int& score_O, char name1[], char name2[], int& difficulty)
+bool loadGame()
 {
 	// when loading, add path "save/" to filename
 	string fullPath = "save/" + filename;
@@ -53,8 +53,8 @@ bool loadGame(std::string& filename, char board[][15], char& currentPlayer, int&
 	inFile >> currentPlayer;
 	inFile >> score_X >> score_O;
 	inFile.ignore(); // ignore the newline character after score_O
-	inFile.getline(name1, 50);
-	inFile.getline(name2, 50);
+	std::getline(inFile, name1);
+	std::getline(inFile, name2);
 	inFile >> difficulty;
 	inFile.close();
 	return true;
@@ -74,7 +74,7 @@ void drawSaveLoadScreen(int Width, int Height)
 	setPos(boxX + 2, boxY + 1);
 }
 
-bool checkFileExists(const std::string& filename)
+bool checkFileExists(std::string& filename)
 {
 	string fullPath = "save/" + filename;
 	ifstream inFile(fullPath.c_str());
@@ -158,14 +158,13 @@ bool customInput(string& result) {
 bool getfilename(std::string& filename)
 {
 	setPos(22, (ConsoleHeight-3) / 2 + 1);
-	char ch;
 	filename.clear();
 	return customInput(filename);
 }
 
-void loadproductfile(std::string& filename, char board[][15], char& currentPlayer, int& score_X, int& score_O, char name1[], char name2[], int &difficulty)
+void loadproductfile()
 {
-	bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O,name1,name2, difficulty);
+	bool loadSuccess = loadGame();
 	if (loadSuccess)
 	{
 		// Redraw the loaded board
@@ -183,7 +182,7 @@ void loadproductfile(std::string& filename, char board[][15], char& currentPlaye
 	}
 }
 
-bool loadactive(std::string& filename, char board[][15], char& currentPlayer, int& score_X, int& score_O, char name1[], char name2[], int &difficulty)
+bool loadactive()
 {
 	drawSaveLoadScreen(ConsoleWidth, ConsoleHeight);
 	if(getfilename(filename) == 0)
@@ -200,12 +199,12 @@ bool loadactive(std::string& filename, char board[][15], char& currentPlayer, in
 	return 1;
 }
 
-void loadGameScreen(std::string& filename, char board[][15], char& currentPlayer, int& score_X, int& score_O, char name1[], char name2[], int &difficulty)
+void loadGameScreen()
 {
 	// load game
 	std::string load_filename;
 	//loadactive(load_filename, board, default_player, score_X, score_O);
-	if (loadactive(load_filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty))
+	if (loadactive())
 	{
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 2);
 		cout << "                                                   ";
@@ -213,9 +212,9 @@ void loadGameScreen(std::string& filename, char board[][15], char& currentPlayer
 		cout << "Game loaded successfully! Returning to game...";
 		Sleep(2000);
 		if(difficulty==4)
-			GamePlay(currentPlayer, name1, name2, filename, 3);
+			GamePlay(1);
 		else
-			AiGamePlay(currentPlayer, name1, name2, filename, 3, difficulty);
+			AiGamePlay(1);
 	}
 	else
 	{
@@ -223,17 +222,17 @@ void loadGameScreen(std::string& filename, char board[][15], char& currentPlayer
 		cout << "Failed to load game. Returning to current game...";
 		Sleep(2000);
 		if(difficulty==4)
-			GamePlay(currentPlayer, name1, name2, filename, 3);
+			GamePlay(3);
 		else
-			AiGamePlay(currentPlayer, name1, name2, filename, 3, difficulty);
+			AiGamePlay(3);
 	}
 }
-void loadGameMenu(std::string& filename, char board[][15], char& currentPlayer, int& score_X, int& score_O, char name1[], char name2[], int& difficulty)
+void loadGameMenu()
 {
 	// load game
 	std::string load_filename;
 	//loadactive(load_filename, board, default_player, score_X, score_O);
-	if (loadactive(load_filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty))
+	if (loadactive())
 	{
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 2);
 		cout << "                                                   ";
@@ -241,13 +240,13 @@ void loadGameMenu(std::string& filename, char board[][15], char& currentPlayer, 
 		cout << "Game loaded successfully! Returning to game...";
 		Sleep(2000);
 		if (difficulty == 4)
-			GamePlay(currentPlayer, name1, name2, filename, 3);
+			GamePlay(1);
 		else
-			AiGamePlay(currentPlayer, name1, name2, filename, 3, difficulty);
+			AiGamePlay(1);
 	}
 }
 
-void saveGameScreen(std::string& filename, char board[][15], char& currentPlayer, int& score_X, int& score_O, char name1[], char name2[], int &difficulty)
+void saveGameScreen()
 {
 	// save game
 	std::string save_filename;
@@ -258,15 +257,15 @@ void saveGameScreen(std::string& filename, char board[][15], char& currentPlayer
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
 		cout << "Save cancelled. Returning to game...";
 		Sleep(2000);
-		GamePlay(currentPlayer, name1, name2, filename, 3);
+		GamePlay(3);
 	}
-	saveGame(save_filename, board, check_XO(), score_X, score_O, name1, name2);
+	saveGame();
 	setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
 	cout << "Game saved successfully! Returning to menu...";
 	Sleep(2000);
 	//GamePlay(currentPlayer, name1, name2, filename, 3);
 	if(difficulty==4)
-		GamePlay(currentPlayer, name1, name2, filename, 3);
+		GamePlay(3);
 	else
-		AiGamePlay(currentPlayer, name1, name2, filename, 3, difficulty);
+		AiGamePlay(3);
 }

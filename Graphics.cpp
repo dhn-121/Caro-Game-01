@@ -297,7 +297,7 @@ int ControlMenu()
 
 //==================== MÀN HÌNH CHƠI (GamePlayScreen) ====================
 
-void drawTurnBox(int XX, int YY, int Width, int Height, char player, char name1[], char name2[])
+void drawTurnBox(int XX, int YY, int Width, int Height, char player, std::string name1, std::string name2)
 {
     setColor(backgroundcolor, fontcolor);
     drawBox(XX, YY, Width, Height, "");
@@ -378,7 +378,7 @@ void drawScoreBox(int XX, int YY, int Width, int Height)
 
 int TurnData[4] = { 0 };
 
-void drawGamePlayScreen(char player, char name1[], char name2[], std::string filename)
+void drawGamePlayScreen(char player, std::string name1, std::string name2, std::string filename)
 {
     system("cls");
     setColor(backgroundcolor, fontcolor);
@@ -436,8 +436,9 @@ void resetScores() {
     score_O = 0;
 }
 
-void drawWinStatus(char player, char name1[], char name2[])
+void drawWinStatus(char player, std::string name1, std::string name2)
 {
+	setColor(backgroundcolor, fontcolor);
     char name_player[50];
     int length = 0;
 
@@ -450,16 +451,16 @@ void drawWinStatus(char player, char name1[], char name2[])
         Status.Width = 35;
         Status.XX = ConsoleWidth / 2 - Status.Width / 2;
         drawX_WIN(Status.XX, Status.YY);
-        strcpy(name_player, name1);
-        length = strlen(name1);
+        strcpy(name_player, name1.c_str());
+        length = strlen(name1.c_str());
     }
     else if (player == player_O)
     {
         Status.Width = 36;
         Status.XX = ConsoleWidth / 2 - Status.Width / 2;
         drawO_WIN(Status.XX, Status.YY);
-        strcpy(name_player, name2);
-        length = strlen(name2);
+        strcpy(name_player, name2.c_str());
+        length = strlen(name2.c_str());
     }
 
     setColor(backgroundcolor, fontcolor);
@@ -496,7 +497,7 @@ void drawDrawStatus()
     cout << score_display;
 }
 
-bool isGameSelected(int idx, bool isSelected)
+bool isGameSelected(int idx, bool isSelected,int type)
 {
     if (isSelected)
         setColor(Selected_BG, Selected_FG);
@@ -504,23 +505,29 @@ bool isGameSelected(int idx, bool isSelected)
         setColor(backgroundcolor, fontcolor);
     std::string content;
 
-    // Tính toán vị trí X cho từng nút (nằm ngang)
-    int totalWidth = 2 * buttonWidth + 2; // 2 nút + khoảng cách 2 ký tự
+    // Tính toán vị trí để căn giữa 3 nút
+    // 3 nút * 20 chiều rộng + 2 khoảng cách * 2 ký tự
+    int totalWidth = 3 * buttonWidth + 4;
     int startX = ConsoleWidth / 2 - totalWidth / 2;
-
-    // Vị trí Y cố định cho cả hai nút
     int button_Y = ConsoleHeight * 60 / 100;
 
     int button_X = 0;
     switch (idx)
     {
     case 0:
-        content = "    PLAY AGAIN    ";
+        content = "    CONTINUE      "; // Giữ điểm, Bàn cờ cũ
         button_X = startX;
         break;
     case 1:
-        content = "       EXIT       ";
-        button_X = startX + buttonWidth + 2; // Cách nút đầu tiên 2 khoảng trắng
+        if(type==1)
+            content = "   PLAY AGAIN     "; // Reset điểm, Bàn cờ mới
+		else
+		    content = "   RESET SCORE    ";
+        button_X = startX + buttonWidth + 2;
+        break;
+    case 2:
+        content = "       HOME       "; // Reset điểm, Về Menu
+        button_X = startX + 2 * buttonWidth + 4;
         break;
     default:
         setColor(15, 0);
@@ -528,64 +535,19 @@ bool isGameSelected(int idx, bool isSelected)
     drawBox(button_X, button_Y, buttonWidth, buttonHeight, content);
     setColor(backgroundcolor, fontcolor);
     return true;
-
 }
 
-int ControlGaming()
+// 2. Điều khiển màn hình kết thúc PvP (3 Nút)
+
+int ControlGaming(int type)
 {
     ShowConsoleCursor(false);
-    // Hiển thị tiêu đề và điểm số
-    system("cls");
-    setColor(backgroundcolor, fontcolor);
+    // ... (Giữ nguyên phần vẽ tiêu đề Win/Lose/Draw ở trên) ...
 
-    // Tiêu đề GAME OVER
-    std::string title = "GAME OVER";
-    int titleX = ConsoleWidth / 2 - title.length() / 2;
-    int titleY = ConsoleHeight * 30 / 100;
-    setPos(titleX, titleY);
-    cout << title;
-
-    // Hiển thị điểm số
-    std::string score_display = "FINAL SCORE: " + std::to_string(score_X) + " - " + std::to_string(score_O);
-    int scoreX = ConsoleWidth / 2 - score_display.length() / 2;
-    int scoreY = titleY + 2;
-    setPos(scoreX, scoreY);
-    cout << score_display;
-
-    // Hiển thị người chiến thắng (nếu có)
-    if (score_X > score_O)
-    {
-        std::string winner_msg = "PLAYER X WINS THE MATCH!";
-        int winnerX = ConsoleWidth / 2 - winner_msg.length() / 2;
-        setPos(winnerX, scoreY + 1);
-        setColor(14, 0); // Màu vàng
-        cout << winner_msg;
-        setColor(backgroundcolor, fontcolor);
-    }
-    else if (score_O > score_X)
-    {
-        std::string winner_msg = "PLAYER O WINS THE MATCH!";
-        int winnerX = ConsoleWidth / 2 - winner_msg.length() / 2;
-        setPos(winnerX, scoreY + 1);
-        setColor(14, 0); // Màu vàng
-        cout << winner_msg;
-        setColor(backgroundcolor, fontcolor);
-    }
-    else
-    {
-        std::string draw_msg = "MATCH ENDS IN A DRAW!";
-        int drawX = ConsoleWidth / 2 - draw_msg.length() / 2;
-        setPos(drawX, scoreY + 1);
-        setColor(11, 0); // Màu xanh nhạt
-        cout << draw_msg;
-        setColor(backgroundcolor, fontcolor);
-    }
-
-    int present_choice = 0; // Bắt đầu ở AGAIN
-
-    // Vẽ tất cả các nút (ban đầu không được chọn)
-    for (int i = 0; i < 2; i++) {
-        isGameSelected(i, (i == present_choice));
+    int present_choice = 0; // Mặc định chọn CONTINUE
+    // Vẽ 3 nút
+    for (int i = 0; i < 3; i++) {
+        isGameSelected(i, (i == present_choice),type);
     }
 
     int key;
@@ -594,66 +556,148 @@ int ControlGaming()
         key = _getch();
         int past_choice = present_choice;
 
-        // Xử lý phím điều hướng (trái/phải)
-        if (key == 0 || key == 224)
-        {
+        if (key == 0 || key == 224) {
             key = _getch();
-            switch (key)
-            {
-            case 75: // Mũi tên trái
-                present_choice = (present_choice - 1 + 2) % 2;
+            switch (key) {
+            case 75: // Trái
+                present_choice = (present_choice - 1 + 3) % 3; // Modulo 3 cho 3 nút
                 playMoveSound();
                 break;
-            case 77: // Mũi tên phải
-                present_choice = (present_choice + 1) % 2;
+            case 77: // Phải
+                present_choice = (present_choice + 1) % 3;
                 playMoveSound();
                 break;
-            default:
-                continue;
             }
         }
-        else
-        {
-            switch (toupper(key))
-            {
-            case 'A': // Phím A (trái)
-                present_choice = (present_choice - 1 + 2) % 2;
+        else {
+            switch (toupper(key)) {
+            case 'A':
+                present_choice = (present_choice - 1 + 3) % 3;
                 playMoveSound();
                 break;
-            case 'D': // Phím D (phải)
-                present_choice = (present_choice + 1) % 2;
+            case 'D':
+                present_choice = (present_choice + 1) % 3;
                 playMoveSound();
                 break;
             case 13: // Enter
                 playClickSound();
-                if (present_choice == 0) // PLAY AGAIN
+                if (present_choice == 0) // === CONTINUE ===
                 {
-                    GamePlay(Default_Set.sfx_active ? player_X : player_O,
-                        "Player 1 (X)", "Player 2 (O)",
-                        "caro_save_01.txt", false);
-                    return 1; // Trả về 1 để báo hiệu chơi lại
+                    // Ván đã kết thúc -> Tạo ván mới 
+                    // KHÔNG reset điểm
+					drawContinueGameScreen();
+                    return 1;
                 }
-                else if (present_choice == 1) // EXIT
+                else if (present_choice == 1) // === PLAY AGAIN ===
                 {
-					resetScores(); // Reset điểm khi thoát
-                    return 0; // Trả về 0 để báo hiệu thoát
+                    resetScores(); // Reset điểm
+                    // Tạo ván mới
+                    /*GamePlay(Default_Set.sfx_active ? player_X : player_O,
+                        "Player 1 (X)", "Player 2 (O)",
+                        "caro_save_01.txt", 0);*/
+					currentPlayer = player_X;
+					name1= "Player 1 (X)";
+					name2= "Player 2 (O)";
+					filename = "caro_save_01.txt";
+					GamePlay(0);
+                    return 1;
+                }
+                else if (present_choice == 2) // === HOME ===
+                {
+                    resetScores(); // Reset điểm
+                    return 0;      // Về menu
+                }
+                break;
+            case 27: // ESC -> Về Home
+                resetScores();
+                playClickSound();
+                return 0;
+            default: continue;
+            }
+        }
+
+        if (present_choice != past_choice) {
+            isGameSelected(past_choice, false,type);
+            isGameSelected(present_choice, true,type);
+        }
+    }
+}
+
+// 3. Điều khiển màn hình kết thúc AI (PvE) (3 Nút)
+int AiControlGaming(int type)
+{
+    ShowConsoleCursor(false);
+    // ... (Giữ nguyên phần vẽ tiêu đề Win/Lose/Draw ở trên) ...
+
+    int present_choice = 0;
+    // Vẽ 3 nút
+    for (int i = 0; i < 3; i++) {
+        isGameSelected(i, (i == present_choice),type);
+    }
+
+    int key;
+    while (true) {
+        key = _getch();
+        int past_choice = present_choice;
+
+        if (key == 0 || key == 224) {
+            key = _getch();
+            switch (key) {
+            case 75:
+                present_choice = (present_choice - 1 + 3) % 3;
+                playMoveSound();
+                break;
+            case 77:
+                present_choice = (present_choice + 1) % 3;
+                playMoveSound();
+                break;
+            }
+        }
+        else {
+            switch (toupper(key)) {
+            case 'A':
+                present_choice = (present_choice - 1 + 3) % 3;
+                playMoveSound();
+                break;
+            case 'D':
+                present_choice = (present_choice + 1) % 3;
+                playMoveSound();
+                break;
+            case 13: // Enter
+                playClickSound();
+                if (present_choice == 0) // === CONTINUE ===
+                {
+                    // Ván kết thúc -> Bàn cờ mới, GIỮ điểm
+                    drawContinueGameScreen();
+                    return 1;
+                }
+                else if (present_choice == 1) // === PLAY AGAIN ===
+                {
+                    resetScores(); // Reset điểm
+                    // Bàn cờ mới
+					name1 = "Player 1 (X)";
+					name2 = "AI (O)";
+					filename = "caro_save_ai.txt";
+					currentPlayer = player_X;
+					AiGamePlay(0);
+                    return 1;
+                }
+                else if (present_choice == 2) // === HOME ===
+                {
+                    resetScores(); // Reset điểm
+                    return 0;      // Về menu
                 }
                 break;
             case 27: // ESC
-				resetScores(); // Reset điểm khi thoát
+                resetScores();
                 playClickSound();
                 return 0;
-            default:
-                continue;
+            default: continue;
             }
         }
-        // Nếu có thay đổi lựa chọn, cập nhật giao diện
-        if (present_choice != past_choice)
-        {
-            // Bỏ chọn nút cũ
-            isGameSelected(past_choice, false);
-            // Chọn nút mới
-            isGameSelected(present_choice, true);
+        if (present_choice != past_choice) {
+            isGameSelected(past_choice, false,type);
+            isGameSelected(present_choice, true,type);
         }
     }
 }
@@ -1205,3 +1249,80 @@ int ControlDifficulty()
     }
 }
 
+char getCharAtCursor(int x, int y) {
+    char c = ' ';
+    DWORD num_read;
+    COORD pos = { (SHORT)x, (SHORT)y };
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    ReadConsoleOutputCharacter(hConsole, (LPTSTR)&c, 1, pos, &num_read);
+    return c;
+}
+
+void HighlightPos(int x, int y, int mode) {
+    if (mode == 1) {
+        // Nền Trắng (15) - Chữ Đỏ (12)
+        setColor(15, 12);
+    }
+    else if(mode == 2) {
+        // Nền Đỏ (12) - Chữ Trắng (15)
+        setColor(12, 15);
+        cout << getCharAtCursor(x, y);
+    }
+    else {
+        setColor(15, 0);
+        setPos(x, y);
+        cout << getCharAtCursor(x, y);
+    }
+
+    // Trả lại màu mặc định cho hệ thống
+    setColor(backgroundcolor, fontcolor);
+    setPos(x, y);
+}
+void highlightWinningSequence(int x, int y, char a[15][15])
+{
+    char cur = a[x][y];
+    int dmove[4][2] = { {0,1}, {1,0}, {1,1}, {1,-1} }; // ngang, dọc, chéo phải-xuống, chéo trái-xuống
+    for (auto dir : dmove)
+    {
+        int count = 1;
+        std::vector<std::pair<int, int>> winningPositions;
+        winningPositions.push_back({ x, y });
+        for (int step = 1; step < 5; step++)
+        {
+            int nx = x + dir[0] * step;
+            int ny = y + dir[1] * step;
+            if (nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && a[nx][ny] == cur)
+            {
+                count++;
+                winningPositions.push_back({ nx, ny });
+            }
+            else
+                break;
+        }
+        for (int step = 1; step < 5; step++)
+        {
+            int nx = x - dir[0] * step;
+            int ny = y - dir[1] * step;
+            if (nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && a[nx][ny] == cur)
+            {
+                count++;
+                winningPositions.push_back({ nx, ny });
+            }
+            else
+                break;
+        }
+        if (count >= 5)
+        {
+            // Tô đậm các vị trí chiến thắng
+            for (auto pos : winningPositions)
+            {
+                int row, col;
+                getxy(row, col, pos.first, pos.second);
+                setPos(row, col);
+                setColor(15, 4); // Màu vàng nền đỏ
+                cout << currentPlayer;
+            }
+            return;
+        }
+    }
+}

@@ -32,14 +32,17 @@ bool MakeMove(char player, int row, int col)
 		return 0;
 	
     board[i][j] = player;
+    HighlightPos(row, col, 0);
     setPos(row, col);
     if (player == player_X)
     {
+		setColor(15, 12);
         cout << "X";
         count_X++;
     }
     else if (player == player_O)
     {
+        setColor(15, 12);
         cout << 'O';
         count_O++;
     }
@@ -48,6 +51,8 @@ bool MakeMove(char player, int row, int col)
         cout << ' ';
         return 0;
     }
+	setColor(backgroundcolor, fontcolor);
+    HighlightPos(row, col, 1);
     return 1;
 }
 

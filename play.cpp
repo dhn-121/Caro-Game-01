@@ -1,17 +1,36 @@
-#include "Library.h"
-void GamePlay(char default_player, char name1[], char name2[], std::string filename,int typegame )
+#include "play.h"
+
+int difficulty;
+char currentPlayer;
+string name1;
+string name2;
+std::string filename;
+
+void drawContinueGameScreen()
 {
+	int type = 3;
+	if(check_iswin(0,0,board)||check_isdraw(count_moves))
+	{
+		type=0;
+	}
+	if (difficulty==4)
+	{
+		GamePlay(type);
+	}
+	else
+	{
+		AiGamePlay(type);
+	}
+}
+void GamePlay(int typegame)
+{
+	difficulty = 4;
 	ShowConsoleCursor(true);
 	system("cls");
-	drawGamePlayScreen(default_player, name1, name2, filename);
+	drawGamePlayScreen(currentPlayer, name1, name2, filename);
 	int x = xbegin;
 	int y = ybegin;
-	char currentPlayer{};
-	int timeMinutes, timeSeconds;
-	int count_moves = 0;
-	int score_X = 0;
-	int score_O = 0;
-	int type = 0;
+	difficulty = 4;
 	stopBackgroundMusic();
 	playGameplayMusic();
 	if (typegame == 0)
@@ -25,11 +44,11 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 	{
 		// load game
 		
-		bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O,name1,name2);
+		bool loadSuccess = loadGame();
 		if (loadSuccess)
 		{
 			// Redraw the loaded board
-			loadproductfile(filename, board, currentPlayer, score_X, score_O,name1,name2);
+			loadproductfile();
 		}
 	}else {
 		for (int i = 0; i <N; i++)
@@ -58,6 +77,8 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 	}
 	//GAME CONTINUE IS TYPEGAME==3
 	setPos(x, y);
+	HighlightPos(x, y, 1);
+	int type = 0;
 	while (true)
 	{
 		type = isNextMove();
@@ -70,6 +91,8 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 			getij(i, j, x, y);
 			if (check_iswin(i, j, board))
 			{
+				highlightWinningSequence(i, j, board);
+				Sleep(3000);
 				updateScore(currentPlayer);
 				system("cls");
 				drawWinStatus(currentPlayer, name1, name2);
@@ -93,37 +116,39 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 		else Movexy(x, y, type);
 	}
 	count_moves = 0;
-	cin.ignore();
-	if (type == -1)
+	
+	if(type==6)
 	{
-		ControlGaming();
-	}else if(type==6)
-	{
-		loadGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
+		loadGameScreen();
+		return;
 	}
 	else if(type==5)
 	{
-		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
+		saveGameScreen();
+		return;
 	}
-	ControlGaming();
+	else if (type == -1)
+	{
+		system("cls");
+		
+	}
+	Sleep(300);
+	if (type == -1)ControlGaming(1);
+	else ControlGaming(0);
 	stopGameplayMusic();
 	playBackgroundMusic();
+		return;
+	
 }
 
-void AiGamePlay(char default_player, char name1[], char name2[], std::string filename, int typegame, int difficulty)
+void AiGamePlay(int typegame)
 {
 	ShowConsoleCursor(true);
 	// Implementation for AI gameplay mode
 	system("cls");
-	drawGamePlayScreen(default_player, name1, name2, filename);
+	drawGamePlayScreen(currentPlayer, name1, name2, filename);
 	int x = xbegin;
 	int y = ybegin;
-	char currentPlayer{};
-	int timeMinutes, timeSeconds;
-	int count_moves = 0;
-	int score_X = 0;
-	int score_O = 0;
-	int type = 0;
 	stopBackgroundMusic();
 	playGameplayMusic();
 	if (typegame == 0)
@@ -137,11 +162,11 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 	else if (typegame == 1)
 	{
 		// load game
-		bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O, name1, name2);
+		bool loadSuccess = loadGame();
 		if (loadSuccess)
 		{
 			// Redraw the loaded board
-			loadproductfile(filename, board, currentPlayer, score_X, score_O, name1, name2);
+			loadproductfile();
 		}
 	}
 	else {
@@ -170,6 +195,8 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 		}
 	}
 	setPos(x, y);
+	HighlightPos(x, y, 1);
+	int type = 0;
 	while (true)
 	{
 		currentPlayer = check_XO();
@@ -194,11 +221,14 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 			}
 			int row, col;
 			getxy(row, col, ai_row, ai_col);
+			HighlightPos(x, y, 0);
 			x = row;
 			y = col;
 			count_moves += MakeMove(player_O, x, y);
 			if (check_iswin(ai_row, ai_col, board))
 			{
+				highlightWinningSequence(ai_row, ai_col, board);
+				Sleep(3000);
 				updateScore(player_O);
 				system("cls");
 				drawWinStatus(player_O, name1, name2);
@@ -254,20 +284,27 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 		}
 	}
 	count_moves = 0;
-	cin.ignore();
-	if (type == -1)
+	
+	if (type == 6)
 	{
-		AiControlGaming(default_player, name1, name2, difficulty);
-	}
-	else if (type == 6)
-	{
-		loadGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
+		loadGameScreen();
+		return;
 	}
 	else if (type == 5)
 	{
-		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
+		saveGameScreen();
+		return;
 	}
-	AiControlGaming(default_player, name1, name2, difficulty);
+	if (type == -1)
+	{
+		system("cls");
+		
+	}
+	Sleep(300);
+	if (type == -1)AiControlGaming(1);
+	else AiControlGaming(0);
 	stopGameplayMusic();
 	playBackgroundMusic();
+		return;
+	
 }
