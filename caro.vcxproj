@@ -120,6 +120,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
     <ClCompile Include="board.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="check.cpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="TicTacToe.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI.h" />
     <ClInclude Include="board.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="check.h" />
