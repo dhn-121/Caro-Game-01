@@ -33,5 +33,7 @@
     void drawO_WIN(int XX, int YY);
     void drawDRAW(int XX, int YY);
     void drawSETTING(int XX, int YY);
+	void drawGAME_MODE(int XX, int YY);
+    void drawDino(int XX, int YY);
 
 #endif

@@ -20,7 +20,6 @@ int main()
 	std::string load_filename;
 	int score_X = 0;
 	int score_O = 0;
-	int difficulty = 4;
 	drawLoadingScreen();
 	do
 	{
@@ -36,37 +35,36 @@ int main()
 			// Chuyển sang màn hình chơi game
 		{
 			// Call the mode selection menu
+			int mode = ControlGameMode();
 
-			while (1)
+			if (mode == 0) // PvP
 			{
-				int mode = ControlGameMode();
-				if (mode == 0) // PvP
-				{
-					GamePlay(default_player, name1, name2, filename, 0);
-					break;
-				}
-				else if (mode == 1) // PvE Mode
-				{
-					int diff = ControlDifficulty();
+				GamePlay(default_player, name1, name2, filename, 0);
+			}
+			else if (mode == 1) // PvE Mode
+			{
+				int diff = ControlDifficulty();
 
-					// Nếu chọn Easy(0), Normal(1), hoặc Hard(2) thì vào game
-					// Nếu chọn Back(3) thì không làm gì (tự quay lại vòng lặp menu)
-					if (diff == 3)continue;
-					if (diff != 3)
-					{
-						// Truyền độ khó (diff) vào hàm AI
-						AiGamePlay(default_player, name1, "COMPUTER", filename, 0, diff);
-						break;
-					}
+				// Nếu chọn Easy(0), Normal(1), hoặc Hard(2) thì vào game
+				// Nếu chọn Back(3) thì không làm gì (tự quay lại vòng lặp menu)
+				if (diff != 3)
+				{
+					// Truyền độ khó (diff) vào hàm AI
+					AiGamePlay(default_player, name1, "COMPUTER", filename, 0, diff);
 				}
-				else break;
 			}
 		}
 		break;
 
 		case 2: // Saved Files
 			system("cls");
-			loadGameMenu(load_filename, board, default_player, score_X, score_O, name1, name2, difficulty);
+			if (loadactive(load_filename, board, default_player, score_X, score_O,name1,name2))
+			{
+				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 3);
+				cout << "Game loaded successfully! Returning to game...";
+				Sleep(2000);
+				GamePlay(default_player, name1, name2, load_filename, 1);
+			}
 			//cin.ignore();
 			//cin.get();
 			break;
@@ -85,8 +83,6 @@ int main()
 
 		case 5: // Exit
 			// Thoát vòng lặp
-			HWND consoleWindow = GetConsoleWindow(); // Lấy ID cửa sổ
-			SendMessage(consoleWindow, WM_CLOSE, 0, 0); // Gửi yêu cầu đóng
 			break;
 		}
 	} while (choice != 5);

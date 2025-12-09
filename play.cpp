@@ -12,7 +12,6 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 	int score_X = 0;
 	int score_O = 0;
 	int type = 0;
-	int difficulty = 4;
 	stopBackgroundMusic();
 	playGameplayMusic();
 	if (typegame == 0)
@@ -26,11 +25,11 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 	{
 		// load game
 		
-		bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O,name1,name2, difficulty);
+		bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O,name1,name2);
 		if (loadSuccess)
 		{
 			// Redraw the loaded board
-			loadproductfile(filename, board, currentPlayer, score_X, score_O,name1,name2, difficulty);
+			loadproductfile(filename, board, currentPlayer, score_X, score_O,name1,name2);
 		}
 	}else {
 		for (int i = 0; i <N; i++)
@@ -100,12 +99,13 @@ void GamePlay(char default_player, char name1[], char name2[], std::string filen
 		ControlGaming();
 	}else if(type==6)
 	{
-		loadGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
+		loadGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
 	}
 	else if(type==5)
 	{
-		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
+		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
 	}
+	ControlGaming();
 	stopGameplayMusic();
 	playBackgroundMusic();
 }
@@ -137,11 +137,11 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 	else if (typegame == 1)
 	{
 		// load game
-		bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
+		bool loadSuccess = loadGame(filename, board, currentPlayer, score_X, score_O, name1, name2);
 		if (loadSuccess)
 		{
 			// Redraw the loaded board
-			loadproductfile(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
+			loadproductfile(filename, board, currentPlayer, score_X, score_O, name1, name2);
 		}
 	}
 	else {
@@ -261,12 +261,13 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 	}
 	else if (type == 6)
 	{
-		loadGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
+		loadGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
 	}
 	else if (type == 5)
 	{
-		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2, difficulty);
+		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
 	}
+	ControlGaming();
 	stopGameplayMusic();
 	playBackgroundMusic();
 }

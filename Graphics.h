@@ -44,6 +44,7 @@
     void drawWinStatus(char player, char name1[], char name2[]);
     void drawDrawStatus();
     int ControlGaming();
+	int AIControlGaming();
 	bool isGameSelected(int idx, bool isSelected);
 	void updateScore(char player);
     struct GameSettings
@@ -65,6 +66,7 @@
     int ControlGameMode();
     // Function to draw the Game Mode screen
     void drawGameModeScreen(int choice);
+	void drawdifficultyHighlight(int idx, bool isSelected);
 	int ControlDifficulty();
 
 
