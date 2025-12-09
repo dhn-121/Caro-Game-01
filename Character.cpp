@@ -655,3 +655,265 @@ void drawSETTING(int XX, int YY) {
 	drawN(XX + 34, YY);
 	drawG(XX + 44, YY);
 }
+void drawGAME_MODE(int XX, int YY) {
+	drawG(XX, YY);
+	drawA(XX + 9, YY);
+	drawM(XX + 17, YY);
+	drawE(XX + 28, YY);
+	drawM(XX + 40, YY);
+	drawO(XX + 49, YY);
+	drawD(XX + 59, YY);
+	drawE(XX + 68, YY);
+}
+void drawDino(int XX, int YY) {
+
+	char B[3];
+	B[0] = char(219);
+	B[1] = char(219);
+	B[2] = '\0';
+
+	char K[9];
+	K[0] = char(219);
+	K[1] = char(219);
+	K[2] = char(219);
+	K[3] = char(219);
+	K[4] = char(219);
+	K[5] = char(219);
+	K[6] = char(219);
+	K[7] = char(219);
+	K[8] = '\0';
+
+
+	// ======== ROW 2 ========
+
+	setPos(XX + 9, YY + 2); cout << B;
+	setPos(XX + 10, YY + 2); cout << B;
+	setPos(XX + 12, YY + 2);  cout << B;
+	setPos(XX + 14, YY + 2);  cout << B;
+	setPos(XX + 16, YY + 2);  cout << B;
+	setPos(XX + 18, YY + 2);  cout << B;
+	setPos(XX + 20, YY + 2);  cout << B;
+	setPos(XX + 22, YY + 2);  cout << B;
+	setPos(XX + 24, YY + 2);  cout << B;
+	setPos(XX + 25, YY + 2);  cout << B;
+
+	// ======== ROW 3 ========
+	setPos(XX + 8, YY + 3); cout << B;
+	setPos(XX + 10, YY + 3); cout << B;
+
+	setPos(XX + 11, YY + 3); cout << "  "; // pixel m?t tr?ng
+
+	setPos(XX + 13, YY + 3);  cout << B;
+	setPos(XX + 14, YY + 3);  cout << B;
+	setPos(XX + 16, YY + 3);  cout << B;
+	setPos(XX + 18, YY + 3);  cout << B;
+	setPos(XX + 20, YY + 3);  cout << B;
+	setPos(XX + 22, YY + 3);  cout << B;
+	setPos(XX + 24, YY + 3);  cout << B;
+	setPos(XX + 26, YY + 3);  cout << B;
+
+
+	// ======== ROW 4 (??nh ??u) ========
+	setPos(XX + 8, YY + 4); cout << B;
+	setPos(XX + 10, YY + 4); cout << B;
+	setPos(XX + 12, YY + 4); cout << B;
+	setPos(XX + 14, YY + 4); cout << B;
+	setPos(XX + 16, YY + 4); cout << B;
+	setPos(XX + 18, YY + 4); cout << B;
+	setPos(XX + 20, YY + 4); cout << B;
+	setPos(XX + 22, YY + 4); cout << B;
+	setPos(XX + 24, YY + 4); cout << B;
+	setPos(XX + 26, YY + 4); cout << B;
+
+
+	// ======== ROW 5 ========
+	setPos(XX + 8, YY + 5); cout << B;
+	setPos(XX + 10, YY + 5); cout << B;
+	setPos(XX + 12, YY + 5); cout << B;
+	setPos(XX + 14, YY + 5); cout << B;
+	setPos(XX + 16, YY + 5); cout << B;
+	setPos(XX + 18, YY + 5); cout << B;
+	setPos(XX + 20, YY + 5); cout << B;
+	setPos(XX + 22, YY + 5); cout << B;
+	setPos(XX + 24, YY + 5); cout << B;
+	setPos(XX + 26, YY + 5); cout << B;
+
+	// ======== ROW 6 ========
+	setPos(XX + 8, YY + 6); cout << B;
+	setPos(XX + 10, YY + 6); cout << B;
+	setPos(XX + 12, YY + 6); cout << B;
+	setPos(XX + 14, YY + 6); cout << B;
+	setPos(XX + 16, YY + 6); cout << B;
+	setPos(XX + 18, YY + 6); cout << B;
+	setPos(XX + 20, YY + 6); cout << B;
+	setPos(XX + 22, YY + 6); cout << B;
+	setPos(XX + 24, YY + 6); cout << B;
+	setPos(XX + 26, YY + 6); cout << B;
+
+	// ======== ROW 7 ========
+	setPos(XX + 8, YY + 7); cout << B;
+	setPos(XX + 10, YY + 7); cout << B;
+	setPos(XX + 12, YY + 7); cout << B;
+	setPos(XX + 14, YY + 7); cout << B;
+	setPos(XX + 15, YY + 7); cout << B;
+	setPos(XX + 17, YY + 7); cout << B;
+
+	// ======== ROW 8  ========
+	setPos(XX + 8, YY + 8); cout << B;
+	setPos(XX + 10, YY + 8); cout << B;
+	setPos(XX + 12, YY + 8); cout << B;
+	setPos(XX + 14, YY + 8); cout << B;
+	setPos(XX + 16, YY + 8); cout << B;
+	setPos(XX + 18, YY + 8); cout << B;
+	setPos(XX + 20, YY + 8); cout << B;
+	setPos(XX + 21, YY + 8); cout << B;
+	setPos(XX + 23, YY + 8); cout << B;
+
+	// ======== ROW 9  ========
+	setPos(XX - 10, YY + 9); cout << B;
+	setPos(XX + 6, YY + 9); cout << B;
+	setPos(XX + 8, YY + 9); cout << B;
+	setPos(XX + 10, YY + 9); cout << B;
+	setPos(XX + 12, YY + 9); cout << B;
+	setPos(XX + 14, YY + 9); cout << B;
+	setPos(XX + 16, YY + 9); cout << B;
+
+
+	// ======== ROW 10  ========
+	setPos(XX - 10, YY + 10); cout << B;
+	setPos(XX + 4, YY + 10); cout << B;
+	setPos(XX + 6, YY + 10); cout << B;
+	setPos(XX + 8, YY + 10); cout << B;
+	setPos(XX + 10, YY + 10); cout << B;
+	setPos(XX + 12, YY + 10); cout << B;
+	setPos(XX + 14, YY + 10); cout << B;
+	setPos(XX + 16, YY + 10); cout << B;
+
+
+	// ======== ROW 11 ========
+	setPos(XX - 10, YY + 11); cout << B;
+	setPos(XX - 8, YY + 11); cout << B;
+	setPos(XX + 2, YY + 11); cout << B;
+	setPos(XX + 4, YY + 11); cout << B;
+	setPos(XX + 6, YY + 11); cout << B;
+	setPos(XX + 8, YY + 11); cout << B;
+	setPos(XX + 10, YY + 11); cout << B;
+	setPos(XX + 12, YY + 11); cout << B;
+	setPos(XX + 14, YY + 11); cout << B;
+	setPos(XX + 16, YY + 11); cout << B;
+	setPos(XX + 18, YY + 11); cout << B;
+	setPos(XX + 20, YY + 11); cout << B;
+	setPos(XX + 21, YY + 11); cout << B;
+
+	// ======== ROW 12 ========
+	setPos(XX - 10, YY + 12); cout << B;
+	setPos(XX - 8, YY + 12); cout << B;
+	setPos(XX - 6, YY + 12); cout << B;
+	setPos(XX, YY + 12); cout << B;
+	setPos(XX + 2, YY + 12); cout << B;
+	setPos(XX + 4, YY + 12); cout << B;
+	setPos(XX + 6, YY + 12); cout << B;
+	setPos(XX + 8, YY + 12); cout << B;
+	setPos(XX + 10, YY + 12); cout << B;
+	setPos(XX + 12, YY + 12); cout << B;
+	setPos(XX + 14, YY + 12); cout << B;
+	setPos(XX + 16, YY + 12); cout << B;
+	//setPos(XX + 18, YY + 12); cout << B;
+	//setPos(XX + 20, YY + 12); cout << B;
+	setPos(XX + 21, YY + 12); cout << B;
+
+	// ======== ROW 13 ========
+	setPos(XX - 10, YY + 13); cout << B;
+	setPos(XX - 8, YY + 13); cout << B;
+	setPos(XX - 6, YY + 13); cout << B;
+	setPos(XX - 4, YY + 13); cout << B;
+	setPos(XX - 2, YY + 13); cout << B;
+	setPos(XX - 0, YY + 13); cout << B;
+	setPos(XX + 2, YY + 13); cout << B;
+	setPos(XX + 4, YY + 13); cout << B;
+	setPos(XX + 6, YY + 13); cout << B;
+	setPos(XX + 8, YY + 13); cout << B;
+	setPos(XX + 10, YY + 13); cout << B;
+	setPos(XX + 12, YY + 13); cout << B;
+	setPos(XX + 14, YY + 13); cout << B;
+	setPos(XX + 16, YY + 13); cout << B;
+
+	// ======== ROW 14 – chân ph?i ========
+	setPos(XX - 10, YY + 14); cout << B;
+	setPos(XX - 8, YY + 14); cout << B;
+	setPos(XX - 6, YY + 14); cout << B;
+	setPos(XX - 4, YY + 14); cout << B;
+	setPos(XX - 2, YY + 14); cout << B;
+	setPos(XX - 0, YY + 14); cout << B;
+	setPos(XX + 2, YY + 14); cout << B;
+	setPos(XX + 4, YY + 14); cout << B;
+	setPos(XX + 6, YY + 14); cout << B;
+	setPos(XX + 8, YY + 14); cout << B;
+	setPos(XX + 10, YY + 14); cout << B;
+	setPos(XX + 12, YY + 14); cout << B;
+	setPos(XX + 14, YY + 14); cout << B;
+	setPos(XX + 16, YY + 14); cout << B;
+
+	// ======== ROW 15 – chân ph?i dài ========
+	setPos(XX - 8, YY + 15); cout << B;
+	setPos(XX - 6, YY + 15); cout << B;
+	setPos(XX - 4, YY + 15); cout << B;
+	setPos(XX - 2, YY + 15); cout << B;
+	setPos(XX - 0, YY + 15); cout << B;
+	setPos(XX + 2, YY + 15); cout << B;
+	setPos(XX + 4, YY + 15); cout << B;
+	setPos(XX + 6, YY + 15); cout << B;
+	setPos(XX + 8, YY + 15); cout << B;
+	setPos(XX + 10, YY + 15); cout << B;
+	setPos(XX + 12, YY + 15); cout << B;
+	setPos(XX + 14, YY + 15); cout << B;
+
+
+
+	// ======== ROW 16 – ?uôi ========
+	setPos(XX - 6, YY + 16); cout << B;
+	setPos(XX - 4, YY + 16); cout << B;
+	setPos(XX - 2, YY + 16); cout << B;
+	setPos(XX - 0, YY + 16); cout << B;
+	setPos(XX + 2, YY + 16); cout << B;
+	setPos(XX + 4, YY + 16); cout << B;
+	setPos(XX + 6, YY + 16); cout << B;
+	setPos(XX + 8, YY + 16); cout << B;
+	setPos(XX + 10, YY + 16); cout << B;
+	setPos(XX + 12, YY + 16); cout << B;
+
+
+
+	// ======== ROW 17 diem cuoi cua than ========
+	setPos(XX - 4, YY + 17); cout << B;
+	setPos(XX - 2, YY + 17); cout << B;
+	setPos(XX - 0, YY + 17); cout << B;
+	setPos(XX + 2, YY + 17); cout << B;
+	setPos(XX + 4, YY + 17); cout << B;
+	setPos(XX + 6, YY + 17); cout << B;
+	setPos(XX + 8, YY + 17); cout << B;
+	setPos(XX + 10, YY + 17); cout << B;
+
+	// ======== ROW 18 diem cuoi cua than ========
+	setPos(XX - 2, YY + 18); cout << B;
+	setPos(XX - 0, YY + 18); cout << B;
+	setPos(XX + 2, YY + 18); cout << B;
+	setPos(XX + 4, YY + 18); cout << B;
+	setPos(XX + 6, YY + 18); cout << B;
+	setPos(XX + 8, YY + 18); cout << B;
+
+
+	// ======== ROW 19 2 chan ========
+	setPos(XX - 0, YY + 19); cout << B;
+	setPos(XX + 6, YY + 19); cout << B;
+	setPos(XX - 0, YY + 20); cout << B;
+	setPos(XX + 6, YY + 20); cout << B;
+
+
+	// ========= ROW 21 mat dat ========
+	/*for (int i = 0; i < 120; i++) {
+		setPos(XX - 10 + i, YY + 21);
+		cout << B;
+	}*/
+
+}

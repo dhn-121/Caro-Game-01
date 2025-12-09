@@ -2,7 +2,6 @@
 #ifndef _GRAPHIC_H_
 #define _GRAPHIC_H_
 #include <string>
-     
     //==================== Các thông số của bảng (đơn vị: ký tự) ====================
 
     extern const int backgroundcolor; //màu nền trắng
@@ -35,16 +34,17 @@
     int ControlMenu();
 
     extern int TurnData[4];
-    void drawTurnBox(int XX, int YY, int Width, int Height, char player,  char name1[],  char name2[]);
-    void drawScoreBox(int XX, int YY, int Width, int Height, char player);
-    void drawGamePlayScreen(char player, char name1[], char name2[], std::string filename);
+    void drawTurnBox(int XX, int YY, int Width, int Height, char player,  std::string name1,  std::string name2);
+    void drawScoreBox(int XX, int YY, int Width, int Height);
+    void drawGamePlayScreen(char player, std::string name1, std::string name2, std::string filename);
 
     // void drawLoadGameScreen()ı;
 
-    void drawWinStatus(char player, char name1[], char name2[]);
+    void drawWinStatus(char player, std::string name1, std::string name2);
     void drawDrawStatus();
-    int ControlGaming();
-	bool isGameSelected(int idx, bool isSelected);
+    int ControlGaming(int type);
+    int AiControlGaming(int type);
+	bool isGameSelected(int idx, bool isSelected,int type);
 	void updateScore(char player);
     struct GameSettings
     {
@@ -65,5 +65,9 @@
     int ControlGameMode();
     // Function to draw the Game Mode screen
     void drawGameModeScreen(int choice);
+	int ControlDifficulty();
+    char getCharAtCursor(int x, int y);
+    void HighlightPos(int x, int y, int mode);
+    void highlightWinningSequence(int, int, char[15][15]);
 
 #endif

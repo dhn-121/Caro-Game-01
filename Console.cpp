@@ -82,6 +82,8 @@ int isNextMove()
 void Movexy(int &x,int &y,int typemove) {
 	int DXX = CellWidth +1; //do dai nhay X
 	int DXY = CellHeight +1; //do dai nhay Y
+	//Xóa tô đậm ở vị trí cũ trước khi đi
+	HighlightPos(x, y, 0);
 	//di chuyen
 	x += DXX*dxy[typemove - 1].first;
 	y += DXY*dxy[typemove - 1].second;
@@ -90,6 +92,7 @@ void Movexy(int &x,int &y,int typemove) {
 	if (x < xbegin) x = (DXX) * (BOARD_SIZE - 1) + xbegin;
 	if (y >= (DXY) * (BOARD_SIZE)+ybegin) y = ybegin;
 	if (y < ybegin)y = DXY * (BOARD_SIZE - 1) + ybegin;
+	//tô đậm
 	//dat con tro
 	setPos(x, y);
 }

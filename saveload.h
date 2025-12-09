@@ -6,15 +6,16 @@
 #include <fstream>
 #include <string>
 #include <direct.h>// library create directory
-bool saveGame(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[]);
-bool loadGame(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[]);
+bool saveGame();
+bool loadGame();
 void drawSaveLoadScreen(int Width, int Height);
 bool customInput(std::string& result);
 bool checkFileExists(const std::string& filename);
 bool getfilename(std::string& filename);
-void loadproductfile(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[]);
-bool loadactive(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[]);
-void loadGameScreen(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[]);
-void saveGameScreen(std::string& filename, char board[][15], char currentPlayer, int score_X, int score_O, char name1[], char name2[]);
+void loadproductfile();
+bool loadactive();
+void loadGameScreen();
+void loadGameMenu();
+void saveGameScreen();
 #endif
 // progame savedgame caro

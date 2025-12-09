@@ -7,8 +7,8 @@ int main()
 	fixConsoleWindow(ConsoleWidth,ConsoleHeight);
 	// 2. Định nghĩa các biến cần thiết cho game
 	char default_player = 'X';
-	char name1[] = "Player 1 (X)";
-	char name2[] = "Player 2 (O)";
+	name1 = "Player 1 (X)";
+	name2= "Player 2 (O)";
 	// char min[] = "05";
 	// char sec[] = "00";
 	std::string filename = "caro_save_01.txt";
@@ -18,8 +18,9 @@ int main()
 	// int y = ybegin;
 	// Vòng lặp chính của chương trình để quay lại Menu
 	std::string load_filename;
-	int score_X = 0;
-	int score_O = 0;
+	score_X = 0;
+	score_O = 0;
+	difficulty = 4;
 	drawLoadingScreen();
 	do
 	{
@@ -39,24 +40,44 @@ int main()
 
 			if (mode == 0) // PvP
 			{
-				GamePlay(default_player, name1, name2, filename, 0);
+				difficulty = 4;
+				score_O = 0;
+				score_X = 0;
+				filename = "caro_save_01.txt";
+				currentPlayer = player_X;
+				name1 = "Player 1 (X)";
+				name2 = "Player 2 (O)";
+				GamePlay(0);
 			}
-			else if (mode == 1) // PvE
+			else if (mode == 1) // PvE Mode
 			{
-				// Call the AI Game Play function
-				AiGamePlay(default_player, name1, "COMPUTER", filename, 0);
+				//int diff = ControlDifficulty();
+				int diff = ControlDifficulty();
+				// Nếu chọn Easy(0), Normal(1), hoặc Hard(2) thì vào game
+				// Nếu chọn Back(3) thì không làm gì (tự quay lại vòng lặp menu)
+				score_O = 0;
+				score_X = 0;
+				filename = "caro_save_01.txt";
+				currentPlayer = player_X;
+				name1 = "Player (X)";
+				name2 = "Computer (O)";
+				if (diff != 3)
+				{
+					difficulty = diff;
+					AiGamePlay(0);
+				}
 			}
 		}
 		break;
 
 		case 2: // Saved Files
 			system("cls");
-			if (loadactive(load_filename, board, default_player, score_X, score_O,name1,name2))
+			if (loadactive())
 			{
 				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 3);
 				cout << "Game loaded successfully! Returning to game...";
 				Sleep(2000);
-				GamePlay(default_player, name1, name2, load_filename, 1);
+				GamePlay(1);
 			}
 			//cin.ignore();
 			//cin.get();

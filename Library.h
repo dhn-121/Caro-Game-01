@@ -2,6 +2,8 @@
 #pragma once
 #ifndef _LIBRARY_H_
 #define _LIBRARY_H_
+
+#define NOMINMAX
 // Include all necessary headers
 #include "board.h"
 #include "Console.h"
@@ -26,7 +28,19 @@
 #include <cstdlib>
 #include <vector>
 #include <mmsystem.h>
-#include <cstring>
 #include <algorithm>
+#include <climits>
+#include <fstream>
+#include <direct.h>
+#include <cstring>
+#include <sstream>
+#include <iomanip>
+#include <random>
+#include <map>
+#include <functional>
+#include <stack>
+#include <queue>
+#include <set>
+#include <cmath>
 
 #endif
