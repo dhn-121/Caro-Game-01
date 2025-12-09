@@ -44,7 +44,7 @@
     void drawWinStatus(char player, char name1[], char name2[]);
     void drawDrawStatus();
     int ControlGaming();
-	int AIControlGaming();
+    int AiControlGaming(char default_player, char name1[], char name2[], int difficulty);
 	bool isGameSelected(int idx, bool isSelected);
 	void updateScore(char player);
     struct GameSettings

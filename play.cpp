@@ -257,7 +257,7 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 	cin.ignore();
 	if (type == -1)
 	{
-		ControlGaming();
+		AiControlGaming(default_player, name1, name2, difficulty);
 	}
 	else if (type == 6)
 	{
@@ -267,7 +267,7 @@ void AiGamePlay(char default_player, char name1[], char name2[], std::string fil
 	{
 		saveGameScreen(filename, board, currentPlayer, score_X, score_O, name1, name2);
 	}
-	ControlGaming();
+	AiControlGaming(default_player, name1, name2, difficulty);
 	stopGameplayMusic();
 	playBackgroundMusic();
 }
