@@ -701,6 +701,155 @@ int AiControlGaming(int type)
         }
     }
 }
+
+int AiControlGaming(char default_player, char name1[], char name2[], int difficulty)
+{
+    ShowConsoleCursor(false);
+    // Hiển thị tiêu đề và điểm số
+    system("cls");
+    setColor(backgroundcolor, fontcolor);
+
+    // Xác định tên người chơi và AI dựa trên default_player
+    char player_char = default_player;
+    char ai_char = (default_player == 'X') ? 'O' : 'X';
+
+    string player_name = name1;  // Người chơi
+    string ai_name = name2;      // AI
+
+    int player_score, ai_score;
+    if (default_player == 'X') {
+        player_score = score_X;
+        ai_score = score_O;
+    }
+    else {
+        player_score = score_O;
+        ai_score = score_X;
+    }
+
+    // Tiêu đề GAME OVER
+    std::string title = "GAME OVER";
+    int titleX = ConsoleWidth / 2 - title.length() / 2;
+    int titleY = ConsoleHeight * 30 / 100;
+    setPos(titleX, titleY);
+    cout << title;
+
+    // Hiển thị tên người chơi và AI với điểm số
+    std::string score_display = player_name + " (" + player_char + "): " +
+        std::to_string(player_score) + " - " +
+        ai_name + " (" + ai_char + "): " +
+        std::to_string(ai_score);
+    int scoreX = ConsoleWidth / 2 - score_display.length() / 2;
+    int scoreY = titleY + 2;
+    setPos(scoreX, scoreY);
+    cout << score_display;
+
+    // Hiển thị người chiến thắng (nếu có)
+    if (player_score > ai_score) {
+        std::string winner_msg = player_name + " WINS THE MATCH!";
+        int winnerX = ConsoleWidth / 2 - winner_msg.length() / 2;
+        setPos(winnerX, scoreY + 1);
+        setColor(14, 0); // Màu vàng
+        cout << winner_msg;
+        setColor(backgroundcolor, fontcolor);
+    }
+    else if (ai_score > player_score) {
+        std::string winner_msg = ai_name + " WINS THE MATCH!";
+        int winnerX = ConsoleWidth / 2 - winner_msg.length() / 2;
+        setPos(winnerX, scoreY + 1);
+        setColor(12, 0); // Màu đỏ (để phân biệt với người chơi)
+        cout << winner_msg;
+        setColor(backgroundcolor, fontcolor);
+    }
+    else {
+        std::string draw_msg = "MATCH ENDS IN A DRAW!";
+        int drawX = ConsoleWidth / 2 - draw_msg.length() / 2;
+        setPos(drawX, scoreY + 1);
+        setColor(11, 0); // Màu xanh nhạt
+        cout << draw_msg;
+        setColor(backgroundcolor, fontcolor);
+    }
+
+    // Hiển thị độ khó AI
+    std::string difficulty_msg = "AI Difficulty: ";
+    switch (difficulty) {
+    case 0: difficulty_msg += "EASY"; break;
+    case 1: difficulty_msg += "NORMAL"; break;
+    case 2: difficulty_msg += "HARD"; break;
+    default: difficulty_msg += "UNKNOWN"; break;
+    }
+    int diffX = ConsoleWidth / 2 - difficulty_msg.length() / 2;
+    setPos(diffX, scoreY + 3);
+    cout << difficulty_msg;
+
+    int present_choice = 0; // Bắt đầu ở AGAIN
+
+    // Vẽ tất cả các nút (ban đầu không được chọn)
+    for (int i = 0; i < 2; i++) {
+        isGameSelected(i, (i == present_choice));
+    }
+
+    int key;
+    while (true) {
+        key = _getch();
+        int past_choice = present_choice;
+
+        // Xử lý phím điều hướng (trái/phải)
+        if (key == 0 || key == 224) {
+            key = _getch();
+            switch (key) {
+            case 75: // Mũi tên trái
+                present_choice = (present_choice - 1 + 2) % 2;
+                playMoveSound();
+                break;
+            case 77: // Mũi tên phải
+                present_choice = (present_choice + 1) % 2;
+                playMoveSound();
+                break;
+            default:
+                continue;
+            }
+        }
+        else {
+            switch (toupper(key)) {
+            case 'A': // Phím A (trái)
+                present_choice = (present_choice - 1 + 2) % 2;
+                playMoveSound();
+                break;
+            case 'D': // Phím D (phải)
+                present_choice = (present_choice + 1) % 2;
+                playMoveSound();
+                break;
+            case 13: // Enter
+                playClickSound();
+                if (present_choice == 0) // PLAY AGAIN
+                {
+                    resetScores();
+                    AiGamePlay(default_player, name1, name2, "caro_save_ai.txt", 0, difficulty);
+                    return 1; // Trả về 1 để báo hiệu chơi lại
+                }
+                else if (present_choice == 1) // EXIT
+                {
+                    resetScores();
+                    return 0; // Trả về 0 để báo hiệu thoát
+                }
+                break;
+            case 27: // ESC
+                resetScores();
+                playClickSound();
+                return 0;
+            default:
+                continue;
+            }
+        }
+        // Nếu có thay đổi lựa chọn, cập nhật giao diện
+        if (present_choice != past_choice) {
+            // Bỏ chọn nút cũ
+            isGameSelected(past_choice, false);
+            // Chọn nút mới
+            isGameSelected(present_choice, true);
+        }
+    }
+}
 // LOAD GAME SCREEN
 
 // void drawLoadGameScreen()
