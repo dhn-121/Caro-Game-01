@@ -1132,47 +1132,64 @@ void HighlightPos(int x, int y, int mode) {
 void highlightWinningSequence(int x, int y, char a[15][15])
 {
     char cur = a[x][y];
-    int dmove[4][2] = { {0,1}, {1,0}, {1,1}, {1,-1} }; // ngang, dọc, chéo phải-xuống, chéo trái-xuống
-    for (auto dir : dmove)
+    if (cur == '-') return;
+
+    // Mảng 2 chiều các hướng đi
+    int dmove[4][2] = { {0,1}, {1,0}, {1,1}, {1,-1} };
+
+    for (int k = 0; k < 4; k++)
     {
+        // Truy cập phần tử bằng chỉ số k
+        int dx = dmove[k][0];
+        int dy = dmove[k][1];
+
         int count = 1;
         std::vector<std::pair<int, int>> winningPositions;
-        winningPositions.push_back({ x, y });
+        winningPositions.push_back(std::make_pair(x, y));
+
+        // Duyệt hướng dương
         for (int step = 1; step < 5; step++)
         {
-            int nx = x + dir[0] * step;
-            int ny = y + dir[1] * step;
+            int nx = x + dx * step;
+            int ny = y + dy * step;
             if (nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && a[nx][ny] == cur)
             {
                 count++;
-                winningPositions.push_back({ nx, ny });
+                winningPositions.push_back(std::make_pair(nx, ny));
             }
-            else
-                break;
+            else break;
         }
+
+        // Duyệt hướng âm
         for (int step = 1; step < 5; step++)
         {
-            int nx = x - dir[0] * step;
-            int ny = y - dir[1] * step;
+            int nx = x - dx * step;
+            int ny = y - dy * step;
             if (nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && a[nx][ny] == cur)
             {
                 count++;
-                winningPositions.push_back({ nx, ny });
+                winningPositions.push_back(std::make_pair(nx, ny));
             }
-            else
-                break;
+            else break;
         }
+
+        // Nếu đủ 5 quân thì tô màu
         if (count >= 5)
         {
-            // Tô đậm các vị trí chiến thắng
-            for (auto pos : winningPositions)
+            for (size_t p = 0; p < winningPositions.size(); p++)
             {
+                std::pair<int, int> pos = winningPositions[p];
+
                 int row, col;
                 getxy(row, col, pos.first, pos.second);
                 setPos(row, col);
-                setColor(15, 4); // Màu vàng nền đỏ
-                cout << currentPlayer;
+
+                // Tô màu: Nền Đỏ (4), Chữ Trắng (15)
+                setColor(15, 12);
+                std::cout << cur;
             }
+            // Trả lại màu mặc định sau khi tô xong
+            setColor(backgroundcolor, fontcolor);
             return;
         }
     }
