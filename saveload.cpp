@@ -1,4 +1,4 @@
-#include"Library.h"
+﻿#include"Library.h"
 
 using namespace std;
 
@@ -63,8 +63,9 @@ bool loadGame()
 void drawSaveLoadScreen(int Width, int Height)
 {
 	system("cls");
-	setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 - 2);
-	cout << "Enter the filename to load/save ";
+	//setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 - 2);
+	setPos((ConsoleWidth - 20) / 2 - 10, (ConsoleHeight) / 2 - 4);
+	cout << "Enter filename (without .txt extension):";
 	setColor(backgroundcolor, fontcolor);
 	int boxWidth = Width - 20;
 	int boxHeight = 3;
@@ -80,78 +81,87 @@ bool checkFileExists(std::string& filename)
 	ifstream inFile(fullPath.c_str());
 	return inFile.good();
 }
+// --- HÀM PHỤ TRỢ: Chuyển wstring (Unicode) sang string (UTF-8) ---
+std::string WStringToString(const std::wstring & wstr)
+{
+	if (wstr.empty()) return std::string();
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+	std::string strTo(size_needed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+	return strTo;
+}
+
+// --- HÀM CUSTOM INPUT (Hỗ trợ tiếng Việt) ---
 bool customInput(string& result) {
 	ShowConsoleCursor(true);
-	char ch;
-	result = ""; 
-	int index = 0; // positions in the string
 
-	//save starting cursor position
+	wstring wResult = L"";
+	wint_t ch;
+	int index = 0;
+
 	COORD startPos = getCursorPos();
 
 	while (true) {
-		ch = _getch(); // get character without echoing
-		playMoveSound();
-		// escape key to cancel 
-		if (ch == 27) {
-			return false; 
-		}
+		ch = _getwch();
 
-		// enter key to finish input
-		else if (ch == 13) {
-			return true;
-		}
-
-		// 3. backspace key to delete
-		else if (ch == 8) {
-			if (index > 0 && result.length() > 0) {
-				// delete character before index
-				result.erase(index - 1, 1);
-				index--;
-
-				// update display
-				// step a: clear and reprint
-				setPos(startPos.X, startPos.Y);
-				cout << result << " "; // print extra space to clear last char
-
-				// step b: reposition cursor
-				setPos(startPos.X + index, startPos.Y);
-			}
-		}
-
-		// arrow keys for left/right movement
-		// and other special keys
-		else if (ch == -32 || ch == 0 || ch == 224) {
-			ch = _getch(); 
+		// 1. Xử lý phím chức năng (Mũi tên, Home, End...)
+		if (ch == 0 || (ch == 0xE0 && _kbhit())) {
+			ch = _getwch(); // Đọc mã phím thực sự phía sau
+			playMoveSound();
 
 			switch (ch) {
-			case 75: // arrow left
+			case 75: // Left
 				if (index > 0) {
 					index--;
 					setPos(startPos.X + index, startPos.Y);
 				}
 				break;
-			case 77: // arrow right
-				if (index < result.length()) {
+			case 77: // Right
+				if (index < wResult.length()) {
 					index++;
 					setPos(startPos.X + index, startPos.Y);
 				}
 				break;
 			}
 		}
+		// 2. Xử lý ESC và ENTER
+		else if (ch == 27) { // ESC
+			result = "";
+			return false;
+		}
+		else if (ch == 13) { // Enter
+			playClickSound();
+			result = WStringToString(wResult);
+			return true;
+		}
+		// 3. Xử lý Backspace
+		else if (ch == 8) {
+			if (index > 0 && wResult.length() > 0) {
+				// Không cần play sound ở đây vì Unikey tự gửi backspace rất nhanh, 
+				// nghe tiếng sẽ bị rè.
 
-		// printable characters
-		else if (isprint(ch)) {
-			// insert character at current index
-			result.insert(index, 1, ch);
-			index++;
+				wResult.erase(index - 1, 1);
+				index--;
 
-			// print updated string
-			setPos(startPos.X, startPos.Y);
-			cout << result;
+				// Vẽ lại chuỗi
+				setPos(startPos.X, startPos.Y);
+				// In chuỗi mới + khoảng trắng để xóa ký tự thừa cũ
+				cout << WStringToString(wResult) << " ";
+				setPos(startPos.X + index, startPos.Y);
+			}
+		}
+		// 4. Xử lý ký tự văn bản (Bao gồm cả tiếng Việt 0xE0)
+		else {
+			// Chỉ nhận các ký tự in được (>= 32)
+			if (ch >= 32) {
+				playMoveSound();
+				wResult.insert(index, 1, (wchar_t)ch);
+				index++;
 
-			// move cursor back to correct position
-			setPos(startPos.X + index, startPos.Y);
+				setPos(startPos.X, startPos.Y);
+				cout << WStringToString(wResult);
+				setPos(startPos.X + index, startPos.Y);
+			}
 		}
 	}
 }

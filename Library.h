@@ -44,5 +44,6 @@
 #include <cmath>
 #include <fcntl.h> 
 #include <io.h>    
+#include <cwchar>
 
 #endif
