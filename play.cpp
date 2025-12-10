@@ -124,6 +124,7 @@ void GamePlay(int typegame)
 			}
 			char next_player = check_XO();
 			drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
+			setPos(x, y);
 		}
 		else Movexy(x, y, type);
 	}
@@ -264,6 +265,7 @@ void AiGamePlay(int typegame)
 			}
 			char next_player = check_XO();
 			drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
+			setPos(x, y);
 		}
 		else
 		{
@@ -297,6 +299,7 @@ void AiGamePlay(int typegame)
 				}
 				char next_player = check_XO();
 				drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
+				setPos(x, y);
 			}
 			else Movexy(x, y, type);
 		}
