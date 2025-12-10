@@ -8,7 +8,7 @@ bool saveGame()
 	_mkdir("save");
 
 	// add path "save/" to filename
-	string fullPath = "save/" + filename;
+	string fullPath = "save/" + filename+".txt";
 
 	ofstream outFile(fullPath.c_str()); // .c_str() to convert string to const char*
 	setPos((ConsoleWidth) / 2-20, (ConsoleHeight) / 2 + 3);
@@ -37,7 +37,7 @@ bool saveGame()
 bool loadGame()
 {
 	// when loading, add path "save/" to filename
-	string fullPath = "save/" + filename;
+	string fullPath = "save/" + filename + ".txt";
 
 	ifstream inFile(fullPath.c_str());
 	if (!inFile) {

@@ -87,52 +87,58 @@ void fixConsoleWindow(int WIDTH, int HEIGHT)
 
     // Ẩn thanh cuộn
     ShowScrollBar(consoleWindow, SB_BOTH, FALSE);
+    SetConsoleOutputCP(65001); // Output UTF-8
+    SetConsoleCP(65001);       // Input UTF-8
 }
 
 
 struct STATUS
 {
-    int Top_Left = 218;
-    int Top_Right = 191;
-    int Bot_Left = 192;
-    int Bot_Right = 217;
-    int Hori_Bar = 196;
-    int Verti_Bar = 179;
-    int Blank = 255;
+    const char* Top_Left = u8"\u250C"; // ┌
+    const char* Top_Right = u8"\u2510"; // ┐
+    const char* Bot_Left = u8"\u2514"; // └
+    const char* Bot_Right = u8"\u2518"; // ┘
+    const char* Hori_Bar = u8"\u2500"; // ─
+    const char* Verti_Bar = u8"\u2502"; // │
 } symbol;
 
 void drawBox(int x, int y, int w, int h, std::string text)
 {
     setPos(x, y);
 
-    cout << char(symbol.Top_Left);
+    // 1. Vẽ cạnh trên
+    cout << symbol.Top_Left;
     for (int i = 0; i < w - 2; i++)
-        cout << char(symbol.Hori_Bar);
-    cout << char(symbol.Top_Right);
+        cout << symbol.Hori_Bar;
+    cout << symbol.Top_Right;
 
-    for (int i = 1; i < h - 1; i++) //in các | ở giữa (không tính) 2 bên rìa
+    // 2. Vẽ hai cạnh bên
+    for (int i = 1; i < h - 1; i++)
     {
         setPos(x, y + i);
-        cout << char(symbol.Verti_Bar);
+        cout << symbol.Verti_Bar;
         setPos(x + w - 1, y + i);
-        cout << char(symbol.Verti_Bar);
+        cout << symbol.Verti_Bar;
     }
 
+    // 3. Vẽ cạnh dưới
     setPos(x, y + h - 1);
-    cout << char(symbol.Bot_Left);
+    cout << symbol.Bot_Left;
     for (int i = 0; i < w - 2; i++)
-        cout << char(symbol.Hori_Bar);
-    cout << char(symbol.Bot_Right);
+        cout << symbol.Hori_Bar;
+    cout << symbol.Bot_Right;
 
-    //Văn bản (nếu có văn bản thì nó sẽ được căn giữ cho đẹp)
+    // 4. Vẽ chữ (Text) ở giữa
     if (!text.empty())
     {
         int txtlength = text.length();
-        int blank_width = w - 2; //phần trống theo chiều ngang
+        int blank_width = w - 2;
         int center = (blank_width - txtlength) / 2;
+        if (center < 0) center = 0;
+
         int textX = x + 1 + center;
 
-        int blank_height = h - 2; //phần trống theo chiều dọc
+        int blank_height = h - 2;
         int middle = (blank_height - 1) / 2;
         int textY = y + 1 + middle;
 

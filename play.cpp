@@ -7,7 +7,6 @@ string name2;
 std::string filename;
 void resetGameVariables()
 {
-	difficulty = 0;
 	currentPlayer = 'X';
 	name1 = "Player 1";
 	name2 = "Player 2";
@@ -277,6 +276,8 @@ void AiGamePlay(int typegame)
 				getij(i, j, x, y);
 				if (check_iswin(i, j, board))
 				{
+					highlightWinningSequence(i, j, board);
+					Sleep(3000);
 					updateScore(currentPlayer);
 					system("cls");
 					drawWinStatus(currentPlayer, name1, name2);

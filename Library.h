@@ -42,5 +42,7 @@
 #include <queue>
 #include <set>
 #include <cmath>
+#include <fcntl.h> 
+#include <io.h>    
 
 #endif

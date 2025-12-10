@@ -1,575 +1,575 @@
-#include "Library.h"
+﻿#include "Library.h"
 
 using namespace std;
 
 void drawA(int XX, int YY) { // 6 * 8
 	setPos(XX + 1, YY);
 	setColor(0, 0); cout << "     ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "       ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << "  ";
+	setColor(co_theme); cout << u8"║" << "  ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 5);
-	cout << char(200) << char(205) << char(188) << "  " << char(200) << char(205) << char(188);
+	cout << u8"╚" << u8"═" << u8"╝" << "  " << u8"╚" << u8"═" << u8"╝";
 }
 
 void drawB(int XX, int YY) { // 6 * 8
 	setPos(XX, YY);
 	setColor(0, 0); for (int i = 0; i < 6; ++i) cout << " ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); for (int i = 0; i < 6; ++i) cout << " ";
-	setColor(co_theme); cout << char(201) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"╝";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); for (int i = 0; i < 6; ++i) cout << " ";
-	setColor(co_theme); cout << char(201) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"╝";
 
 	setPos(XX, YY + 5);
-	cout << char(200);
-	for (int i = 0; i < 5; ++i) cout << char(205);
-	cout << char(188);
+	cout << u8"╚";
+	for (int i = 0; i < 5; ++i) cout << u8"═";
+	cout << u8"╝";
 }
 
 void drawC(int XX, int YY) { // 6 * 8
 	setPos(XX + 1, YY);
 	setColor(0, 0); cout << "      ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0);  cout << "  ";
 	setColor(co_theme);
-	cout << char(201);
-	for (int i = 1; i <= 4; ++i) cout << char(205);
-	cout << char(188);
+	cout << u8"╔";
+	for (int i = 1; i <= 4; ++i) cout << u8"═";
+	cout << u8"╝";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0);  cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0);  cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 4);
-	cout << char(200);
+	cout << u8"╚";
 	setColor(0, 0);  cout << "      ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX + 1, YY + 5);
-	cout << char(200);
-	for (int i = 1; i <= 5; ++i) cout << char(205);
-	cout << char(188);
+	cout << u8"╚";
+	for (int i = 1; i <= 5; ++i) cout << u8"═";
+	cout << u8"╝";
 }
 
 void drawO(int XX, int YY, int co_txt = 0) { // 6 * 9
 	setPos(XX + 1, YY);
 	setColor(co_txt, 0); cout << "      ";
-	setColor(15, co_txt); cout << char(187);
+	setColor(15, co_txt); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(201) << char(205) << char(205) << char(205);
+	setColor(15, co_txt); cout << u8"╔" << u8"═" << u8"═" << u8"═";
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(187);
+	setColor(15, co_txt); cout << u8"╗";
 
 	setPos(XX, YY + 2);
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(186) << "   ";
+	setColor(15, co_txt); cout << u8"║" << "   ";
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(186);
+	setColor(15, co_txt); cout << u8"║";
 
 	setPos(XX, YY + 3);
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(186) << "   ";
+	setColor(15, co_txt); cout << u8"║" << "   ";
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(186);
+	setColor(15, co_txt); cout << u8"║";
 
 	setPos(XX, YY + 4);
-	cout << char(200);
+	cout << u8"╚";
 	setColor(co_txt, 0); cout << "      ";
-	setColor(15, co_txt); cout << char(201) << char(188);
+	setColor(15, co_txt); cout << u8"╔" << u8"╝";
 
 	setPos(XX + 1, YY + 5);
-	cout << char(200);
-	for (int i = 1; i <= 5; ++i) cout << char(205);
-	cout << char(188);
+	cout << u8"╚";
+	for (int i = 1; i <= 5; ++i) cout << u8"═";
+	cout << u8"╝";
 	setColor(co_theme);
 }
 
 void drawR(int XX, int YY) { // 6 * 8
 	setPos(XX, YY);
 	setColor(0, 0); cout << "      ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "      ";
-	setColor(co_theme); cout << char(201) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"╝";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << "  ";
+	setColor(co_theme); cout << u8"║" << "  ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 5);
-	cout << char(200) << char(205) << char(188) << "  " << char(200) << char(205) << char(188);
+	cout << u8"╚" << u8"═" << u8"╝" << "  " << u8"╚" << u8"═" << u8"╝";
 }
 
 void drawU(int XX, int YY) { // 6 * 9
 	setPos(XX, YY);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187) << "   ";
+	setColor(co_theme); cout << u8"╗" << "   ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << "   ";
+	setColor(co_theme); cout << u8"║" << "   ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << "   ";
+	setColor(co_theme); cout << u8"║" << "   ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << "   ";
+	setColor(co_theme); cout << u8"║" << "   ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 4);
-	cout << char(200);
+	cout << u8"╚";
 	setColor(0, 0); cout << "      ";
-	setColor(co_theme); cout << char(201) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"╝";
 
 	setPos(XX + 1, YY + 5);
-	cout << char(200);
-	for (int i = 1; i <= 5; ++i) cout << char(205);
-	cout << char(188);
+	cout << u8"╚";
+	for (int i = 1; i <= 5; ++i) cout << u8"═";
+	cout << u8"╝";
 }
 
 void drawT(int XX, int YY) { // 6 * 9
 	setPos(XX, YY);
 	setColor(0, 0);  cout << "        ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
-	cout << char(200) << char(205) << char(205);
+	cout << u8"╚" << u8"═" << u8"═";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme);  cout << char(201) << char(205) << char(205) << char(188);
+	setColor(co_theme);  cout << u8"╔" << u8"═" << u8"═" << u8"╝";
 
 	for (int i = 0; i < 3; ++i) {
 		setPos(XX + 3, YY + 2 + i);
 		setColor(0, 0); cout << "  ";
-		setColor(co_theme); cout << char(186);
+		setColor(co_theme); cout << u8"║";
 	}
 
 	setPos(XX + 3, YY + 5);
-	cout << char(200) << char(205) << char(188);
+	cout << u8"╚" << u8"═" << u8"╝";
 }
 
 void drawL(int XX, int YY) {  // 6 * 8
 	setPos(XX, YY);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	for (int i = 1; i <= 3; ++i) {
 		setPos(XX, YY + i);
 		setColor(0, 0); cout << "  ";
-		setColor(co_theme); cout << char(186);
+		setColor(co_theme); cout << u8"║";
 	}
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); cout << "       ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 5);
-	cout << char(200);
-	for (int i = 0; i < 6; ++i) cout << char(205);
-	cout << char(188);
+	cout << u8"╚";
+	for (int i = 0; i < 6; ++i) cout << u8"═";
+	cout << u8"╝";
 }
 
 void drawD(int XX, int YY) {  // 6 * 8
 	setPos(XX, YY);
 	setColor(0, 0); cout << "      ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	for (int i = 2; i <= 3; ++i) {
 		setPos(XX, YY + i);
 		setColor(0, 0); cout << "  ";
-		setColor(co_theme); cout << char(186) << "  ";
+		setColor(co_theme); cout << u8"║" << "  ";
 		setColor(0, 0); cout << "  ";
-		setColor(co_theme); cout << char(186);
+		setColor(co_theme); cout << u8"║";
 	}
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); cout << "      ";
-	setColor(co_theme); cout << char(201) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"╝";
 
 	setPos(XX, YY + 5);
-	cout << char(200);
-	for (int i = 0; i < 5; ++i) cout << char(205);
-	cout << char(188);
+	cout << u8"╚";
+	for (int i = 0; i < 5; ++i) cout << u8"═";
+	cout << u8"╝";
 }
 
 void drawG(int XX, int YY) {  // 6 * 9
 	setPos(XX + 1, YY);
 	setColor(0, 0); cout << "      ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201);
-	for (int i = 0; i < 4; ++i) cout << char(205);
-	cout << char(188);
+	setColor(co_theme); cout << u8"╔";
+	for (int i = 0; i < 4; ++i) cout << u8"═";
+	cout << u8"╝";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << "  ";
+	setColor(co_theme); cout << u8"║" << "  ";
 	setColor(0, 0); cout << "   ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << "   ";
+	setColor(co_theme); cout << u8"║" << "   ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 4);
-	cout << char(200);
+	cout << u8"╚";
 	setColor(0, 0); cout << "      ";
-	setColor(co_theme); cout << char(201) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"╝";
 
 	setPos(XX + 1, YY + 5);
-	cout << char(200);
-	for (int i = 0; i < 5; ++i) cout << char(205);
-	cout << char(188);
+	cout << u8"╚";
+	for (int i = 0; i < 5; ++i) cout << u8"═";
+	cout << u8"╝";
 }
 
 void drawM(int XX, int YY) {  // 6 * 11
 	setPos(XX, YY);
 	setColor(0, 0); cout << "   ";
-	setColor(co_theme); cout << char(187) << "   ";
+	setColor(co_theme); cout << u8"╗" << "   ";
 	setColor(0, 0); cout << "   ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "    ";
-	setColor(co_theme); cout << char(187) << " ";
+	setColor(co_theme); cout << u8"╗" << " ";
 	setColor(0, 0); cout << "    ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201);
+	setColor(co_theme); cout << u8"╔";
 	setColor(0, 0); cout << "    ";
-	setColor(co_theme); cout << char(201);
+	setColor(co_theme); cout << u8"╔";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << char(200);
+	setColor(co_theme); cout << u8"║" << u8"╚";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"╝";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << " " << char(200) << char(205) << char(188) << " ";
+	setColor(co_theme); cout << u8"║" << " " << u8"╚" << u8"═" << u8"╝" << " ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 5);
-	cout << char(200) << char(205) << char(188) << "     " << char(200) << char(205) << char(188);
+	cout << u8"╚" << u8"═" << u8"╝" << "     " << u8"╚" << u8"═" << u8"╝";
 }
 
 void drawE(int XX, int YY) {  // 6 * 8
 	setPos(XX, YY);
 	setColor(0, 0); cout << "       ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201);
-	for (int i = 0; i < 4; ++i) cout << char(205);
-	cout << char(188);
+	setColor(co_theme); cout << u8"╔";
+	for (int i = 0; i < 4; ++i) cout << u8"═";
+	cout << u8"╝";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "     ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═" << u8"╝";
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); cout << "       ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 5);
-	cout << char(200);
-	for (int i = 0; i < 6; ++i) cout << char(205);
-	cout << char(188);
+	cout << u8"╚";
+	for (int i = 0; i < 6; ++i) cout << u8"═";
+	cout << u8"╝";
 }
 
 void drawN(int XX, int YY) {  // 6 * 10
 	setPos(XX, YY);
 	setColor(0, 0); cout << "   ";
-	setColor(co_theme); cout << char(187) << "   ";
+	setColor(co_theme); cout << u8"╗" << "   ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "    ";
-	setColor(co_theme); cout << char(187) << "  ";
+	setColor(co_theme); cout << u8"╗" << "  ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201);
+	setColor(co_theme); cout << u8"╔";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187) << " ";
+	setColor(co_theme); cout << u8"╗" << " ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << char(200);
+	setColor(co_theme); cout << u8"║" << u8"╚";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << " " << char(200);
+	setColor(co_theme); cout << u8"║" << " " << u8"╚";
 	setColor(0, 0); cout << "    ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 5);
-	cout << char(200) << char(205) << char(188) << "  " << char(200);
-	for (int i = 0; i < 3; ++i) cout << char(205);
-	cout << char(188);
+	cout << u8"╚" << u8"═" << u8"╝" << "  " << u8"╚";
+	for (int i = 0; i < 3; ++i) cout << u8"═";
+	cout << u8"╝";
 }
 
 void drawW(int XX, int YY) {  // 6 * 10
 	setPos(XX, YY);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187) << "    ";
+	setColor(co_theme); cout << u8"╗" << "    ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << "    ";
+	setColor(co_theme); cout << u8"║" << "    ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << " ";
+	setColor(co_theme); cout << u8"║" << " ";
 	setColor(0, 0); cout << " ";
-	setColor(co_theme); cout << char(187) << " ";
+	setColor(co_theme); cout << u8"╗" << " ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 	setColor(0, 0); cout << "   ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 4);
-	setColor(co_theme); cout << char(200);
+	setColor(co_theme); cout << u8"╚";
 	setColor(0, 0); cout << "   ";
-	setColor(co_theme); cout << char(201);
+	setColor(co_theme); cout << u8"╔";
 	setColor(0, 0); cout << "   ";
-	setColor(co_theme); cout << char(201) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"╝";
 
 	setPos(XX + 1, YY + 5);
-	cout << char(200) << char(205) << char(205) << char(188) << char(200) << char(205) << char(205) << char(188);
+	cout << u8"╚" << u8"═" << u8"═" << u8"╝" << u8"╚" << u8"═" << u8"═" << u8"╝";
 }
 
 void drawH(int XX, int YY) {  // 6 * 8
 	setPos(XX, YY);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187) << "  ";
+	setColor(co_theme); cout << u8"╗" << "  ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << "  ";
+	setColor(co_theme); cout << u8"║" << "  ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "       ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186) << "  ";
+	setColor(co_theme); cout << u8"║" << "  ";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 5);
-	cout << char(200) << char(205) << char(188) << "  " << char(200) << char(205) << char(188);
+	cout << u8"╚" << u8"═" << u8"╝" << "  " << u8"╚" << u8"═" << u8"╝";
 }
 
 void drawP(int XX, int YY) {  // 6 * 8
 	setPos(XX, YY);
 	setColor(0, 0); cout << "      ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═";
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "      ";
-	setColor(co_theme); cout << char(201) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"╝";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(201) << char(205) << char(205) << char(205) << char(188);
+	setColor(co_theme); cout << u8"╔" << u8"═" << u8"═" << u8"═" << u8"╝";
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 5);
-	cout << char(200) << char(205) << char(188);
+	cout << u8"╚" << u8"═" << u8"╝";
 }
 
 void drawX(int XX, int YY, int co_txt = 0) {  // 6 * 8
 	setPos(XX, YY);
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(187) << "  ";
+	setColor(15, co_txt); cout << u8"╗" << "  ";
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(187);
+	setColor(15, co_txt); cout << u8"╗";
 
 	setPos(XX, YY + 1);
-	cout << char(200);
+	cout << u8"╚";
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(187);
+	setColor(15, co_txt); cout << u8"╗";
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(201) << char(188);
+	setColor(15, co_txt); cout << u8"╔" << u8"╝";
 
 	setPos(XX, YY + 2);
-	cout << " " << char(200);
+	cout << " " << u8"╚";
 	setColor(co_txt, 0); cout << "   ";
-	setColor(15, co_txt); cout << char(201) << char(188);
+	setColor(15, co_txt); cout << u8"╔" << u8"╝";
 
 	setPos(XX, YY + 3);
 	cout << " ";
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(201);
+	setColor(15, co_txt); cout << u8"╔";
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(187);
+	setColor(15, co_txt); cout << u8"╗";
 
 	setPos(XX, YY + 4);
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(201) << char(188) << " ";
+	setColor(15, co_txt); cout << u8"╔" << u8"╝" << " ";
 	setColor(co_txt, 0); cout << "  ";
-	setColor(15, co_txt); cout << char(187);
+	setColor(15, co_txt); cout << u8"╗";
 
 	setPos(XX, YY + 5);
-	cout << char(200) << char(205) << char(188) << "  " << char(200) << char(205) << char(188);
+	cout << u8"╚" << u8"═" << u8"╝" << "  " << u8"╚" << u8"═" << u8"╝";
 	setColor(co_theme);
 }
 
 void drawI(int XX, int YY) {  // 6 * 3
 	setPos(XX, YY);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(187);
+	setColor(co_theme); cout << u8"╗";
 
 	setPos(XX, YY + 1);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 2);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 3);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 4);
 	setColor(0, 0); cout << "  ";
-	setColor(co_theme); cout << char(186);
+	setColor(co_theme); cout << u8"║";
 
 	setPos(XX, YY + 5);
-	cout << char(200) << char(205) << char(188);
+	cout << u8"╚" << u8"═" << u8"╝";
 }
 
 void drawCARO(int XX, int YY) {
@@ -666,22 +666,11 @@ void drawGAME_MODE(int XX, int YY) {
 	drawE(XX + 68, YY);
 }
 void drawDino(int XX, int YY) {
+	const char* B = u8"██ ";          // khối 2 ô
+	const char* K = u8"████████ ";
+	/*B[2] = '\0';
 
-	char B[3];
-	B[0] = char(219);
-	B[1] = char(219);
-	B[2] = '\0';
-
-	char K[9];
-	K[0] = char(219);
-	K[1] = char(219);
-	K[2] = char(219);
-	K[3] = char(219);
-	K[4] = char(219);
-	K[5] = char(219);
-	K[6] = char(219);
-	K[7] = char(219);
-	K[8] = '\0';
+	K[8] = '\0';*/
 
 
 	// ======== ROW 2 ========
@@ -838,7 +827,7 @@ void drawDino(int XX, int YY) {
 	setPos(XX + 14, YY + 13); cout << B;
 	setPos(XX + 16, YY + 13); cout << B;
 
-	// ======== ROW 14 � ch�n ph?i ========
+	// ======== ROW 14 – chân ph?i ========
 	setPos(XX - 10, YY + 14); cout << B;
 	setPos(XX - 8, YY + 14); cout << B;
 	setPos(XX - 6, YY + 14); cout << B;
@@ -854,7 +843,7 @@ void drawDino(int XX, int YY) {
 	setPos(XX + 14, YY + 14); cout << B;
 	setPos(XX + 16, YY + 14); cout << B;
 
-	// ======== ROW 15 � ch�n ph?i d�i ========
+	// ======== ROW 15 – chân ph?i dài ========
 	setPos(XX - 8, YY + 15); cout << B;
 	setPos(XX - 6, YY + 15); cout << B;
 	setPos(XX - 4, YY + 15); cout << B;
@@ -870,7 +859,7 @@ void drawDino(int XX, int YY) {
 
 
 
-	// ======== ROW 16 � ?u�i ========
+	// ======== ROW 16 – ?uôi ========
 	setPos(XX - 6, YY + 16); cout << B;
 	setPos(XX - 4, YY + 16); cout << B;
 	setPos(XX - 2, YY + 16); cout << B;
