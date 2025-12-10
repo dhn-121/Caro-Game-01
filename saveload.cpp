@@ -65,9 +65,10 @@ void drawSaveLoadScreen(int Width, int Height)
 	system("cls");
 	//setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 - 2);
 	setPos((ConsoleWidth - 20) / 2 - 10, (ConsoleHeight) / 2 - 4);
-	cout << "Enter filename (without .txt extension):";
+	cout << "Enter filename (without .txt extension) ";
+	cout << "max 100 characters";
 	setColor(backgroundcolor, fontcolor);
-	int boxWidth = Width - 20;
+	int boxWidth = Width - 18;
 	int boxHeight = 3;
 	int boxX = (ConsoleWidth - boxWidth) / 2;
 	int boxY = (ConsoleHeight - boxHeight) / 2;
@@ -92,70 +93,79 @@ std::string WStringToString(const std::wstring & wstr)
 }
 
 // --- HÀM CUSTOM INPUT (Hỗ trợ tiếng Việt) ---
-bool customInput(string& result) {
+bool customInput(string& result,int maxsize) {
 	ShowConsoleCursor(true);
 
 	wstring wResult = L"";
-	wint_t ch;
 	int index = 0;
-
 	COORD startPos = getCursorPos();
 
+	HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+	INPUT_RECORD InRec;
+	DWORD NumRead;
+
 	while (true) {
-		ch = _getwch();
+		// Đọc sự kiện bàn phím
+		ReadConsoleInputW(hIn, &InRec, 1, &NumRead);
 
-		// 1. Xử lý phím chức năng (Mũi tên, Home, End...)
-		if (ch == 0 || (ch == 0xE0 && _kbhit())) {
-			ch = _getwch(); // Đọc mã phím thực sự phía sau
-			playMoveSound();
+		// Chỉ xử lý khi phím được NHẤN XUỐNG
+		if (InRec.EventType == KEY_EVENT && InRec.Event.KeyEvent.bKeyDown) {
 
-			switch (ch) {
-			case 75: // Left
+			WORD vk = InRec.Event.KeyEvent.wVirtualKeyCode; // Mã phím ảo
+			WCHAR wc = InRec.Event.KeyEvent.uChar.UnicodeChar; // Ký tự văn bản
+
+			// --- QUAN TRỌNG: Bỏ qua các phím chức năng đơn lẻ ---
+			// Nếu chỉ bấm Shift/Ctrl/Alt/CapsLock mà không kèm ký tự, bỏ qua ngay
+			// để tránh nó lọt xuống dưới làm nhiễu logic.
+			if (vk == VK_SHIFT || vk == VK_CONTROL || vk == VK_MENU || vk == VK_CAPITAL || vk == VK_LWIN || vk == VK_RWIN) {
+				continue;
+			}
+
+			// 1. ESC: Hủy bỏ
+			if (vk == VK_ESCAPE) {
+				result = "";
+				return false;
+			}
+			// 2. ENTER: Xác nhận
+			else if (vk == VK_RETURN) {
+				playClickSound();
+				result = WStringToString(wResult);
+				return true;
+			}
+			// 3. BACKSPACE: Xóa ký tự
+			// Thêm điều kiện (wc == 8) để bắt được Backspace do Unikey gửi kể cả khi đang đè Shift
+			else if (vk == VK_BACK || wc == 8) {
+				if (index > 0 && wResult.length() > 0) {
+					wResult.erase(index - 1, 1);
+					index--;
+
+					setPos(startPos.X, startPos.Y);
+					cout << WStringToString(wResult) << " "; // Xóa ký tự thừa
+					setPos(startPos.X + index, startPos.Y);
+				}
+			}
+			// 4. MŨI TÊN TRÁI
+			else if (vk == VK_LEFT) {
+				playMoveSound();
 				if (index > 0) {
 					index--;
 					setPos(startPos.X + index, startPos.Y);
 				}
-				break;
-			case 77: // Right
+			}
+			// 5. MŨI TÊN PHẢI
+			else if (vk == VK_RIGHT) {
+				playMoveSound();
 				if (index < wResult.length()) {
 					index++;
 					setPos(startPos.X + index, startPos.Y);
 				}
-				break;
 			}
-		}
-		// 2. Xử lý ESC và ENTER
-		else if (ch == 27) { // ESC
-			result = "";
-			return false;
-		}
-		else if (ch == 13) { // Enter
-			playClickSound();
-			result = WStringToString(wResult);
-			return true;
-		}
-		// 3. Xử lý Backspace
-		else if (ch == 8) {
-			if (index > 0 && wResult.length() > 0) {
-				// Không cần play sound ở đây vì Unikey tự gửi backspace rất nhanh, 
-				// nghe tiếng sẽ bị rè.
-
-				wResult.erase(index - 1, 1);
-				index--;
-
-				// Vẽ lại chuỗi
-				setPos(startPos.X, startPos.Y);
-				// In chuỗi mới + khoảng trắng để xóa ký tự thừa cũ
-				cout << WStringToString(wResult) << " ";
-				setPos(startPos.X + index, startPos.Y);
-			}
-		}
-		// 4. Xử lý ký tự văn bản (Bao gồm cả tiếng Việt 0xE0)
-		else {
-			// Chỉ nhận các ký tự in được (>= 32)
-			if (ch >= 32) {
+			// 6. KÝ TỰ VĂN BẢN (Tiếng Việt, In hoa, Thường...)
+			else if (wc >= 32) {
 				playMoveSound();
-				wResult.insert(index, 1, (wchar_t)ch);
+				if(maxsize>0 && wResult.length()>=maxsize)
+					continue;
+				wResult.insert(index, 1, wc);
 				index++;
 
 				setPos(startPos.X, startPos.Y);
@@ -167,9 +177,9 @@ bool customInput(string& result) {
 }
 bool getfilename(std::string& filename)
 {
-	setPos(22, (ConsoleHeight-3) / 2 + 1);
+	setPos(10, (ConsoleHeight - 3) / 2 + 1);
 	filename.clear();
-	return customInput(filename);
+	return customInput(filename,100);
 }
 
 void loadproductfile()
