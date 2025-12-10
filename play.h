@@ -3,7 +3,7 @@
 #define _PLAY_H_
 #include "Library.h"
 using namespace std;
-void drawContinueGameScreen();
+void drawContinueGameScreen(int iscontinue);
 void GamePlay(int typegame);
 void AiGamePlay(int typegame);
 

@@ -16,30 +16,38 @@ bool check_iswin(int x, int y, char a[N][N])
 {
 	char cur = a[x][y];
 	int dmove[4][2] = { {0,1}, {1,0}, {1,1}, {1,-1} }; // ngang, dọc, chéo phải-xuống, chéo trái-xuống
-	for(auto dir : dmove)
+	for (int k = 0; k < 4; k++)
 	{
+		int dx = dmove[k][0];
+		int dy = dmove[k][1];
+
 		int count = 1;
-		for(int step = 1; step < 5; step++)
+
+		// Duyệt theo hướng dương (forward)
+		for (int step = 1; step < 5; step++)
 		{
-			// di chuyển theo hướng dir
-			int nx = x + dir[0] * step;
-			int ny = y + dir[1] * step;
-			if(nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && a[nx][ny] == cur)
+			int nx = x + dx * step;
+			int ny = y + dy * step;
+			// Kiểm tra biên và quân cờ
+			if (nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && a[nx][ny] == cur)
 				count++;
 			else
 				break;
 		}
-		for(int step = 1; step < 5; step++)
+
+		// Duyệt theo hướng âm (backward)
+		for (int step = 1; step < 5; step++)
 		{
-			// di chuyển ngược hướng dir
-			int nx = x - dir[0] * step;
-			int ny = y - dir[1] * step;
-			if(nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && a[nx][ny] == cur)
+			int nx = x - dx * step;
+			int ny = y - dy * step;
+			// Kiểm tra biên và quân cờ
+			if (nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && a[nx][ny] == cur)
 				count++;
 			else
 				break;
 		}
-		if(count >= 5)
+
+		if (count >= 5)
 			return true;
 	}
 	return false;
