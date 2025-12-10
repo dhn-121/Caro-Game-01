@@ -177,6 +177,10 @@ void loadproductfile()
 				getxy(row, col, i, j);
 				setPos(row, col);
 				cout << board[i][j];
+				if(board[i][j]=='X')
+					count_X++;
+				else if(board[i][j]=='O')
+					count_O++;
 			}
 		}
 	}
