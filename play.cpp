@@ -6,10 +6,10 @@ string name1;
 string name2;
 std::string filename;
 
-void drawContinueGameScreen()
+void drawContinueGameScreen(int iscontiue)
 {
 	int type = 3;
-	if(check_iswin(0,0,board)||check_isdraw(count_moves))
+	if(!iscontiue)
 	{
 		type=0;
 	}
@@ -87,6 +87,7 @@ void GamePlay(int typegame)
 		if (type == 0)
 		{
 			int i, j;
+			setPos(x, y);
 			count_moves+=MakeMove(currentPlayer, x, y);
 			getij(i, j, x, y);
 			if (check_iswin(i, j, board))
@@ -311,5 +312,4 @@ void AiGamePlay(int typegame)
 	playBackgroundMusic();
 		return;
 	
-
 }

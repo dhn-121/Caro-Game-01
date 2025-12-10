@@ -585,7 +585,7 @@ int ControlGaming(int type)
                 {
                     // Ván đã kết thúc -> Tạo ván mới 
                     // KHÔNG reset điểm
-					drawContinueGameScreen();
+					drawContinueGameScreen(type);
                     return 1;
                 }
                 else if (present_choice == 1) // === PLAY AGAIN ===
@@ -668,7 +668,7 @@ int AiControlGaming(int type)
                 if (present_choice == 0) // === CONTINUE ===
                 {
                     // Ván kết thúc -> Bàn cờ mới, GIỮ điểm
-                    drawContinueGameScreen();
+                    drawContinueGameScreen(type);
                     return 1;
                 }
                 else if (present_choice == 1) // === PLAY AGAIN ===
@@ -1129,6 +1129,7 @@ void HighlightPos(int x, int y, int mode) {
     setColor(backgroundcolor, fontcolor);
     setPos(x, y);
 }
+
 void highlightWinningSequence(int x, int y, char a[15][15])
 {
     char cur = a[x][y];
