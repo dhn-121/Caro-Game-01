@@ -5,7 +5,17 @@ char currentPlayer;
 string name1;
 string name2;
 std::string filename;
-
+void resetGameVariables()
+{
+	difficulty = 0;
+	currentPlayer = 'X';
+	name1 = "Player 1";
+	name2 = "Player 2";
+	filename = "caro_save_01.txt";
+	count_moves = 0;
+	count_O = 0;
+	count_X = 0;
+}
 void drawContinueGameScreen(int iscontiue)
 {
 	int type = 3;
@@ -40,6 +50,8 @@ void GamePlay(int typegame)
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < N; j++)
 				board[i][j] = '-';
+		//reset
+		resetGameVariables();
 	}else if(typegame==1)
 	{
 		// load game
@@ -133,7 +145,7 @@ void GamePlay(int typegame)
 		system("cls");
 		
 	}
-	Sleep(300);
+	Sleep(200);
 	count_O = 0;
 	count_X = 0;
 	if (type == -1)ControlGaming(1);
@@ -161,6 +173,8 @@ void AiGamePlay(int typegame)
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < N; j++)
 				board[i][j] = '-';
+		resetGameVariables();
+		name2 = "AI (O)";
 	}
 	else if (typegame == 1)
 	{
@@ -303,7 +317,7 @@ void AiGamePlay(int typegame)
 		system("cls");
 		
 	}
-	Sleep(300);
+	Sleep(200);
 	count_O = 0;
 	count_X = 0;
 	if (type == -1)AiControlGaming(1);
