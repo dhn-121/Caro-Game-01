@@ -89,10 +89,8 @@ int main()
 			break;
 
 		case 4: // About Us
-			system("cls");
-			drawHelpScreen();
-			cin.ignore();
-			cin.get();
+			displayHelp(createQAList(), 0);
+			ControlHelp();
 			break;
 
 		case 5: // Exit

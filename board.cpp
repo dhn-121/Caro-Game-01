@@ -1,7 +1,6 @@
 #include "Library.h"
 using namespace std;
 
-// Sử dụng mã Unicode cho khung bàn cờ (Box Drawing Characters - Single Line)
 const char* B_TOP_LEFT = u8"\u250C"; // ┌
 const char* B_HORIZ = u8"\u2500"; // ─
 const char* B_TOP_TEE = u8"\u252C"; // ┬
@@ -12,7 +11,7 @@ const char* B_CROSS = u8"\u253C"; // ┼
 const char* B_RIGHT_TEE = u8"\u2524"; // ┤
 const char* B_BOT_LEFT = u8"\u2514"; // └
 const char* B_BOT_TEE = u8"\u2534"; // ┴
-const char* B_BOT_RIGHT = u8"\u2518"; // ┘
+const char* B_BOT_RIGHT = u8"\u2518"; // ┘ 
 
 void DrawBoard() {
     int current_Y = Yi;

@@ -15,6 +15,7 @@
 #include "play.h"
 #include "Character.h"
 #include "AI.h"
+#include "help.h"
 
 // Standard library headers
 #include <iostream>

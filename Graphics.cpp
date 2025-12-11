@@ -90,8 +90,6 @@ void fixConsoleWindow(int WIDTH, int HEIGHT)
     SetConsoleOutputCP(65001); // Output UTF-8
     SetConsoleCP(65001);       // Input UTF-8
 }
-
-
 struct STATUS
 {
     const char* Top_Left = u8"\u250C"; // ┌
@@ -101,7 +99,6 @@ struct STATUS
     const char* Hori_Bar = u8"\u2500"; // ─
     const char* Verti_Bar = u8"\u2502"; // │
 } symbol;
-
 void drawBox(int x, int y, int w, int h, std::string text)
 {
     setPos(x, y);
@@ -896,9 +893,12 @@ void drawHelpScreen()
     DATA Title;
     Title.Height = 6;
     Title.Width = 32;
-    Title.XX = ConsoleWidth/2 - Title.Width/2;
-    Title.YY = ConsoleHeight * 20/100;
+    Title.XX = ConsoleWidth / 2 - Title.Width / 2;
+    Title.YY = ConsoleHeight * 7 / 100;
     drawHELP(Title.XX, Title.YY);
+    int Back_XX = ConsoleWidth / 2 - buttonWidth / 2;
+    int Back_YY = ConsoleHeight - 10;
+    drawBox(Back_XX, Back_YY, buttonWidth, buttonHeight, "       BACK       ");
 }
 
 // Function to draw the game mode selection menu

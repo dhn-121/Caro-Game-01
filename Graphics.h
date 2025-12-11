@@ -6,7 +6,8 @@
 
     extern const int backgroundcolor; //màu nền trắng
     extern const int fontcolor; //màu chữ đen
-    
+
+
     extern int ConsoleWidth;
     extern int ConsoleHeight;
     //Kích thước thực của bảng cờ được tính theo dạng ký tự (BOARD_SIZE = 15, 16 là viền dọc, ngang )
