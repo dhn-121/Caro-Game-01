@@ -203,7 +203,9 @@ void drawMenuScreen()
     drawBox(button_XX, Setting_YY, buttonWidth, buttonHeight, "SETTING");
     drawBox(button_XX, Help_YY, buttonWidth, buttonHeight, "HELP");
     drawBox(button_XX, Exit_YY, buttonWidth, buttonHeight, "EXIT");
+
     drawDino(15, ConsoleHeight - 25);
+    drawCactus(Xi - 6, Yi + 1);
 }
 
 //Nếu được chọn thì ô chọn sẽ có màu đen chữ trắng
@@ -295,7 +297,171 @@ int ControlMenu()
 }
 
 //==================== MÀN HÌNH NHẬP TÊN ==========================
-//dang duoc cap nhat...
+
+
+//Chuyển đổi wstring sâng string
+
+std::string InputName(int XX, int YY, int MAX)
+{
+    std::string input = "";
+    ShowConsoleCursor(true);
+    setPos (XX, YY);
+
+    customInput(input, MAX);
+
+    ShowConsoleCursor(false);
+    return input;
+}
+
+bool checkInputted (int mode, std::string &name1, std::string &name2)
+{
+    if (mode == 1) //PVE 
+        return !name1.empty();
+    else
+        return !name1.empty() && !name2.empty();
+}
+
+void Player_1 (std::string &name, int XX, int YY, int Width, int Height)
+{
+    setPos(XX + 2, YY + 1);
+    ShowConsoleCursor(true);
+
+    name = InputName(XX, YY, Width-4);
+
+    ShowConsoleCursor(false);
+
+}
+
+void Player_2 (std::string &name2, int mode, int XX, int YY, int Width, int Height)
+{
+    if (mode == 1)
+    {
+        setPos(XX + 2, YY + 1);
+        name2 = "Computer";
+        cout << name2;
+        Sleep(300);
+    }
+    Player_1 (name2, XX, YY, Width, Height);
+}
+
+void drawNameButton(int XX, int YY, int choice, bool able)
+{
+    if (able)
+    {
+        if (choice == 0)
+            setColor(Selected_BG, Selected_FG);
+        else 
+            setColor(backgroundcolor, fontcolor);
+    }
+    else
+        setColor(8, 7);
+    drawBox(XX, YY, buttonWidth, buttonHeight, "       PLAY       ");
+
+    if (choice == 1)
+        setColor(Selected_BG, Selected_FG);
+    else 
+        setColor(backgroundcolor, fontcolor);
+    drawBox(XX, YY + buttonHeight + 1, buttonWidth, buttonHeight, "       BACK       ");
+}
+
+int NameControl(int XX, int YY)
+{
+    int choice = 0;
+    drawNameButton(XX, YY, choice, true);
+    while (1)
+    {
+        int key = _getch();
+        int past_choice = choice;
+        if (key == 0 || key == 224)
+        {
+            key = _getch();
+            if (key == 72)
+            {
+                choice = 0;
+                playMoveSound();
+            }
+            else if (key == 80)
+            {
+                choice = 1;
+                playMoveSound();
+            }
+        }
+        else if (key == 'W' || key == 'w')
+        {
+            choice = (choice - 1 + 2)%2;
+            playMoveSound();
+        }
+        else if (key == 'S' || key == 's')
+        {
+            choice = (choice + 1)%2;
+            playMoveSound();
+        }
+        else if (key == 13)
+        {
+            playClickSound();
+            return (choice == 0) ? 1 : 0; 
+        }
+        if (past_choice != choice)
+            drawNameButton(XX, YY, choice, true);
+    }
+
+}
+
+int drawNameScreen (std::string& name1, std::string& name2, int mode)
+{
+    system("cls");
+    setColor(backgroundcolor, fontcolor);
+
+    std::string title = "INPUT YOUR NAME";
+    int title_XX = ConsoleWidth/2 - title.length()/2;
+    int title_YY = ConsoleHeight/2 - 7;
+
+    setPos(title_XX, title_YY);
+    cout << title;
+
+    std::string content1 = "Player (X):";
+    std::string content2 = "Player (O):";
+
+    int input_width = ConsoleWidth * 50/100;
+    int input_height = 3;
+    int input_XX = ConsoleWidth/2 - input_width/2;
+    int input_YY = title_YY + 4;
+
+    int input_data[2];
+
+    //Player 1
+    setPos(input_XX, input_YY);
+    cout << content1;
+    input_YY ++;
+    input_data[0] = input_YY;
+    drawBox(input_XX, input_YY, input_width, input_height, "");
+
+    //Player 2
+    input_YY += input_height + 1;
+    setPos(input_XX, input_YY);
+    cout << content2;
+    input_YY ++;
+    input_data[1] = input_YY;
+    drawBox(input_XX, input_YY, input_width, input_height, "");
+    
+    nhapten:
+        Player_1(name1, input_XX, input_YY, input_width, input_height);
+        Player_2(name2, mode, input_XX, input_YY, input_width, input_height);
+
+    //Check da nhap chua?
+    if (!checkInputted(mode, name1, name2))
+    {
+        setPos(input_XX, input_YY + input_height + 1);
+        cout << "Please input your name!";
+        Sleep(1500);
+        goto nhapten;
+    }
+    
+    int button_XX = ConsoleWidth/2 - buttonWidth/2;
+    int button_YY = input_YY + input_height + 5;
+
+    return NameControl(button_XX, button_YY);
+}
 
 
 //==================== MÀN HÌNH CHƠI (GamePlayScreen) ====================
@@ -414,6 +580,9 @@ void drawGamePlayScreen(char player, std::string name1, std::string name2, std::
     drawBox(Score.XX, Score.YY, Score.Width, Score.Height, "");
     drawScoreBox(Score.XX, Score.YY, Score.Width, Score.Height);
 
+    drawMiniCactus(Xi - 6 + 8, Yi + 1 + 7);
+    drawMiniDino(Xi - 6 + 5, Yi + 1 + 6);
+
     int filelength = filename.length();
     int fileX = ConsoleWidth / 2 - filelength / 2;
     int fileY = ConsoleHeight - 2;
@@ -502,6 +671,9 @@ void drawDrawStatus()
 
 bool isGameSelected(int idx, bool isSelected,int type)
 {
+
+    drawPAUSE(ConsoleWidth/2 - 42/2, 2);
+
     if (isSelected)
         setColor(Selected_BG, Selected_FG);
     else
@@ -886,6 +1058,8 @@ int ControlSettings()
 }
 
 //HELP SCREEN....
+
+
 
 void drawHelpScreen()
 {
