@@ -293,10 +293,6 @@ void loadproductfile()
 			for (int j = 0; j < N; j++)
 			{
 				if (board[i][j] == '-')continue;
-				int row, col;
-				getxy(row, col, i, j);
-				setPos(row, col);
-				cout << board[i][j];
 				if(board[i][j]=='X')
 					count_X++;
 				else if(board[i][j]=='O')
