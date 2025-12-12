@@ -6,7 +6,8 @@
 
     extern const int backgroundcolor; //màu nền trắng
     extern const int fontcolor; //màu chữ đen
-    
+
+
     extern int ConsoleWidth;
     extern int ConsoleHeight;
     //Kích thước thực của bảng cờ được tính theo dạng ký tự (BOARD_SIZE = 15, 16 là viền dọc, ngang )
@@ -32,6 +33,14 @@
     void drawMenuScreen();
     void drawIsSelected(int idx, bool isSelected);
     int ControlMenu();
+
+    std::string InputName(std::string& input, int XX, int YY, int MAX);
+    bool checkInputted(int mode, std::string& name1, std::string& name2);
+    void Player_1(std::string& name, int XX, int YY, int Width, int Height);
+    void Player_2(std::string& name2, int mode, int XX, int YY, int Width, int Height);
+    void drawNameButton(int XX, int YY, int choice, bool able);
+    int NameControl(int XX, int YY);
+    int drawNameScreen(std::string& name1, std::string& name2, int mode);
 
     extern int TurnData[4];
     void drawTurnBox(int XX, int YY, int Width, int Height, char player,  std::string name1,  std::string name2);

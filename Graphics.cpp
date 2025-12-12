@@ -8,7 +8,7 @@ const int backgroundcolor = 15;
 const int fontcolor = 0;
 
 int Xi = 5;
-int Yi = ConsoleHeight/2 - BoardRealHeight/2-2;
+int Yi = ConsoleHeight / 2 - BoardRealHeight / 2 - 2;
 
 const int buttonWidth = 20;
 const int buttonHeight = 3;
@@ -87,52 +87,55 @@ void fixConsoleWindow(int WIDTH, int HEIGHT)
 
     // Ẩn thanh cuộn
     ShowScrollBar(consoleWindow, SB_BOTH, FALSE);
+    SetConsoleOutputCP(65001); // Output UTF-8
+    SetConsoleCP(65001);       // Input UTF-8
 }
-
-
 struct STATUS
 {
-    int Top_Left = 218;
-    int Top_Right = 191;
-    int Bot_Left = 192;
-    int Bot_Right = 217;
-    int Hori_Bar = 196;
-    int Verti_Bar = 179;
-    int Blank = 255;
+    const char* Top_Left = u8"\u250C"; // ┌
+    const char* Top_Right = u8"\u2510"; // ┐
+    const char* Bot_Left = u8"\u2514"; // └
+    const char* Bot_Right = u8"\u2518"; // ┘
+    const char* Hori_Bar = u8"\u2500"; // ─
+    const char* Verti_Bar = u8"\u2502"; // │
 } symbol;
-
 void drawBox(int x, int y, int w, int h, std::string text)
 {
     setPos(x, y);
 
-    cout << char(symbol.Top_Left);
+    // 1. Vẽ cạnh trên
+    cout << symbol.Top_Left;
     for (int i = 0; i < w - 2; i++)
-        cout << char(symbol.Hori_Bar);
-    cout << char(symbol.Top_Right);
+        cout << symbol.Hori_Bar;
+    cout << symbol.Top_Right;
 
-    for (int i = 1; i < h - 1; i++) //in các | ở giữa (không tính) 2 bên rìa
+    // 2. Vẽ hai cạnh bên
+    for (int i = 1; i < h - 1; i++)
     {
         setPos(x, y + i);
-        cout << char(symbol.Verti_Bar);
+        cout << symbol.Verti_Bar;
         setPos(x + w - 1, y + i);
-        cout << char(symbol.Verti_Bar);
+        cout << symbol.Verti_Bar;
     }
 
+    // 3. Vẽ cạnh dưới
     setPos(x, y + h - 1);
-    cout << char(symbol.Bot_Left);
+    cout << symbol.Bot_Left;
     for (int i = 0; i < w - 2; i++)
-        cout << char(symbol.Hori_Bar);
-    cout << char(symbol.Bot_Right);
+        cout << symbol.Hori_Bar;
+    cout << symbol.Bot_Right;
 
-    //Văn bản (nếu có văn bản thì nó sẽ được căn giữ cho đẹp)
+    // 4. Vẽ chữ (Text) ở giữa
     if (!text.empty())
     {
         int txtlength = text.length();
-        int blank_width = w - 2; //phần trống theo chiều ngang
+        int blank_width = w - 2;
         int center = (blank_width - txtlength) / 2;
+        if (center < 0) center = 0;
+
         int textX = x + 1 + center;
 
-        int blank_height = h - 2; //phần trống theo chiều dọc
+        int blank_height = h - 2;
         int middle = (blank_height - 1) / 2;
         int textY = y + 1 + middle;
 
@@ -152,11 +155,11 @@ void drawLoadingScreen()
     std::string message3 = "WELCOME TO OUR PROJECT";
 
     int message1_x = (ConsoleWidth - message1.length()) / 2;
-    int message1_y = ConsoleHeight * 40/100;
+    int message1_y = ConsoleHeight * 40 / 100;
     int message2_x = (ConsoleWidth - message2.length()) / 2;
     int message2_y = ConsoleHeight / 2;
     int message3_x = (ConsoleWidth - message3.length()) / 2;
-    int message3_y = ConsoleHeight * 60/100;
+    int message3_y = ConsoleHeight * 60 / 100;
 
     setPos(message1_x, message1_y);
     cout << message1;
@@ -171,19 +174,19 @@ void drawLoadingScreen()
 //==================== MÀN HÌNH CHÍNH ====================
 
 int MenuButton[5];
-int button_XX = ConsoleWidth/2 - buttonWidth/2;
+int button_XX = ConsoleWidth / 2 - buttonWidth / 2;
 
 void drawMenuScreen()
 {
     setColor(backgroundcolor, fontcolor);
 
     DATA Title;
-    Title.Width = 33 ;
-    Title.Height = 6 ;
-    Title.XX = ConsoleWidth/2 - Title.Width/2;
+    Title.Width = 33;
+    Title.Height = 6;
+    Title.XX = ConsoleWidth / 2 - Title.Width / 2;
     Title.YY = 2;
     drawCARO(Title.XX, Title.YY);
-    
+
     int Play_YY = Title.YY + Title.Height + 2;
     MenuButton[0] = Play_YY;
     int Load_YY = Play_YY + buttonHeight + 1;
@@ -200,7 +203,9 @@ void drawMenuScreen()
     drawBox(button_XX, Setting_YY, buttonWidth, buttonHeight, "SETTING");
     drawBox(button_XX, Help_YY, buttonWidth, buttonHeight, "HELP");
     drawBox(button_XX, Exit_YY, buttonWidth, buttonHeight, "EXIT");
-    drawDino(15, ConsoleHeight - 25);
+
+    drawDino(15, ConsoleHeight - 27);
+    drawCactus(Xi - 6, Yi + 1);
 }
 
 //Nếu được chọn thì ô chọn sẽ có màu đen chữ trắng
@@ -215,24 +220,24 @@ void drawIsSelected(int idx, bool isSelected)
     int Y0 = MenuButton[idx];
     switch (idx)
     {
-        case 0:
-            content = "    PLAY GAME     ";
-            break;
-        case 1:
-            content = "    LOAD GAME     ";
-            break;
-        case 2:
-            content = "     SETTING      ";
-            break;
-        case 3:
-            content = "       HELP       ";
-            break;
-        case 4:
-            content = "       EXIT       ";
-            break;
-        default:
-            setColor(15,0);
-            return;
+    case 0:
+        content = "    PLAY GAME     ";
+        break;
+    case 1:
+        content = "    LOAD GAME     ";
+        break;
+    case 2:
+        content = "     SETTING      ";
+        break;
+    case 3:
+        content = "       HELP       ";
+        break;
+    case 4:
+        content = "       EXIT       ";
+        break;
+    default:
+        setColor(15, 0);
+        return;
     }
     drawBox(button_XX, Y0, buttonWidth, buttonHeight, content);
     setColor(backgroundcolor, fontcolor);
@@ -292,7 +297,168 @@ int ControlMenu()
 }
 
 //==================== MÀN HÌNH NHẬP TÊN ==========================
-//dang duoc cap nhat...
+
+
+//Chuyển đổi wstring sâng string
+
+std::string InputName(std::string& input,int XX, int YY, int MAX)
+{
+    ShowConsoleCursor(true);
+    setPos(XX, YY);
+
+    customInput2(input, MAX);
+
+    ShowConsoleCursor(false);
+    return input;
+}
+
+bool checkInputted(int mode, std::string& name1, std::string& name2)
+{
+    if (mode == 1) //PVE 
+        return !name1.empty();
+    else
+        return !name1.empty() && !name2.empty();
+}
+
+void Player_1(std::string& name, int XX, int YY, int Width, int Height)
+{
+    setPos(XX + 2, YY + 1);
+    ShowConsoleCursor(true);
+
+    InputName(name,XX, YY, Width - 4);
+
+    ShowConsoleCursor(false);
+
+}
+
+void Player_2(std::string& name2, int mode, int XX, int YY, int Width, int Height)
+{
+    if (mode == 1)
+    {
+        setPos(XX, YY);
+        name2 = "Computer";
+    }
+    Player_1(name2, XX, YY, Width, Height);
+}
+
+void drawNameButton(int XX, int YY, int choice, bool able)
+{
+    if (able)
+    {
+        if (choice == 0)
+            setColor(Selected_BG, Selected_FG);
+        else
+            setColor(backgroundcolor, fontcolor);
+    }
+    else
+        setColor(8, 7);
+    drawBox(XX, YY, buttonWidth, buttonHeight, "       PLAY       ");
+
+    if (choice == 1)
+        setColor(Selected_BG, Selected_FG);
+    else
+        setColor(backgroundcolor, fontcolor);
+    drawBox(XX, YY + buttonHeight + 1, buttonWidth, buttonHeight, "       BACK       ");
+}
+
+int NameControl(int XX, int YY)
+{
+    int choice = 0;
+    drawNameButton(XX, YY, choice, true);
+    while (1)
+    {
+        int key = _getch();
+        int past_choice = choice;
+        if (key == 0 || key == 224)
+        {
+            key = _getch();
+            if (key == 72)
+            {
+                choice = 0;
+                playMoveSound();
+            }
+            else if (key == 80)
+            {
+                choice = 1;
+                playMoveSound();
+            }
+        }
+        else if (key == 'W' || key == 'w')
+        {
+            choice = (choice - 1 + 2) % 2;
+            playMoveSound();
+        }
+        else if (key == 'S' || key == 's')
+        {
+            choice = (choice + 1) % 2;
+            playMoveSound();
+        }
+        else if (key == 13)
+        {
+            playClickSound();
+            return (choice == 0) ? 1 : 0;
+        }
+        if (past_choice != choice)
+            drawNameButton(XX, YY, choice, true);
+    }
+
+}
+
+int drawNameScreen(std::string& name1, std::string& name2, int mode)
+{
+    system("cls");
+    setColor(backgroundcolor, fontcolor);
+
+    std::string title = "INPUT YOUR NAME";
+    int title_XX = ConsoleWidth / 2 - title.length() / 2;
+    int title_YY = ConsoleHeight / 2 - 15;
+
+    setPos(title_XX, title_YY);
+    cout << title;
+
+    std::string content1 = "Player (X):";
+    std::string content2 = "Player (O):";
+
+    int input_width = ConsoleWidth * 50 / 100;
+    int input_height = 3;
+    int input_XX = ConsoleWidth / 2 - input_width / 2;
+    int input_YY = title_YY + 4;
+
+    int input_data[2];
+
+    //Player 1
+    setPos(input_XX, input_YY);
+    cout << content1;
+    input_YY++;
+    input_data[0] = input_YY;
+    drawBox(input_XX, input_YY, input_width, input_height, "");
+
+    //Player 2
+    input_YY += input_height + 1;
+    setPos(input_XX, input_YY);
+    cout << content2;
+    input_YY++;
+    input_data[1] = input_YY;
+    drawBox(input_XX, input_YY, input_width, input_height, "");
+
+nhapten:
+    Player_1(name1, input_XX + 1, input_data[0] + 1, input_width, input_height);
+    Player_2(name2, mode, input_XX + 1, input_data[1] + 1, input_width, input_height);
+
+    //Check da nhap chua?
+    if (!checkInputted(mode, name1, name2))
+    {
+        setPos(input_XX, input_YY + input_height + 1);
+        cout << "Please input your name!";
+        Sleep(1500);
+        goto nhapten;
+    }
+
+    int button_XX = ConsoleWidth / 2 - buttonWidth / 2;
+    int button_YY = input_YY + input_height + 5;
+
+    return NameControl(button_XX, button_YY);
+}
 
 
 //==================== MÀN HÌNH CHƠI (GamePlayScreen) ====================
@@ -411,6 +577,9 @@ void drawGamePlayScreen(char player, std::string name1, std::string name2, std::
     drawBox(Score.XX, Score.YY, Score.Width, Score.Height, "");
     drawScoreBox(Score.XX, Score.YY, Score.Width, Score.Height);
 
+    drawMiniCactus(Xi - 6 + 8, Yi + 1 + 7);
+    drawMiniDino(Xi - 6 + 5, Yi + 1 + 6);
+
     int filelength = filename.length();
     int fileX = ConsoleWidth / 2 - filelength / 2;
     int fileY = ConsoleHeight - 2;
@@ -438,7 +607,7 @@ void resetScores() {
 
 void drawWinStatus(char player, std::string name1, std::string name2)
 {
-	setColor(backgroundcolor, fontcolor);
+    setColor(backgroundcolor, fontcolor);
     char name_player[50];
     int length = 0;
 
@@ -497,8 +666,12 @@ void drawDrawStatus()
     cout << score_display;
 }
 
-bool isGameSelected(int idx, bool isSelected,int type)
+bool isGameSelected(int idx, bool isSelected, int type)
 {
+   // system("cls");
+    if (type == 1)
+    drawPAUSE(ConsoleWidth / 2 - 42 / 2, 2);
+
     if (isSelected)
         setColor(Selected_BG, Selected_FG);
     else
@@ -519,10 +692,10 @@ bool isGameSelected(int idx, bool isSelected,int type)
         button_X = startX;
         break;
     case 1:
-        if(type==1)
+        if (type == 1)
             content = "   PLAY AGAIN     "; // Reset điểm, Bàn cờ mới
-		else
-		    content = "   RESET SCORE    ";
+        else
+            content = "   RESET SCORE    ";
         button_X = startX + buttonWidth + 2;
         break;
     case 2:
@@ -547,7 +720,7 @@ int ControlGaming(int type)
     int present_choice = 0; // Mặc định chọn CONTINUE
     // Vẽ 3 nút
     for (int i = 0; i < 3; i++) {
-        isGameSelected(i, (i == present_choice),type);
+        isGameSelected(i, (i == present_choice), type);
     }
 
     int key;
@@ -585,7 +758,7 @@ int ControlGaming(int type)
                 {
                     // Ván đã kết thúc -> Tạo ván mới 
                     // KHÔNG reset điểm
-					drawContinueGameScreen(type);
+                    drawContinueGameScreen(type);
                     return 1;
                 }
                 else if (present_choice == 1) // === PLAY AGAIN ===
@@ -595,11 +768,11 @@ int ControlGaming(int type)
                     /*GamePlay(Default_Set.sfx_active ? player_X : player_O,
                         "Player 1 (X)", "Player 2 (O)",
                         "caro_save_01.txt", 0);*/
-					currentPlayer = player_X;
-					name1= "Player 1 (X)";
-					name2= "Player 2 (O)";
-					filename = "caro_save_01.txt";
-					GamePlay(0);
+                    currentPlayer = player_X;
+                    name1 = "Player 1 (X)";
+                    name2 = "Player 2 (O)";
+                    filename = "caro_save_01.txt";
+                    GamePlay(0);
                     return 1;
                 }
                 else if (present_choice == 2) // === HOME ===
@@ -617,8 +790,8 @@ int ControlGaming(int type)
         }
 
         if (present_choice != past_choice) {
-            isGameSelected(past_choice, false,type);
-            isGameSelected(present_choice, true,type);
+            isGameSelected(past_choice, false, type);
+            isGameSelected(present_choice, true, type);
         }
     }
 }
@@ -632,7 +805,7 @@ int AiControlGaming(int type)
     int present_choice = 0;
     // Vẽ 3 nút
     for (int i = 0; i < 3; i++) {
-        isGameSelected(i, (i == present_choice),type);
+        isGameSelected(i, (i == present_choice), type);
     }
 
     int key;
@@ -675,11 +848,11 @@ int AiControlGaming(int type)
                 {
                     resetScores(); // Reset điểm
                     // Bàn cờ mới
-					name1 = "Player 1 (X)";
-					name2 = "AI (O)";
-					filename = "caro_save_ai.txt";
-					currentPlayer = player_X;
-					AiGamePlay(0);
+                    name1 = "Player 1 (X)";
+                    name2 = "AI (O)";
+                    filename = "caro_save_ai.txt";
+                    currentPlayer = player_X;
+                    AiGamePlay(0);
                     return 1;
                 }
                 else if (present_choice == 2) // === HOME ===
@@ -696,8 +869,8 @@ int AiControlGaming(int type)
             }
         }
         if (present_choice != past_choice) {
-            isGameSelected(past_choice, false,type);
-            isGameSelected(present_choice, true,type);
+            isGameSelected(past_choice, false, type);
+            isGameSelected(present_choice, true, type);
         }
     }
 }
@@ -728,11 +901,11 @@ void drawSettingsScreen()
 {
     system("cls");
     setColor(backgroundcolor, fontcolor);
-    
+
     DATA Title;
-    Title.Width = 33 ;
-    Title.Height = 6 ;
-    Title.XX = ConsoleWidth/2 - Title.Width/2;
+    Title.Width = 33;
+    Title.Height = 6;
+    Title.XX = ConsoleWidth / 2 - Title.Width / 2;
     Title.YY = 2;
     drawSETTING(Title.XX, Title.YY);
 
@@ -740,7 +913,7 @@ void drawSettingsScreen()
     DATA ToggleBox;
     ToggleBox.Height = 7;
     ToggleBox.Width = 30;
-    ToggleBox.XX = ConsoleWidth/2 - ToggleBox.Width/2;
+    ToggleBox.XX = ConsoleWidth / 2 - ToggleBox.Width / 2;
     ToggleBox.YY = Title.YY + Title.Height + 4;
     drawBox(ToggleBox.XX, ToggleBox.YY, ToggleBox.Width, ToggleBox.Height, "");
 
@@ -769,7 +942,7 @@ void drawSettingsScreen()
     SettingData[1][0] = SettingData[0][0];
     SettingData[1][1] = music_YY;
 
-    int Back_XX = ConsoleWidth/2 - buttonWidth/2;
+    int Back_XX = ConsoleWidth / 2 - buttonWidth / 2;
     int Back_YY = ToggleBox.YY + ToggleBox.Height + 2;
     drawBox(Back_XX, Back_YY, buttonWidth, buttonHeight, "       BACK       ");
 
@@ -830,11 +1003,11 @@ int ControlSettings()
             key = _getch();
             switch (key)
             {
-            case 72: 
-                key = 'W'; 
+            case 72:
+                key = 'W';
                 playMoveSound();
                 break; // Lên
-            case 80: 
+            case 80:
                 key = 'S';
                 playMoveSound();
                 break; // Xuống
@@ -845,7 +1018,7 @@ int ControlSettings()
         switch (toupper(key))
         {
         case 'W':
-            present_choice = (present_choice - 1 + 3) % 3 ;
+            present_choice = (present_choice - 1 + 3) % 3;
             break;
         case 'S':
             present_choice = (present_choice + 1) % 3; ;
@@ -884,15 +1057,20 @@ int ControlSettings()
 
 //HELP SCREEN....
 
+
+
 void drawHelpScreen()
 {
     setColor(backgroundcolor, fontcolor);
     DATA Title;
     Title.Height = 6;
     Title.Width = 32;
-    Title.XX = ConsoleWidth/2 - Title.Width/2;
-    Title.YY = ConsoleHeight * 20/100;
+    Title.XX = ConsoleWidth / 2 - Title.Width / 2;
+    Title.YY = ConsoleHeight * 7 / 100;
     drawHELP(Title.XX, Title.YY);
+    int Back_XX = ConsoleWidth / 2 - buttonWidth / 2;
+    int Back_YY = ConsoleHeight - 10;
+    drawBox(Back_XX, Back_YY, buttonWidth, buttonHeight, "       BACK       ");
 }
 
 // Function to draw the game mode selection menu
@@ -1114,7 +1292,7 @@ void HighlightPos(int x, int y, int mode) {
         // Nền Trắng (15) - Chữ Đỏ (12)
         setColor(15, 12);
     }
-    else if(mode == 2) {
+    else if (mode == 2) {
         // Nền Đỏ (12) - Chữ Trắng (15)
         setColor(12, 15);
         cout << getCharAtCursor(x, y);

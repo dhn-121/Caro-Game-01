@@ -36,36 +36,45 @@ int main()
 			// Chuyển sang màn hình chơi game
 		{
 			// Call the mode selection menu
+		modescreen:
+			setColor(backgroundcolor, fontcolor);
 			int mode = ControlGameMode();
-
+			int canplay = 0;
 			if (mode == 0) // PvP
 			{
-				difficulty = 4;
-				score_O = 0;
-				score_X = 0;
-				filename = "caro_save_01.txt";
-				currentPlayer = player_X;
-				name1 = "Player 1 (X)";
-				name2 = "Player 2 (O)";
-				GamePlay(0);
+				canplay = drawNameScreen(name1, name2, mode);
+				if (canplay == 1)
+				{
+					difficulty = 4;
+					score_O = 0;
+					score_X = 0;
+					filename = "caro_save_01.txt";
+					GamePlay(0);
+				}
+				else
+					goto modescreen;
 			}
 			else if (mode == 1) // PvE Mode
 			{
 				//int diff = ControlDifficulty();
-				int diff = ControlDifficulty();
-				// Nếu chọn Easy(0), Normal(1), hoặc Hard(2) thì vào game
-				// Nếu chọn Back(3) thì không làm gì (tự quay lại vòng lặp menu)
-				score_O = 0;
-				score_X = 0;
-				filename = "caro_save_01.txt";
-				currentPlayer = player_X;
-				name1 = "Player (X)";
-				name2 = "Computer (O)";
-				if (diff != 3)
+				canplay = drawNameScreen(name1, name2, mode);
+				if (canplay == 1)
 				{
-					difficulty = diff;
-					AiGamePlay(0);
+					int diff = ControlDifficulty();
+					// Nếu chọn Easy(0), Normal(1), hoặc Hard(2) thì vào game
+					// Nếu chọn Back(3) thì không làm gì (tự quay lại vòng lặp menu)
+					score_O = 0;
+					score_X = 0;
+					filename = "caro_save_01.txt";
+					currentPlayer = player_X;
+					if (diff != 3)
+					{
+						difficulty = diff;
+						AiGamePlay(0);
+					}
 				}
+				else
+					goto modescreen;
 			}
 		}
 		break;
@@ -89,10 +98,8 @@ int main()
 			break;
 
 		case 4: // About Us
-			system("cls");
-			drawHelpScreen();
-			cin.ignore();
-			cin.get();
+			displayHelp(createQAList(), 0);
+			ControlHelp();
 			break;
 
 		case 5: // Exit

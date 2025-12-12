@@ -1,4 +1,4 @@
-#include"Library.h"
+﻿#include"Library.h"
 
 using namespace std;
 
@@ -8,7 +8,7 @@ bool saveGame()
 	_mkdir("save");
 
 	// add path "save/" to filename
-	string fullPath = "save/" + filename;
+	string fullPath = "save/" + filename+".txt";
 
 	ofstream outFile(fullPath.c_str()); // .c_str() to convert string to const char*
 	setPos((ConsoleWidth) / 2-20, (ConsoleHeight) / 2 + 3);
@@ -37,7 +37,7 @@ bool saveGame()
 bool loadGame()
 {
 	// when loading, add path "save/" to filename
-	string fullPath = "save/" + filename;
+	string fullPath = "save/" + filename + ".txt";
 
 	ifstream inFile(fullPath.c_str());
 	if (!inFile) {
@@ -63,10 +63,12 @@ bool loadGame()
 void drawSaveLoadScreen(int Width, int Height)
 {
 	system("cls");
-	setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 - 2);
-	cout << "Enter the filename to load/save ";
+	//setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 - 2);
+	setPos((ConsoleWidth - 20) / 2 - 10, (ConsoleHeight) / 2 - 4);
+	cout << "Enter filename (without .txt extension) ";
+	cout << "max 100 characters";
 	setColor(backgroundcolor, fontcolor);
-	int boxWidth = Width - 20;
+	int boxWidth = Width - 18;
 	int boxHeight = 3;
 	int boxX = (ConsoleWidth - boxWidth) / 2;
 	int boxY = (ConsoleHeight - boxHeight) / 2;
@@ -80,86 +82,204 @@ bool checkFileExists(std::string& filename)
 	ifstream inFile(fullPath.c_str());
 	return inFile.good();
 }
-bool customInput(string& result) {
-	ShowConsoleCursor(true);
-	char ch;
-	result = ""; 
-	int index = 0; // positions in the string
+// --- HÀM PHỤ TRỢ: Chuyển wstring (Unicode) sang string (UTF-8) ---
+std::string WStringToString(const std::wstring & wstr)
+{
+	if (wstr.empty()) return std::string();
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+	std::string strTo(size_needed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+	return strTo;
+}
 
-	//save starting cursor position
+// --- HÀM CUSTOM INPUT (Hỗ trợ tiếng Việt) ---
+bool customInput(string& result,int maxsize) {
+	ShowConsoleCursor(true);
+
+	wstring wResult = L"";
+	int index = 0;
 	COORD startPos = getCursorPos();
 
+	HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+	INPUT_RECORD InRec;
+	DWORD NumRead;
+
 	while (true) {
-		ch = _getch(); // get character without echoing
-		playMoveSound();
-		// escape key to cancel 
-		if (ch == 27) {
-			return false; 
-		}
+		// Đọc sự kiện bàn phím
+		ReadConsoleInputW(hIn, &InRec, 1, &NumRead);
 
-		// enter key to finish input
-		else if (ch == 13) {
-			return true;
-		}
+		// Chỉ xử lý khi phím được NHẤN XUỐNG
+		if (InRec.EventType == KEY_EVENT && InRec.Event.KeyEvent.bKeyDown) {
 
-		// 3. backspace key to delete
-		else if (ch == 8) {
-			if (index > 0 && result.length() > 0) {
-				// delete character before index
-				result.erase(index - 1, 1);
-				index--;
+			WORD vk = InRec.Event.KeyEvent.wVirtualKeyCode; // Mã phím ảo
+			WCHAR wc = InRec.Event.KeyEvent.uChar.UnicodeChar; // Ký tự văn bản
 
-				// update display
-				// step a: clear and reprint
-				setPos(startPos.X, startPos.Y);
-				cout << result << " "; // print extra space to clear last char
-
-				// step b: reposition cursor
-				setPos(startPos.X + index, startPos.Y);
+			// --- QUAN TRỌNG: Bỏ qua các phím chức năng đơn lẻ ---
+			// Nếu chỉ bấm Shift/Ctrl/Alt/CapsLock mà không kèm ký tự, bỏ qua ngay
+			// để tránh nó lọt xuống dưới làm nhiễu logic.
+			if (vk == VK_SHIFT || vk == VK_CONTROL || vk == VK_MENU || vk == VK_CAPITAL || vk == VK_LWIN || vk == VK_RWIN) {
+				continue;
 			}
-		}
 
-		// arrow keys for left/right movement
-		// and other special keys
-		else if (ch == -32 || ch == 0 || ch == 224) {
-			ch = _getch(); 
+			// 1. ESC: Hủy bỏ
+			if (vk == VK_ESCAPE) {
+				result = "";
+				return false;
+			}
+			// 2. ENTER: Xác nhận
+			else if (vk == VK_RETURN) {
+				playClickSound();
+				result = WStringToString(wResult);
+				return true;
+			}
+			// 3. BACKSPACE: Xóa ký tự
+			// Thêm điều kiện (wc == 8) để bắt được Backspace do Unikey gửi kể cả khi đang đè Shift
+			else if (vk == VK_BACK || wc == 8) {
+				if (index > 0 && wResult.length() > 0) {
+					wResult.erase(index - 1, 1);
+					index--;
 
-			switch (ch) {
-			case 75: // arrow left
+					setPos(startPos.X, startPos.Y);
+					cout << WStringToString(wResult) << " "; // Xóa ký tự thừa
+					setPos(startPos.X + index, startPos.Y);
+				}
+			}
+			// 4. MŨI TÊN TRÁI
+			else if (vk == VK_LEFT) {
+				playMoveSound();
 				if (index > 0) {
 					index--;
 					setPos(startPos.X + index, startPos.Y);
 				}
-				break;
-			case 77: // arrow right
-				if (index < result.length()) {
+			}
+			// 5. MŨI TÊN PHẢI
+			else if (vk == VK_RIGHT) {
+				playMoveSound();
+				if (index < wResult.length()) {
 					index++;
 					setPos(startPos.X + index, startPos.Y);
 				}
-				break;
+			}
+			// 6. KÝ TỰ VĂN BẢN (Tiếng Việt, In hoa, Thường...)
+			else if (wc >= 32) {
+				playMoveSound();
+				if(maxsize>0 && wResult.length()>=maxsize)
+					continue;
+				wResult.insert(index, 1, wc);
+				index++;
+				if(wResult.length()>maxsize)
+				{
+					wResult.erase(index - 1, 1);
+					index--;
+					continue;
+				}
+				setPos(startPos.X, startPos.Y);
+				cout << WStringToString(wResult);
+				setPos(startPos.X + index, startPos.Y);
 			}
 		}
+	}
+}
+bool customInput2(string& result, int maxsize) {
+	ShowConsoleCursor(true);
 
-		// printable characters
-		else if (isprint(ch)) {
-			// insert character at current index
-			result.insert(index, 1, ch);
-			index++;
+	wstring wResult = L"";
+	int index = 0;
+	COORD startPos = getCursorPos();
 
-			// print updated string
-			setPos(startPos.X, startPos.Y);
-			cout << result;
+	HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+	INPUT_RECORD InRec;
+	DWORD NumRead;
+	for (int i = 0; i < result.length(); i++)
+	{
+		wchar_t wc = (wchar_t)result[i];
+		wResult.insert(index, 1, wc);
+		index++;
+		setPos(startPos.X, startPos.Y);
+		cout << WStringToString(wResult);
+	}
+	setPos(startPos.X + index, startPos.Y);
+	while (true) {
+		// Đọc sự kiện bàn phím
+		ReadConsoleInputW(hIn, &InRec, 1, &NumRead);
 
-			// move cursor back to correct position
-			setPos(startPos.X + index, startPos.Y);
+		// Chỉ xử lý khi phím được NHẤN XUỐNG
+		if (InRec.EventType == KEY_EVENT && InRec.Event.KeyEvent.bKeyDown) {
+
+			WORD vk = InRec.Event.KeyEvent.wVirtualKeyCode; // Mã phím ảo
+			WCHAR wc = InRec.Event.KeyEvent.uChar.UnicodeChar; // Ký tự văn bản
+
+			// --- QUAN TRỌNG: Bỏ qua các phím chức năng đơn lẻ ---
+			// Nếu chỉ bấm Shift/Ctrl/Alt/CapsLock mà không kèm ký tự, bỏ qua ngay
+			// để tránh nó lọt xuống dưới làm nhiễu logic.
+			if (vk == VK_SHIFT || vk == VK_CONTROL || vk == VK_MENU || vk == VK_CAPITAL || vk == VK_LWIN || vk == VK_RWIN) {
+				continue;
+			}
+
+			// 1. ESC: Hủy bỏ
+			if (vk == VK_ESCAPE) {
+				result = "";
+				return false;
+			}
+			// 2. ENTER: Xác nhận
+			else if (vk == VK_RETURN) {
+				playClickSound();
+				result = WStringToString(wResult);
+				return true;
+			}
+			// 3. BACKSPACE: Xóa ký tự
+			// Thêm điều kiện (wc == 8) để bắt được Backspace do Unikey gửi kể cả khi đang đè Shift
+			else if (vk == VK_BACK || wc == 8) {
+				if (index > 0 && wResult.length() > 0) {
+					wResult.erase(index - 1, 1);
+					index--;
+
+					setPos(startPos.X, startPos.Y);
+					cout << WStringToString(wResult) << " "; // Xóa ký tự thừa
+					setPos(startPos.X + index, startPos.Y);
+				}
+			}
+			// 4. MŨI TÊN TRÁI
+			else if (vk == VK_LEFT) {
+				playMoveSound();
+				if (index > 0) {
+					index--;
+					setPos(startPos.X + index, startPos.Y);
+				}
+			}
+			// 5. MŨI TÊN PHẢI
+			else if (vk == VK_RIGHT) {
+				playMoveSound();
+				if (index < wResult.length()) {
+					index++;
+					setPos(startPos.X + index, startPos.Y);
+				}
+			}
+			// 6. KÝ TỰ VĂN BẢN (Tiếng Việt, In hoa, Thường...)
+			else if (wc >= 32) {
+				playMoveSound();
+				if (maxsize > 0 && wResult.length() >= maxsize)
+					continue;
+				wResult.insert(index, 1, wc);
+				index++;
+				if (wResult.length() > maxsize)
+				{
+					wResult.erase(index - 1, 1);
+					index--;
+					continue;
+				}
+				setPos(startPos.X, startPos.Y);
+				cout << WStringToString(wResult);
+				setPos(startPos.X + index, startPos.Y);
+			}
 		}
 	}
 }
 bool getfilename(std::string& filename)
 {
-	setPos(22, (ConsoleHeight-3) / 2 + 1);
+	setPos(10, (ConsoleHeight - 3) / 2 + 1);
 	filename.clear();
-	return customInput(filename);
+	return customInput(filename,100);
 }
 
 void loadproductfile()

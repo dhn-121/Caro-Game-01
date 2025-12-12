@@ -15,6 +15,7 @@
 #include "play.h"
 #include "Character.h"
 #include "AI.h"
+#include "help.h"
 
 // Standard library headers
 #include <iostream>
@@ -42,5 +43,8 @@
 #include <queue>
 #include <set>
 #include <cmath>
+#include <fcntl.h> 
+#include <io.h>    
+#include <cwchar>
 
 #endif
