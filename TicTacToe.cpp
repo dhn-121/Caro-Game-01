@@ -19,32 +19,41 @@ bool ValidMove(int row, int col)
 {
    /* if (row < 1 || row > 15 || col < 1 || col > 15)
         return false;*/
-    if (board[row][col] != ' ')
+    if (board[row][col] != '-')
         return false;
     return true;
 }
 
-void MakeMove(char player, int row, int col)
+bool MakeMove(char player, int row, int col)
 {
     int i, j;
 	getij(i, j, row, col);
     if(!ValidMove(i, j))
-		return;
+		return 0;
 	
     board[i][j] = player;
+    HighlightPos(row, col, 0);
     setPos(row, col);
     if (player == player_X)
     {
+		setColor(15, 12);
         cout << "X";
         count_X++;
     }
     else if (player == player_O)
     {
+        setColor(15, 12);
         cout << 'O';
         count_O++;
     }
-    else 
-        cout << '.';
+    else
+    {
+        cout << ' ';
+        return 0;
+    }
+	setColor(backgroundcolor, fontcolor);
+    HighlightPos(row, col, 1);
+    return 1;
 }
 
 

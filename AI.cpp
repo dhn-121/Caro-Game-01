@@ -1,0 +1,411 @@
+﻿#include "AI.h"
+#include <vector>
+#include <algorithm>
+#include <climits>
+#include <cmath>
+
+using namespace std;
+
+// =================================================================================
+// CẤU HÌNH CHO AI (BOSS MODE)
+// =================================================================================
+
+// Điểm số cho các chuỗi liên tiếp (0, 1, 2, 3, 4, 5 quân)
+// Tăng theo cấp số nhân để AI biết sợ khi đối thủ sắp thắng
+const long long SCORE_BY_COUNT[] = { 0, 10, 200, 5000, 200000, 1000000000LL };
+
+const int SEARCH_RADIUS = 2;       // Bán kính tìm kiếm quanh các quân cờ đã đánh
+const int MAX_CANDIDATES = 15;     // Giới hạn số nước đi tốt nhất để tính toán (Top-K)
+const int MINIMAX_DEPTH = 4;       // Độ sâu suy nghĩ (3 hoặc 4 là ổn với cấu trúc này)
+
+// Cấu trúc lưu nước đi để sắp xếp
+struct Move {
+    int r, c;
+    long long score;
+    Move(int rr = -1, int cc = -1, long long s = 0) : r(rr), c(cc), score(s) {}
+};
+
+// =================================================================================
+// (EASY/NORMAL MODE)
+// =================================================================================
+
+// Mảng điểm cho chế độ Normal
+const long ARR_SCORES[] = { 0, 10, 100, 1000, 10000, 1000000 };
+
+long calculateScore(int r, int c, int dr, int dc, char board[N][N], char player) {
+    long score = 0;
+    int count = 0;
+    int openEnds = 0;
+
+    for (int i = 1; i < 5; i++) {
+        if (r + i * dr >= 0 && r + i * dr < BOARD_SIZE && c + i * dc >= 0 && c + i * dc < BOARD_SIZE && board[r + i * dr][c + i * dc] == player) count++;
+        else {
+            if (r + i * dr >= 0 && r + i * dr < BOARD_SIZE && c + i * dc >= 0 && c + i * dc < BOARD_SIZE && board[r + i * dr][c + i * dc] == '-') openEnds++;
+            break;
+        }
+    }
+    for (int i = 1; i < 5; i++) {
+        if (r - i * dr >= 0 && r - i * dr < BOARD_SIZE && c - i * dc >= 0 && c - i * dc < BOARD_SIZE && board[r - i * dr][c - i * dc] == player) count++;
+        else {
+            if (r - i * dr >= 0 && r - i * dr < BOARD_SIZE && c - i * dc >= 0 && c - i * dc < BOARD_SIZE && board[r - i * dr][c - i * dc] == '-') openEnds++;
+            break;
+        }
+    }
+
+    if (count >= 5) return ARR_SCORES[5];
+    if (openEnds == 0 && count < 5) return 0;
+
+    score = ARR_SCORES[count];
+    if (openEnds == 2) score *= 2;
+    else if (openEnds == 1) score *= 1.5;
+
+    return score;
+}
+
+// NORMAL MODE AI
+void getBestMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer) {
+    long maxScore = -1;
+    char humanPlayer = (aiPlayer == 'X') ? 'O' : 'X';
+    bestRow = -1; bestCol = -1;
+
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            if (board[i][j] == '-') {
+                board[i][j] = aiPlayer;
+                long attackScore = 0;
+                attackScore += calculateScore(i, j, 0, 1, board, aiPlayer);
+                attackScore += calculateScore(i, j, 1, 0, board, aiPlayer);
+                attackScore += calculateScore(i, j, 1, 1, board, aiPlayer);
+                attackScore += calculateScore(i, j, 1, -1, board, aiPlayer);
+                board[i][j] = '-';
+
+                board[i][j] = humanPlayer;
+                long defenseScore = 0;
+                defenseScore += calculateScore(i, j, 0, 1, board, humanPlayer);
+                defenseScore += calculateScore(i, j, 1, 0, board, humanPlayer);
+                defenseScore += calculateScore(i, j, 1, 1, board, humanPlayer);
+                defenseScore += calculateScore(i, j, 1, -1, board, humanPlayer);
+                board[i][j] = '-';
+
+                long totalScore = attackScore + defenseScore;
+                if (totalScore > maxScore) {
+                    maxScore = totalScore;
+                    bestRow = i;
+                    bestCol = j;
+                }
+            }
+        }
+    }
+}
+
+// EASY MODE AI
+void getEasyMove(char board[N][N], int& row, int& col) {
+    std::vector<std::pair<int, int>> emptyCells;
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            if (board[i][j] == '-') {
+                emptyCells.push_back({ i, j });
+            }
+        }
+    }
+    if (!emptyCells.empty()) {
+        int index = rand() % emptyCells.size();
+        row = emptyCells[index].first;
+        col = emptyCells[index].second;
+    }
+    else {
+        row = -1; col = -1;
+    }
+}
+
+// =================================================================================
+// HARD MODE AI (BOSS LOGIC - ADAPTED)
+// =================================================================================
+
+// Kiểm tra tọa độ có hợp lệ không
+inline bool inBounds(int r, int c) {
+    return r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE;
+}
+
+// Kiểm tra thắng thua nhanh
+bool isWin(char board[N][N], int r, int c, char player) {
+    const int dirs[4][2] = { {0,1},{1,0},{1,1},{1,-1} };
+    for (int d = 0; d < 4; ++d) {
+        int cnt = 1;
+        int dr = dirs[d][0], dc = dirs[d][1];
+        // Forward
+        for (int k = 1; k < 5; k++) {
+            int nr = r + dr * k, nc = c + dc * k;
+            if (!inBounds(nr, nc) || board[nr][nc] != player) break;
+            cnt++;
+        }
+        // Backward
+        for (int k = 1; k < 5; k++) {
+            int nr = r - dr * k, nc = c - dc * k;
+            if (!inBounds(nr, nc) || board[nr][nc] != player) break;
+            cnt++;
+        }
+        if (cnt >= 5) return true;
+    }
+    return false;
+}
+
+// Tính điểm chi tiết cho một hướng (Dùng cho hàm evaluate)
+long long scoreDirectionBoss(char board[N][N], int r, int c, int dr, int dc, char player) {
+    int cnt = 1;
+    int openEnds = 0;
+
+    // Forward
+    for (int k = 1; k < 5; k++) {
+        int nr = r + dr * k, nc = c + dc * k;
+        if (!inBounds(nr, nc)) break;
+        if (board[nr][nc] == player) cnt++;
+        else {
+            if (board[nr][nc] == '-') openEnds++;
+            break;
+        }
+    }
+    // Backward
+    for (int k = 1; k < 5; k++) {
+        int nr = r - dr * k, nc = c - dc * k;
+        if (!inBounds(nr, nc)) break;
+        if (board[nr][nc] == player) cnt++;
+        else {
+            if (board[nr][nc] == '-') openEnds++;
+            break;
+        }
+    }
+
+    if (cnt >= 5) return SCORE_BY_COUNT[5];
+    if (openEnds == 0 && cnt < 5) return 0;
+
+    long long base = SCORE_BY_COUNT[std::min(5, cnt)];
+    if (openEnds == 2) base *= 2;        // 2 đầu mở -> Ngon
+    else if (openEnds == 1) base = (base * 3) / 2; // 1 đầu mở -> Tạm
+
+    return base;
+}
+
+// Đánh giá sơ bộ một nước đi (Heuristic) để lọc Candidates
+long long evaluateMoveScore(char board[N][N], int r, int c, char aiChar, char humanChar) {
+    if (!inBounds(r, c) || board[r][c] != '-') return 0;
+
+    // Giả lập AI đi
+    long long total = 0;
+    board[r][c] = aiChar;
+    const int dirs[4][2] = { {0,1},{1,0},{1,1},{1,-1} };
+    for (int d = 0; d < 4; ++d) {
+        total += scoreDirectionBoss(board, r, c, dirs[d][0], dirs[d][1], aiChar);
+    }
+    board[r][c] = '-';
+
+    // Giả lập Human đi (để tính điểm chặn)
+    board[r][c] = humanChar;
+    long long totalBlock = 0;
+    for (int d = 0; d < 4; ++d) {
+        totalBlock += scoreDirectionBoss(board, r, c, dirs[d][0], dirs[d][1], humanChar);
+    }
+    board[r][c] = '-';
+
+    // Tổng điểm = Công + Thủ * Hệ số (Ưu tiên thủ)
+    return total + totalBlock * 2;
+}
+
+// Đánh giá toàn bộ bàn cờ (Leaf node evaluation)
+long long evaluateBoardBoss(char board[N][N], char aiChar, char humanChar) {
+    long long attack = 0, defense = 0;
+
+    // Chỉ quét những ô có quân cờ để tối ưu
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            if (board[i][j] == aiChar) {
+                const int dirs[4][2] = { {0,1},{1,0},{1,1},{1,-1} };
+                for (int d = 0; d < 4; ++d) attack += scoreDirectionBoss(board, i, j, dirs[d][0], dirs[d][1], aiChar);
+            }
+            else if (board[i][j] == humanChar) {
+                const int dirs[4][2] = { {0,1},{1,0},{1,1},{1,-1} };
+                for (int d = 0; d < 4; ++d) defense += scoreDirectionBoss(board, i, j, dirs[d][0], dirs[d][1], humanChar);
+            }
+        }
+    }
+    return attack - defense * 2; // AI sợ thua nên trọng số thủ cao hơn
+}
+
+// Tìm các nước đi ứng viên (Chỉ tìm xung quanh các quân đã đánh)
+vector<pair<int, int>> generateCandidates(char board[N][N]) {
+    bool mark[BOARD_SIZE][BOARD_SIZE] = { false };
+    vector<pair<int, int>> candidates;
+
+    bool anyStone = false;
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            if (board[i][j] != '-') {
+                anyStone = true;
+                // Quét bán kính xung quanh quân cờ
+                for (int dr = -SEARCH_RADIUS; dr <= SEARCH_RADIUS; ++dr) {
+                    for (int dc = -SEARCH_RADIUS; dc <= SEARCH_RADIUS; ++dc) {
+                        int nr = i + dr, nc = j + dc;
+                        if (inBounds(nr, nc) && board[nr][nc] == '-' && !mark[nr][nc]) {
+                            mark[nr][nc] = true;
+                            candidates.push_back({ nr, nc });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Nếu bàn cờ trống, đánh vào giữa
+    if (!anyStone) {
+        candidates.push_back({ BOARD_SIZE / 2, BOARD_SIZE / 2 });
+    }
+    return candidates;
+}
+
+// Lọc và sắp xếp ứng viên (Move Ordering) để Minimax cắt tỉa tốt hơn
+vector<pair<int, int>> selectTopCandidates(char board[N][N], vector<pair<int, int>>& raw, char aiChar, char humanChar) {
+    vector<Move> scored;
+    scored.reserve(raw.size());
+
+    for (auto& p : raw) {
+        long long score = evaluateMoveScore(board, p.first, p.second, aiChar, humanChar);
+        scored.push_back(Move(p.first, p.second, score));
+    }
+
+    // Sắp xếp điểm từ cao xuống thấp
+    std::sort(scored.begin(), scored.end(), [](const Move& a, const Move& b) {
+        return a.score > b.score;
+        });
+
+    vector<pair<int, int>> out;
+    int limit = std::min((int)scored.size(), MAX_CANDIDATES);
+    for (int i = 0; i < limit; i++) {
+        out.push_back({ scored[i].r, scored[i].c });
+    }
+    return out;
+}
+
+// Hàm Minimax đệ quy với Alpha-Beta Pruning
+long long minimax_boss(char board[N][N], int depth, long long alpha, long long beta, bool maximizingPlayer, char aiChar, char humanChar) {
+    if (depth == 0) return evaluateBoardBoss(board, aiChar, humanChar);
+
+    // 1. Tạo và lọc nước đi
+    vector<pair<int, int>> raw = generateCandidates(board);
+    if (raw.empty()) return 0;
+    vector<pair<int, int>> candidates = selectTopCandidates(board, raw, aiChar, humanChar);
+
+    if (maximizingPlayer) {
+        long long maxEval = -LLONG_MAX;
+        for (auto& mv : candidates) {
+            int r = mv.first, c = mv.second;
+            board[r][c] = aiChar;
+
+            // Check win ngay lập tức
+            if (isWin(board, r, c, aiChar)) {
+                board[r][c] = '-';
+                return SCORE_BY_COUNT[5];
+            }
+
+            long long eval = minimax_boss(board, depth - 1, alpha, beta, false, aiChar, humanChar);
+            board[r][c] = '-'; // Backtrack
+
+            maxEval = std::max(maxEval, eval);
+            alpha = std::max(alpha, eval);
+            if (beta <= alpha) break; // Beta Cut-off
+        }
+        return maxEval;
+    }
+    else {
+        long long minEval = LLONG_MAX;
+        for (auto& mv : candidates) {
+            int r = mv.first, c = mv.second;
+            board[r][c] = humanChar;
+
+            // Check human win
+            if (isWin(board, r, c, humanChar)) {
+                board[r][c] = '-';
+                return -SCORE_BY_COUNT[5];
+            }
+
+            long long eval = minimax_boss(board, depth - 1, alpha, beta, true, aiChar, humanChar);
+            board[r][c] = '-'; // Backtrack
+
+            minEval = std::min(minEval, eval);
+            beta = std::min(beta, eval);
+            if (beta <= alpha) break; // Alpha Cut-off
+        }
+        return minEval;
+    }
+}
+
+// ================= ENTRY POINT CHO HARD MODE =================
+// Hàm này thay thế getSmartMove cũ
+void getSmartMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer) {
+    char humanPlayer = (aiPlayer == 'X') ? 'O' : 'X';
+
+    // 1. Lấy danh sách nước đi tiềm năng
+    vector<pair<int, int>> raw = generateCandidates(board);
+
+    // Nếu bàn cờ trống hoặc không có nước đi
+    if (raw.empty()) {
+        bestRow = BOARD_SIZE / 2;
+        bestCol = BOARD_SIZE / 2;
+        return;
+    }
+
+    // 2. Lọc Top K nước đi tốt nhất để tính Minimax
+    vector<pair<int, int>> candidates = selectTopCandidates(board, raw, aiPlayer, humanPlayer);
+
+    long long bestVal = -LLONG_MAX;
+    pair<int, int> bestMove = candidates[0]; // Mặc định chọn cái đầu tiên nếu tính toán fail
+
+    // 3. Chạy vòng lặp Minimax cho từng candidate
+    for (auto& mv : candidates) {
+        int r = mv.first;
+        int c = mv.second;
+
+        board[r][c] = aiPlayer;
+
+        // Nếu nước này thắng luôn thì chọn ngay
+        if (isWin(board, r, c, aiPlayer)) {
+            board[r][c] = '-';
+            bestRow = r; bestCol = c;
+            return;
+        }
+
+        // Gọi để quy
+        long long val = minimax_boss(board, MINIMAX_DEPTH - 1, -LLONG_MAX, LLONG_MAX, false, aiPlayer, humanPlayer);
+
+        // Cộng thêm điểm heuristic cơ bản để phân biệt các nước đi có cùng điểm Minimax
+        long long base = evaluateMoveScore(board, r, c, aiPlayer, humanPlayer);
+        val += base / 10;
+
+        board[r][c] = '-'; // Hoàn tác
+
+        if (val > bestVal) {
+            bestVal = val;
+            bestMove = { r, c };
+        }
+    }
+
+    bestRow = bestMove.first;
+    bestCol = bestMove.second;
+}
+
+// Các hàm phụ trợ cũ cho Minimax (nếu cần giữ để tương thích file .h, 
+// nhưng ở đây ta đã thay thế logic bên trong getSmartMove rồi)
+bool isRelevantMove(int r, int c, char board[N][N]) {
+    // Hàm này giữ lại để file AI.h không bị lỗi link, 
+    // nhưng logic thực tế đã được chuyển vào generateCandidates
+    return true;
+}
+
+long long evaluateBoardState(char board[N][N], char aiPlayer) {
+    char humanPlayer = (aiPlayer == 'X') ? 'O' : 'X';
+    return evaluateBoardBoss(board, aiPlayer, humanPlayer);
+}
+
+long long minimax(char board[N][N], int depth, bool isMaximizing, long long alpha, long long beta, char aiPlayer) {
+    char humanPlayer = (aiPlayer == 'X') ? 'O' : 'X';
+    return minimax_boss(board, depth, alpha, beta, isMaximizing, aiPlayer, humanPlayer);
+}

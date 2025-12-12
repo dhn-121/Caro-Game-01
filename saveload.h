@@ -6,9 +6,16 @@
 #include <fstream>
 #include <string>
 #include <direct.h>// library create directory
-void saveGame(const std::string& filename, char board[][15], char currentPlayer, int timeMinutes, int timeSeconds);
-bool loadGame(const std::string& filename, char board[][15], char& currentPlayer, int& timeMinutes, int& timeSeconds);
+bool saveGame();
+bool loadGame();
 void drawSaveLoadScreen(int Width, int Height);
+bool customInput(std::string& result,int maxsize);
 bool checkFileExists(const std::string& filename);
+bool getfilename(std::string& filename);
+void loadproductfile();
+bool loadactive();
+void loadGameScreen();
+void loadGameMenu();
+void saveGameScreen();
 #endif
 // progame savedgame caro

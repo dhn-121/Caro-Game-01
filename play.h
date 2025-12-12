@@ -3,5 +3,17 @@
 #define _PLAY_H_
 #include "Library.h"
 using namespace std;
-int GamePlay(char default_player, char name1[], char name2[], char min[], char sec[], std::string filename,bool isload);
+void drawContinueGameScreen(int iscontinue);
+void GamePlay(int typegame);
+void AiGamePlay(int typegame);
+
+
+extern int score_X;
+extern int score_O;
+extern std::string filename;
+extern int count_moves;
+extern char currentPlayer;
+extern string name1;
+extern string name2;
+extern int difficulty;
 #endif

@@ -1,106 +1,95 @@
-﻿#include "Library.h"
-//test xem có ai chiến thắng không
+#include"Library.h"
 int main()
-{
-	playBackgroundMusic();  // music background
-	// 1. create fixed console window
-	fixConsoleWindow(ConsoleWidth, ConsoleHeight);
-	// 2. the default values
+{	
+	initializeBGM();
+	playBackgroundMusic(); // phát nhạc nền menu
+	// 1. Khởi tạo và Cố định Cửa sổ
+	fixConsoleWindow(ConsoleWidth,ConsoleHeight);
+	// 2. Định nghĩa các biến cần thiết cho game
 	char default_player = 'X';
-	char name1[] = "Player 1 (X)";
-	char name2[] = "Player 2 (O)";
-	char min[] = "05";
-	char sec[] = "00";
+	name1 = "Player 1 (X)";
+	name2= "Player 2 (O)";
+	// char min[] = "05";
+	// char sec[] = "00";
 	std::string filename = "caro_save_01.txt";
 
 	int choice;
-	int x = xbegin;
-	int y = ybegin;
-	//the flag to check load game or not
-	bool isload = false;
+	// int x = xbegin;
+	// int y = ybegin;
+	// Vòng lặp chính của chương trình để quay lại Menu
+	std::string load_filename;
+	score_X = 0;
+	score_O = 0;
+	difficulty = 4;
 	drawLoadingScreen();
-	// the main loop for menu
 	do
 	{
-		fixviewConsoleWindow();
+		fixConsoleWindow(ConsoleWidth, ConsoleHeight);
 		system("cls");
 		drawMenuScreen();
 		// Gọi hàm điều khiển Menu và lấy lựa chọn
 		choice = ControlMenu();
-
+		
 		// 4. Xử lý lựa chọn
 		switch (choice) {
 		case 1: // Play Game
-		{
 			// Chuyển sang màn hình chơi game
-			fixviewConsoleWindow();
-			drawGamePlayScreen(default_player, name1, name2, min, sec, filename);
-			calculateStartPos();
-			x = xbegin;
-			y = ybegin;
-			stopBackgroundMusic(); // tắt nhạc menu
-			playGameplayMusic();
-			//cout << Xi << " " << Yi;
-			for (int i = 0; i < N; i++)
+		{
+			// Call the mode selection menu
+		modescreen:
+			setColor(backgroundcolor, fontcolor);
+			int mode = ControlGameMode();
+			int canplay = 0;
+			if (mode == 0) // PvP
 			{
-				for (int j = 0; j < N; j++)
+				canplay = drawNameScreen(name1, name2, mode);
+				if (canplay == 1)
 				{
-					board[i][j] = ' ';
+					difficulty = 4;
+					score_O = 0;
+					score_X = 0;
+					filename = "caro_save_01.txt";
+					GamePlay(0);
 				}
+				else
+					goto modescreen;
 			}
-			int count_moves = 0;
-			while (true)
+			else if (mode == 1) // PvE Mode
 			{
-				int type = isNextMove();
-				if (type == -1)break;
-				char player_main = check_XO();
-				if (type == 0)
+				//int diff = ControlDifficulty();
+				canplay = drawNameScreen(name1, name2, mode);
+				if (canplay == 1)
 				{
-					count_moves++;
-					MakeMove(player_main, x, y);
-					int i, j;
-					getij(i, j, x, y);
-					if (check_iswin(i, j, board))
+					int diff = ControlDifficulty();
+					// Nếu chọn Easy(0), Normal(1), hoặc Hard(2) thì vào game
+					// Nếu chọn Back(3) thì không làm gì (tự quay lại vòng lặp menu)
+					score_O = 0;
+					score_X = 0;
+					filename = "caro_save_01.txt";
+					currentPlayer = player_X;
+					if (diff != 3)
 					{
-						system("cls");
-						setColor(0, 15);
-						if (player_main == 'X') {
-							drawX_WIN(Xi + 9, Yi - 1);
-							stopGameplayMusic();
-							playWinSound();
-						}
-						else {
-							drawO_WIN(Xi + 9, Yi - 1);
-							stopGameplayMusic();
-							playWinSound();
-						}
-						//return;
-						break;
-					}
-					else if (check_isdraw(count_moves)) // <--- THÊM KHỐI NÀY
-					{
-						system("cls");
-						drawDRAW(Xi + 9, Yi - 1);
-						stopGameplayMusic();
-						playDrawSound();
-						break; // Thoát game
+						difficulty = diff;
+						AiGamePlay(0);
 					}
 				}
-				else Movexy(x, y, type);
+				else
+					goto modescreen;
 			}
-			cin.ignore();
-			count_moves = 0;
-			choice = 0; // Exit sau khi kết thúc game
-			stopGameplayMusic();
-			playBackgroundMusic();
-			break;
 		}
+		break;
 
 		case 2: // Saved Files
 			system("cls");
-			drawLOAD_GAME(Xi - 8, Yi - 1);
-			cin.ignore();
-			cin.get();
+			if (loadactive())
+			{
+				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 3);
+				cout << "Game loaded successfully! Returning to game...";
+				Sleep(2000);
+				GamePlay(1);
+			}
+			//cin.ignore();
+			//cin.get();
 			break;
 
 		case 3: // Settings
@@ -109,9 +98,8 @@ int main()
 			break;
 
 		case 4: // About Us
-			drawAboutUsScreen();
-			cin.ignore();
-			cin.get();
+			displayHelp(createQAList(), 0);
+			ControlHelp();
 			break;
 
 		case 5: // Exit
@@ -119,9 +107,9 @@ int main()
 			break;
 		}
 	} while (choice != 5);
-
 	system("cls");
 	setPos(0, 0);
 	cout << "Exit Game. Goodbye!" << endl;
 	return 0;
 }
+

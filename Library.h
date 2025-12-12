@@ -1,6 +1,9 @@
+#pragma comment(lib, "winmm.lib")
 #pragma once
 #ifndef _LIBRARY_H_
 #define _LIBRARY_H_
+
+#define NOMINMAX
 // Include all necessary headers
 #include "board.h"
 #include "Console.h"
@@ -10,6 +13,9 @@
 #include "Sound.h"
 #include "saveload.h"
 #include "play.h"
+#include "Character.h"
+#include "AI.h"
+#include "help.h"
 
 // Standard library headers
 #include <iostream>
@@ -23,6 +29,22 @@
 #include <cstdlib>
 #include <vector>
 #include <mmsystem.h>
-
+#include <algorithm>
+#include <climits>
+#include <fstream>
+#include <direct.h>
+#include <cstring>
+#include <sstream>
+#include <iomanip>
+#include <random>
+#include <map>
+#include <functional>
+#include <stack>
+#include <queue>
+#include <set>
+#include <cmath>
+#include <fcntl.h> 
+#include <io.h>    
+#include <cwchar>
 
 #endif

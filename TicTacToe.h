@@ -15,10 +15,10 @@
     extern char player_O;
     extern int count_X;
     extern int count_O;
-    const int N = BOARD_SIZE +2;
+    #define N  BOARD_SIZE +2
     extern char board[N][N];
     bool ValidMove(int row, int col);
-    void MakeMove(char player, int row, int col);
+    bool MakeMove(char player, int row, int col);
     char check_XO();
     
 #endif
