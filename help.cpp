@@ -18,7 +18,7 @@ vector<QAPair> createQAList() {
         },
         {
             "How do I save or load the game?",
-            "* To SAVE your current game, press 'L' (Load).\n* To LOAD a saved game, press 'T' (Save)."
+            "* To SAVE your current game, press 'L'.\n* To LOAD a saved game, press 'T'."
         },
         {
             "How do I turn on/off the sound?",
@@ -265,4 +265,5 @@ void ControlHelp() {
             }
         }
     }
+
 }
