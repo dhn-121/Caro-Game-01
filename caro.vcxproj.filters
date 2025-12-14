@@ -54,9 +54,6 @@
     <ClCompile Include="help.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="language.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h">
@@ -90,9 +87,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="help.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="language.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

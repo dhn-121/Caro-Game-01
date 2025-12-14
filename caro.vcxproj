@@ -127,7 +127,6 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="help.cpp" />
-    <ClCompile Include="language.cpp" />
     <ClCompile Include="maincaro.cpp" />
     <ClCompile Include="play.cpp" />
     <ClCompile Include="play.h" />
@@ -143,7 +142,6 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="help.h" />
-    <ClInclude Include="language.h" />
     <ClInclude Include="Library.h" />
     <ClInclude Include="saveload.h" />
     <ClInclude Include="Sound.h" />
