@@ -1,17 +1,17 @@
 #include"Library.h"
 int main()
 {	
-	SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
 	initializeBGM();
 	playBackgroundMusic(); // phát nhạc nền menu
 	// 1. Khởi tạo và Cố định Cửa sổ
 	fixConsoleWindow(ConsoleWidth,ConsoleHeight);
 	// 2. Định nghĩa các biến cần thiết cho game
 	char default_player = 'X';
+	//name1 = "Player 1 (X)";
+	//name2= "Player 2 (O)";
 	// char min[] = "05";
 	// char sec[] = "00";
-	std::string filename = "caro_save_01.txt";
+	/*std::string filename = "caro_save_01.txt";*/
 
 	int choice;
 	// int x = xbegin;
@@ -36,9 +36,9 @@ int main()
 			// Chuyển sang màn hình chơi game
 		{
 			// Call the mode selection menu
-			modescreen:
-				setColor(backgroundcolor, fontcolor);
-				int mode = ControlGameMode();
+		modescreen:
+			setColor(backgroundcolor, fontcolor);
+			int mode = ControlGameMode();
 			int canplay = 0;
 			if (mode == 0) // PvP
 			{
@@ -48,10 +48,10 @@ int main()
 					difficulty = 4;
 					score_O = 0;
 					score_X = 0;
-					filename = "caro_save_01.txt";
+					/*filename = "caro_save_01.txt";*/
 					GamePlay(0);
 				}
-				else 
+				else
 					goto modescreen;
 			}
 			else if (mode == 1) // PvE Mode
@@ -65,7 +65,7 @@ int main()
 					// Nếu chọn Back(3) thì không làm gì (tự quay lại vòng lặp menu)
 					score_O = 0;
 					score_X = 0;
-					filename = "caro_save_01.txt";
+					/*filename = "caro_save_01.txt";*/
 					currentPlayer = player_X;
 					if (diff != 3)
 					{
@@ -73,7 +73,7 @@ int main()
 						AiGamePlay(0);
 					}
 				}
-				else 
+				else
 					goto modescreen;
 			}
 		}
@@ -99,9 +99,8 @@ int main()
 
 		case 4: // About Us
 			system("cls");
-			drawHelpScreen();
-			cin.ignore();
-			cin.get();
+			displayHelp(createQAList(), 0);
+			ControlHelp();
 			break;
 
 		case 5: // Exit
@@ -114,3 +113,4 @@ int main()
 	cout << "Exit Game. Goodbye!" << endl;
 	return 0;
 }
+

@@ -8,17 +8,17 @@ bool saveGame()
 	_mkdir("save");
 
 	// add path "save/" to filename
-	string fullPath = "save/" + filename+".txt";
+	string fullPath = "save/" + filename + ".txt";
 
 	ofstream outFile(fullPath.c_str()); // .c_str() to convert string to const char*
-	setPos((ConsoleWidth) / 2-20, (ConsoleHeight) / 2 + 3);
+	setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 3);
 
 	if (!outFile) {
-		cerr << "Error creating file " << fullPath << endl;
+		cerr << T("Error creating file ") << fullPath << endl;
 		return 0;
 	}
 
-	for (int i = 0; i <N; ++i) {
+	for (int i = 0; i < N; ++i) {
 		for (int j = 0; j < N; ++j) {
 			outFile << board[i][j];
 		}
@@ -30,7 +30,7 @@ bool saveGame()
 	outFile << name2 << endl;
 	outFile << difficulty << endl;
 	outFile.close();
-	cout << "Game saved successfully to " << fullPath << endl;
+	cout << T("Game saved successfully to ") << fullPath << endl;
 	return true;
 }
 
@@ -41,7 +41,7 @@ bool loadGame()
 
 	ifstream inFile(fullPath.c_str());
 	if (!inFile) {
-		cerr << "file not found" << fullPath << endl;
+		cerr << T("file not found") << fullPath << endl;
 		return false;
 	}
 
@@ -63,10 +63,11 @@ bool loadGame()
 void drawSaveLoadScreen(int Width, int Height)
 {
 	system("cls");
-	//setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 - 2);
-	setPos((ConsoleWidth - 20) / 2 - 10, (ConsoleHeight) / 2 - 4);
-	cout << "Enter filename (without .txt extension) ";
-	cout << "max 100 characters";
+	setColor(backgroundcolor, fontcolor);
+	drawSAVELOAD((ConsoleWidth - 65) / 2, ConsoleHeight * 7 / 100);
+	setPos((ConsoleWidth - 53) / 2, (ConsoleHeight) / 2 - 4);
+	cout << T("Enter filename (without .txt extension) ");
+	cout << T("max 100 characters");
 	setColor(backgroundcolor, fontcolor);
 	int boxWidth = Width - 18;
 	int boxHeight = 3;
@@ -83,7 +84,7 @@ bool checkFileExists(std::string& filename)
 	return inFile.good();
 }
 // --- HÀM PHỤ TRỢ: Chuyển wstring (Unicode) sang string (UTF-8) ---
-std::string WStringToString(const std::wstring & wstr)
+std::string WStringToString(const std::wstring& wstr)
 {
 	if (wstr.empty()) return std::string();
 	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
@@ -92,82 +93,76 @@ std::string WStringToString(const std::wstring & wstr)
 	return strTo;
 }
 
-// --- HÀM CUSTOM INPUT (Hỗ trợ tiếng Việt) ---
-bool customInput(string& result,int maxsize) {
-	ShowConsoleCursor(true);
+// --- HÀM PHỤ TRỢ: Chuyển string (UTF-8) sang wstring (Unicode) ---
+std::wstring StringToWString(const std::string& str)
+{
+	if (str.empty()) return std::wstring();
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+	std::wstring wstrTo(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+	return wstrTo;
+}
 
-	wstring wResult = L"";
-	int index = 0;
+// --- HÀM CUSTOM INPUT (Hỗ trợ tiếng Việt) ---
+bool customInput(string& result, int maxsize)
+{
+	ShowConsoleCursor(true);
+	result = "";
+	wstring wResult = StringToWString(result);
+	int index = wResult.length();
 	COORD startPos = getCursorPos();
 
 	HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
 	INPUT_RECORD InRec;
 	DWORD NumRead;
 
+	setPos(startPos.X, startPos.Y);
+	cout << WStringToString(wResult);
+
 	while (true) {
-		// Đọc sự kiện bàn phím
 		ReadConsoleInputW(hIn, &InRec, 1, &NumRead);
 
-		// Chỉ xử lý khi phím được NHẤN XUỐNG
 		if (InRec.EventType == KEY_EVENT && InRec.Event.KeyEvent.bKeyDown) {
 
-			WORD vk = InRec.Event.KeyEvent.wVirtualKeyCode; // Mã phím ảo
-			WCHAR wc = InRec.Event.KeyEvent.uChar.UnicodeChar; // Ký tự văn bản
+			WORD vk = InRec.Event.KeyEvent.wVirtualKeyCode;
+			WCHAR wc = InRec.Event.KeyEvent.uChar.UnicodeChar;
 
-			// --- QUAN TRỌNG: Bỏ qua các phím chức năng đơn lẻ ---
-			// Nếu chỉ bấm Shift/Ctrl/Alt/CapsLock mà không kèm ký tự, bỏ qua ngay
-			// để tránh nó lọt xuống dưới làm nhiễu logic.
-			if (vk == VK_SHIFT || vk == VK_CONTROL || vk == VK_MENU || vk == VK_CAPITAL || vk == VK_LWIN || vk == VK_RWIN) {
+			if (vk == VK_SHIFT || vk == VK_CONTROL || vk == VK_MENU ||
+				vk == VK_CAPITAL || vk == VK_LWIN || vk == VK_RWIN)
 				continue;
-			}
 
-			// 1. ESC: Hủy bỏ
 			if (vk == VK_ESCAPE) {
 				result = "";
 				return false;
 			}
-			// 2. ENTER: Xác nhận
 			else if (vk == VK_RETURN) {
 				playClickSound();
 				result = WStringToString(wResult);
 				return true;
 			}
-			// 3. BACKSPACE: Xóa ký tự
-			// Thêm điều kiện (wc == 8) để bắt được Backspace do Unikey gửi kể cả khi đang đè Shift
-			else if (vk == VK_BACK || wc == 8) {
-				if (index > 0 && wResult.length() > 0) {
+			else if (vk == VK_BACK) {
+				if (index > 0) {
 					wResult.erase(index - 1, 1);
 					index--;
-
 					setPos(startPos.X, startPos.Y);
-					cout << WStringToString(wResult) << " "; // Xóa ký tự thừa
+					cout << WStringToString(wResult) << " ";
 					setPos(startPos.X + index, startPos.Y);
 				}
 			}
-			// 4. MŨI TÊN TRÁI
-			else if (vk == VK_LEFT) {
-				playMoveSound();
-				if (index > 0) {
-					index--;
-					setPos(startPos.X + index, startPos.Y);
-				}
+			else if (vk == VK_LEFT && index > 0) {
+				index--;
+				setPos(startPos.X + index, startPos.Y);
 			}
-			// 5. MŨI TÊN PHẢI
-			else if (vk == VK_RIGHT) {
-				playMoveSound();
-				if (index < wResult.length()) {
-					index++;
-					setPos(startPos.X + index, startPos.Y);
-				}
+			else if (vk == VK_RIGHT && index < wResult.length()) {
+				index++;
+				setPos(startPos.X + index, startPos.Y);
 			}
-			// 6. KÝ TỰ VĂN BẢN (Tiếng Việt, In hoa, Thường...)
-			else if (wc >= 32) {
-				playMoveSound();
-				if(maxsize>0 && wResult.length()>=maxsize)
+			else if (wc != 0 && iswprint(wc)) {
+				if (maxsize > 0 && wResult.length() >= maxsize)
 					continue;
+
 				wResult.insert(index, 1, wc);
 				index++;
-
 				setPos(startPos.X, startPos.Y);
 				cout << WStringToString(wResult);
 				setPos(startPos.X + index, startPos.Y);
@@ -175,11 +170,79 @@ bool customInput(string& result,int maxsize) {
 		}
 	}
 }
+
+bool customInput2(string& result, int maxsize)
+{
+	ShowConsoleCursor(true);
+
+	wstring wResult = StringToWString(result);
+	int index = wResult.length();
+	COORD startPos = getCursorPos();
+
+	HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+	INPUT_RECORD InRec;
+	DWORD NumRead;
+
+	setPos(startPos.X, startPos.Y);
+	cout << WStringToString(wResult);
+
+	while (true) {
+		ReadConsoleInputW(hIn, &InRec, 1, &NumRead);
+
+		if (InRec.EventType == KEY_EVENT && InRec.Event.KeyEvent.bKeyDown) {
+
+			WORD vk = InRec.Event.KeyEvent.wVirtualKeyCode;
+			WCHAR wc = InRec.Event.KeyEvent.uChar.UnicodeChar;
+
+			if (vk == VK_SHIFT || vk == VK_CONTROL || vk == VK_MENU ||
+				vk == VK_CAPITAL || vk == VK_LWIN || vk == VK_RWIN)
+				continue;
+
+			if (vk == VK_ESCAPE) {
+				result = "";
+				return false;
+			}
+			else if (vk == VK_RETURN) {
+				playClickSound();
+				result = WStringToString(wResult);
+				return true;
+			}
+			else if (vk == VK_BACK) {
+				if (index > 0) {
+					wResult.erase(index - 1, 1);
+					index--;
+					setPos(startPos.X, startPos.Y);
+					cout << WStringToString(wResult) << " ";
+					setPos(startPos.X + index, startPos.Y);
+				}
+			}
+			else if (vk == VK_LEFT && index > 0) {
+				index--;
+				setPos(startPos.X + index, startPos.Y);
+			}
+			else if (vk == VK_RIGHT && index < wResult.length()) {
+				index++;
+				setPos(startPos.X + index, startPos.Y);
+			}
+			else if (wc != 0 && iswprint(wc)) {
+				if (maxsize > 0 && wResult.length() >= maxsize)
+					continue;
+
+				wResult.insert(index, 1, wc);
+				index++;
+				setPos(startPos.X, startPos.Y);
+				cout << WStringToString(wResult);
+				setPos(startPos.X + index, startPos.Y);
+			}
+		}
+	}
+}
+
 bool getfilename(std::string& filename)
 {
 	setPos(10, (ConsoleHeight - 3) / 2 + 1);
 	filename.clear();
-	return customInput(filename,100);
+	return customInput(filename, 100);
 }
 
 void loadproductfile()
@@ -193,13 +256,9 @@ void loadproductfile()
 			for (int j = 0; j < N; j++)
 			{
 				if (board[i][j] == '-')continue;
-				int row, col;
-				getxy(row, col, i, j);
-				setPos(row, col);
-				cout << board[i][j];
-				if(board[i][j]=='X')
+				if (board[i][j] == 'X')
 					count_X++;
-				else if(board[i][j]=='O')
+				else if (board[i][j] == 'O')
 					count_O++;
 			}
 		}
@@ -209,15 +268,15 @@ void loadproductfile()
 bool loadactive()
 {
 	drawSaveLoadScreen(ConsoleWidth, ConsoleHeight);
-	if(getfilename(filename) == 0)
+	if (getfilename(filename) == 0)
 		return 0;
 	while (checkFileExists(filename) == false)
 	{
 		setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 2);
-		cout << "File not found. Try again:          ";
+		cout << T("File not found. Try again:          ");
 		setPos(22, (ConsoleHeight - 3) / 2 + 1);
 		cout << "                                                                                       ";
-		if(getfilename(filename) == 0)
+		if (getfilename(filename) == 0)
 			return 0;
 	}
 	return 1;
@@ -233,9 +292,9 @@ void loadGameScreen()
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 2);
 		cout << "                                                   ";
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 3);
-		cout << "Game loaded successfully! Returning to game...";
+		cout << T("Game loaded successfully! Returning to game...");
 		Sleep(2000);
-		if(difficulty==4)
+		if (difficulty == 4)
 			GamePlay(1);
 		else
 			AiGamePlay(1);
@@ -243,9 +302,9 @@ void loadGameScreen()
 	else
 	{
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 2);
-		cout << "Failed to load game. Returning to current game...";
+		cout << T("Failed to load game. Returning to current game...");
 		Sleep(2000);
-		if(difficulty==4)
+		if (difficulty == 4)
 			GamePlay(3);
 		else
 			AiGamePlay(3);
@@ -261,7 +320,7 @@ void loadGameMenu()
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 2);
 		cout << "                                                   ";
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 3);
-		cout << "Game loaded successfully! Returning to game...";
+		cout << T("Game loaded successfully! Returning to game...");
 		Sleep(2000);
 		if (difficulty == 4)
 			GamePlay(1);
@@ -279,16 +338,16 @@ void saveGameScreen()
 	if (getfilename(save_filename) == 0)
 	{
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
-		cout << "Save cancelled. Returning to game...";
+		cout << T("Save cancelled. Returning to game...");
 		Sleep(2000);
 		GamePlay(3);
 	}
 	saveGame();
 	setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
-	cout << "Game saved successfully! Returning to menu...";
+	cout << T("Game saved successfully! Returning to menu...");
 	Sleep(2000);
 	//GamePlay(currentPlayer, name1, name2, filename, 3);
-	if(difficulty==4)
+	if (difficulty == 4)
 		GamePlay(3);
 	else
 		AiGamePlay(3);

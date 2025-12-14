@@ -11,6 +11,7 @@
     void drawU(int XX, int YY);
     void drawT(int XX, int YY);
     void drawL(int XX, int YY);
+    void drawL(int XX, int YY);
     void drawD(int XX, int YY);
     void drawG(int XX, int YY);
     void drawM(int XX, int YY);
@@ -21,9 +22,7 @@
     void drawP(int XX, int YY);
     void drawX(int XX, int YY, int co_txt);
     void drawI(int XX, int YY);
-    void drawS(int XX, int YY);
-    void drawV(int XX, int YY);
-
+	void drawS(int XX, int YY);
     void drawCARO(int XX, int YY);
     void drawABOUT(int XX, int YY);
     void drawLOAD_GAME(int XX, int YY);
@@ -33,15 +32,18 @@
     void drawX_WIN(int XX, int YY);
     void drawO_WIN(int XX, int YY);
     void drawDRAW(int XX, int YY);
-	void drawGAME_MODE(int XX, int YY);
-    void drawSAVELOAD(int XX, int YY);
-    void drawPAUSE(int XX, int YY);
     void drawSETTING(int XX, int YY);
-
+	void drawGAME_MODE(int XX, int YY);
     void drawDino(int XX, int YY);
-    void drawCactus(int XX, int YY);
-    void drawMiniDino(int XX, int YY);
-    void drawMiniCactus(int XX, int YY);
+	void drawV(int XX, int YY);
+	void drawPAUSE(int XX, int YY);
+	void drawSAVELOAD(int XX, int YY);
+	void drawMiniDino(int XX, int YY);
+	void drawMiniCactus(int XX, int YY);
+	void drawCactus(int XX, int YY);
+	void drawSTART(int XX, int YY);
+	void drawSELECT_MODE(int XX, int YY);
+	void drawLEVEL(int XX, int YY);
 
 
 #endif

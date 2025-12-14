@@ -10,6 +10,7 @@ bool saveGame();
 bool loadGame();
 void drawSaveLoadScreen(int Width, int Height);
 bool customInput(std::string& result,int maxsize);
+bool customInput2(std::string& result, int maxsize);
 bool checkFileExists(const std::string& filename);
 bool getfilename(std::string& filename);
 void loadproductfile();

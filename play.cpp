@@ -8,9 +8,9 @@ std::string filename;
 void resetGameVariables()
 {
 	currentPlayer = 'X';
-	name1 = "Player 1";
-	name2 = "Player 2";
-	filename = "caro_save_01.txt";
+	/*name1 = "Player 1";
+	name2 = "Player 2";*/
+	/*filename = "caro_save_01.txt";*/
 	count_moves = 0;
 	count_O = 0;
 	count_X = 0;
@@ -36,7 +36,6 @@ void GamePlay(int typegame)
 	difficulty = 4;
 	ShowConsoleCursor(true);
 	system("cls");
-	drawGamePlayScreen(currentPlayer, name1, name2, filename);
 	int x = xbegin;
 	int y = ybegin;
 	difficulty = 4;
@@ -61,28 +60,43 @@ void GamePlay(int typegame)
 			// Redraw the loaded board
 			loadproductfile();
 		}
-	}else {
-		for (int i = 0; i <N; i++)
+	}if (typegame == 0)
+	{
+		// new game
+		// initialize board
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				board[i][j] = '-';
+		//reset
+		resetGameVariables();
+	}
+	else if (typegame == 1)
+	{
+		// load game
+
+		bool loadSuccess = loadGame();
+		if (loadSuccess)
 		{
-			for (int j = 0; j <N; j++)
-			{
-				if (board[i][j] == '-')continue;
-					int row, col;
-					getxy(row, col,i,j);
-					setPos(row, col);
-					cout << board[i][j];
-			}
+			// Redraw the loaded board
+			loadproductfile();
 		}
 	}
-	if(typegame==1||typegame==2)
+	system("cls");
+	drawGamePlayScreen(currentPlayer, name1, name2, filename);
+	if (typegame == 1 || typegame == 2)
 	{
 		char next_player = check_XO();
 		drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
-		for(int i=0;i<N;i++)
+		for (int i = 0; i < N; i++)
 		{
-			for(int j=0;j<N;j++)
+			for (int j = 0; j < N; j++)
 			{
-				if(board[i][j]!='-')count_moves++;
+				if (board[i][j] == '-')continue;
+				count_moves++;
+				int row, col;
+				getxy(row, col, i, j);
+				setPos(row, col);
+				cout << board[i][j];
 			}
 		}
 	}
@@ -173,12 +187,33 @@ void AiGamePlay(int typegame)
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < N; j++)
 				board[i][j] = '-';
+		//reset
 		resetGameVariables();
-		name2 = "AI (O)";
 	}
 	else if (typegame == 1)
 	{
 		// load game
+
+		bool loadSuccess = loadGame();
+		if (loadSuccess)
+		{
+			// Redraw the loaded board
+			loadproductfile();
+		}
+	}if (typegame == 0)
+	{
+		// new game
+		// initialize board
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				board[i][j] = '-';
+		//reset
+		resetGameVariables();
+	}
+	else if (typegame == 1)
+	{
+		// load game
+
 		bool loadSuccess = loadGame();
 		if (loadSuccess)
 		{
@@ -186,19 +221,8 @@ void AiGamePlay(int typegame)
 			loadproductfile();
 		}
 	}
-	else {
-		for (int i = 0; i < N; i++)
-		{
-			for (int j = 0; j < N; j++)
-			{
-				if (board[i][j] == '-')continue;
-				int row, col;
-				getxy(row, col, i, j);
-				setPos(row, col);
-				cout << board[i][j];
-			}
-		}
-	}
+	system("cls");
+	drawGamePlayScreen(currentPlayer, name1, name2, filename);
 	if (typegame == 1 || typegame == 2)
 	{
 		char next_player = check_XO();
@@ -207,7 +231,12 @@ void AiGamePlay(int typegame)
 		{
 			for (int j = 0; j < N; j++)
 			{
-				if (board[i][j] != '-')count_moves++;
+				if (board[i][j] == '-')continue;
+				count_moves++;
+				int row, col;
+				getxy(row, col, i, j);
+				setPos(row, col);
+				cout << board[i][j];
 			}
 		}
 	}
