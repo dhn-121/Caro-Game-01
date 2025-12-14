@@ -18,6 +18,7 @@ struct QAPair {
 extern int ConsoleWidth;
 extern int ConsoleHeight;
 vector<QAPair> createQAList();
+vector<string> wrapText(const string& text, int maxWidth);
 void displayHelp(const vector<QAPair>& qaList, int selectedIndex);
 void drawBorderOnly(int x, int y, int width, int height);
 string safeTruncate(const string& str, int maxWidth);

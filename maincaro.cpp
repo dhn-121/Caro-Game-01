@@ -7,11 +7,11 @@ int main()
 	fixConsoleWindow(ConsoleWidth,ConsoleHeight);
 	// 2. Định nghĩa các biến cần thiết cho game
 	char default_player = 'X';
-	name1 = "Player 1 (X)";
-	name2= "Player 2 (O)";
+	//name1 = "Player 1 (X)";
+	//name2= "Player 2 (O)";
 	// char min[] = "05";
 	// char sec[] = "00";
-	std::string filename = "caro_save_01.txt";
+	/*std::string filename = "caro_save_01.txt";*/
 
 	int choice;
 	// int x = xbegin;
@@ -48,7 +48,7 @@ int main()
 					difficulty = 4;
 					score_O = 0;
 					score_X = 0;
-					filename = "caro_save_01.txt";
+					/*filename = "caro_save_01.txt";*/
 					GamePlay(0);
 				}
 				else
@@ -65,7 +65,7 @@ int main()
 					// Nếu chọn Back(3) thì không làm gì (tự quay lại vòng lặp menu)
 					score_O = 0;
 					score_X = 0;
-					filename = "caro_save_01.txt";
+					/*filename = "caro_save_01.txt";*/
 					currentPlayer = player_X;
 					if (diff != 3)
 					{
@@ -85,7 +85,7 @@ int main()
 			{
 				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 3);
 				cout << "Game loaded successfully! Returning to game...";
-				Sleep(2000);
+				sleepms(2000);
 				GamePlay(1);
 			}
 			//cin.ignore();
@@ -98,6 +98,7 @@ int main()
 			break;
 
 		case 4: // About Us
+			system("cls");
 			displayHelp(createQAList(), 0);
 			ControlHelp();
 			break;

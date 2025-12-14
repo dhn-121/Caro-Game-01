@@ -41,6 +41,9 @@
 	void drawMiniDino(int XX, int YY);
 	void drawMiniCactus(int XX, int YY);
 	void drawCactus(int XX, int YY);
+	void drawSTART(int XX, int YY);
+	void drawSELECT_MODE(int XX, int YY);
+	void drawLEVEL(int XX, int YY);
 
 
 #endif

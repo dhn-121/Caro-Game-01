@@ -4,28 +4,12 @@ using namespace std;
 
 vector<QAPair> createQAList() {
     vector<QAPair> qaList = {
-        {
-            "Tell me about this game.",
-            "Welcome! This CARO game is the final project of the Fundamentals of Programming course, presented by Group 1 - 25CTT3, University of Science, VNU-HCM.\nThere are 6 people in our group:\n1. Pham Hoang Tuong An\n2. Dinh Ngoc Bich\n3. Phan Van Can\n4. Nguyen Hoang Chau\n5. Truong Thi Ngoc Ha\n6. Do Xuan Huy"
-        },
-        {
-            "How do I make a move?",
-            "You can use the classic WASD controls to navigate the board:\n* W: Move Up\n* A: Move Left\n* S: Move Down\n* D: Move Right"
-        },
-        {
-            "How do I pause the game?",
-            "You can press the ESC key on your keyboard."
-        },
-        {
-            "How do I save or load the game?",
-            "* To SAVE your current game, press 'L' (Load).\n* To LOAD a saved game, press 'T' (Save)."
-        },
-        {
-            "How do I turn on/off the sound?",
-            "On the Menu Screen\n1. Choose 'SETTINGS'.\n2. Use 'W' (Up) and 'S' (Down) to navigate the options.\n3. Press ENTER to toggle the sound on or off."
-        }
+        { T("HELP_Q1"), T("HELP_A1") },
+        { T("HELP_Q2"), T("HELP_A2") },
+        { T("HELP_Q3"), T("HELP_A3") },
+        { T("HELP_Q4"), T("HELP_A4") },
+        { T("HELP_Q5"), T("HELP_A5") }
     };
-
     return qaList;
 }
 struct STATUS
@@ -82,144 +66,136 @@ string safeTruncate(const string& str, int maxWidth) {
     if (str.length() <= maxWidth) return str;
     return str.substr(0, maxWidth);
 }
-
-void displayHelp(const vector<QAPair>& qaList, int selectedIndex) {
-    system("cls");
-    drawHelpScreen();
-    
-    // Tính toán vị trí và kích thước dựa trên ConsoleWidth và ConsoleHeight
-    int consoleW = ConsoleWidth > 0 ? ConsoleWidth : 120;
-    int consoleH = ConsoleHeight > 0 ? ConsoleHeight : 35;
-
-    // Vẽ chữ HELP ở trên cùng, giữa màn hình
-    int helpHeight = 6;
-    int helpWidth = 32;
-    // Tính vị trí cho chữ HELP
-    int helpX = consoleW / 2 - helpWidth / 2;
-    int helpY = 2;  // Cách mép trên 2 dòng
-
-    // Tính toán vị trí bắt đầu của khung (dưới chữ HELP)
-    int boxStartY = helpY + helpHeight + 1;  // Cách chữ HELP 1 dòng
-
-    // Tính toán kích thước cho hai khung
-    int availableHeight = consoleH - boxStartY - 6;  // Trừ không gian cho hướng dẫn ở dưới
-    int boxHeight = min(20, 14);  // Chiều cao tối đa 20 hoặc chiều cao khả dụng
-
-    int leftBoxWidth = 40;  // Chiều rộng cố định cho khung câu hỏi
-    int rightBoxWidth = 60;  // Chiều rộng cố định cho khung câu trả lời
-
-    // Tính toán vị trí ngang cho các khung
-    int leftBoxX = 9;  // Cách lề trái 9 cột
-    int rightBoxX = consoleW - rightBoxWidth - 9;  // Cách lề phải 5 cột
-
-    // Vẽ khung câu hỏi (bên trái)
-    drawBorderOnly(leftBoxX, boxStartY, leftBoxWidth, boxHeight);
-
-    // Vẽ khung câu trả lời (bên phải)
-    drawBorderOnly(rightBoxX, boxStartY, rightBoxWidth, boxHeight);
-
-    // Hiển thị danh sách câu hỏi trong khung bên trái
-    int maxQuestions = min((int)qaList.size(), boxHeight - 3);
-    int maxQuestionDisplayWidth = leftBoxWidth - 4;  // Trừ 2 cho mỗi bên viền
-
-    // Tính toán vị trí bắt đầu để luôn hiển thị câu hỏi được chọn
-    int startIndex = 0;
-    if (qaList.size() > maxQuestions) {
-        if (selectedIndex >= maxQuestions) {
-            startIndex = selectedIndex - maxQuestions + 1;
-        }
-        // Đảm bảo startIndex không vượt quá
-        if (startIndex + maxQuestions > qaList.size()) {
-            startIndex = qaList.size() - maxQuestions;
-        }
-    }
-    startIndex = max(0, startIndex);
-
-    for (int i = 0; i < maxQuestions; i++) {
-        int questionIndex = startIndex + i;
-        if (questionIndex >= qaList.size()) break;
-
-        setPos(leftBoxX + 2, boxStartY + 1 + i);
-
-        // Chuẩn bị chuỗi hiển thị
-        string displayStr;
-        if (questionIndex == selectedIndex) {
-            displayStr = "> " + safeTruncate(qaList[questionIndex].question, maxQuestionDisplayWidth - 2);
-        }
-        else {
-            displayStr = "  " + safeTruncate(qaList[questionIndex].question, maxQuestionDisplayWidth - 2);
-        }
-
-        // In chuỗi
-        cout << displayStr;
-
-        // Xóa phần còn lại của dòng
-        int spacesNeeded = maxQuestionDisplayWidth - displayStr.length();
-        for (int j = 0; j < spacesNeeded; j++) {
-            cout << " ";
-        }
-    }
-    
-    // Hiển thị câu trả lời trong khung bên phải
-    int maxAnswerWidth = rightBoxWidth - 4;
-
-    // Tách câu trả lời thành các dòng
-    string answer = qaList[selectedIndex].answer;
+vector<string> wrapText(const string& text, int maxWidth)
+{
     vector<string> lines;
-    string currentLine;
+    string current;
 
-    // Xử lý ngắt dòng thủ công
-    for (size_t i = 0; i < answer.length(); i++) {
-        char c = answer[i];
-
+    for (char c : text) {
         if (c == '\n') {
-            lines.push_back(currentLine);
-            currentLine.clear();
+            lines.push_back(current);
+            current.clear();
+            continue;
         }
-        else {
-            currentLine += c;
-            // Tự động xuống dòng nếu quá dài
-            if (currentLine.length() >= maxAnswerWidth) {
-                // Tìm vị trí ngắt từ tốt nhất
-                size_t lastSpace = currentLine.find_last_of(' ', maxAnswerWidth);
-                if (lastSpace != string::npos && lastSpace > maxAnswerWidth * 2 / 3) {
-                    lines.push_back(currentLine.substr(0, lastSpace));
-                    currentLine = currentLine.substr(lastSpace + 1);
-                }
-                else {
-                    lines.push_back(currentLine.substr(0, maxAnswerWidth));
-                    currentLine = currentLine.substr(maxAnswerWidth);
-                }
+
+        current += c;
+
+        if ((int)current.length() >= maxWidth) {
+            size_t lastSpace = current.find_last_of(' ');
+            if (lastSpace != string::npos && lastSpace > maxWidth / 2) {
+                lines.push_back(current.substr(0, lastSpace));
+                current = current.substr(lastSpace + 1);
+            }
+            else {
+                lines.push_back(current.substr(0, maxWidth));
+                current = current.substr(maxWidth);
             }
         }
     }
-    if (!currentLine.empty()) {
-        lines.push_back(currentLine);
+
+    if (!current.empty())
+        lines.push_back(current);
+
+    return lines;
+}
+
+void clearLine(int x, int y, int width) {
+    setPos(x, y);
+    cout << string(width, ' ');
+}
+
+void displayHelp(const vector<QAPair>& qaList, int selectedIndex)
+{
+    if (qaList.empty() || selectedIndex < 0 || selectedIndex >= qaList.size())
+        return;
+
+    drawHelpScreen();
+
+    int consoleW = ConsoleWidth > 0 ? ConsoleWidth : 120;
+    int consoleH = ConsoleHeight > 0 ? ConsoleHeight : 35;
+
+    // ===== HEADER =====
+    int helpWidth = 32;
+    int helpHeight = 6;
+    int helpX = consoleW / 2 - helpWidth / 2;
+    int helpY = 2;
+
+    int boxStartY = helpY + helpHeight+1;
+
+    // ===== BOX SIZE =====
+    int availableHeight = consoleH - boxStartY - 6;
+    int boxHeight = min(14, availableHeight);
+    boxHeight = max(boxHeight, 8);
+
+    int leftBoxW = 40;
+    int rightBoxW = 60;
+
+    int leftBoxX = 9;
+    int rightBoxX = consoleW - rightBoxW - 9;
+
+    drawBorderOnly(leftBoxX, boxStartY, leftBoxW, boxHeight);
+    drawBorderOnly(rightBoxX, boxStartY, rightBoxW, boxHeight);
+
+    // ===== CLEAR BOXES =====
+    for (int i = 0; i < boxHeight - 2; i++) {
+        setPos(leftBoxX + 1, boxStartY + 1 + i);
+        cout << string(leftBoxW - 2, ' ');
+        setPos(rightBoxX + 1, boxStartY + 1 + i);
+        cout << string(rightBoxW - 2, ' ');
     }
 
-    // Hiển thị các dòng câu trả lời
-    int maxAnswerLines = boxHeight - 2;
+    // ===== QUESTIONS LIST =====
+    int maxQuestions = boxHeight - 2;
+    int qWidth = leftBoxW;
 
-    for (int i = 0; i < min(maxAnswerLines, (int)lines.size()); i++) {
-        setPos(rightBoxX + 2, boxStartY + 1 + i);
-        string lineToDisplay = safeTruncate(lines[i], maxAnswerWidth);
-        cout << lineToDisplay;
+    int startIndex = 0;
+    if (selectedIndex >= maxQuestions)
+        startIndex = selectedIndex - maxQuestions + 1;
+    int textWidth = leftBoxW+5; 
+    int y = boxStartY + 1;
 
-        // Xóa phần còn lại của dòng
-        int spacesNeeded = maxAnswerWidth - lineToDisplay.length();
-        for (int j = 0; j < spacesNeeded; j++) {
-            cout << " ";
+    for (int qi = startIndex; qi < qaList.size(); qi++) {
+
+        vector<string> lines = wrapText(qaList[qi].question, textWidth);
+
+        for (int li = 0; li < lines.size(); li++) {
+            if (y >= boxStartY + boxHeight - 1)
+                break;
+
+            setPos(leftBoxX + 1, y);
+            cout << string(leftBoxW - 2, ' '); // clear dòng
+
+            setPos(leftBoxX + 2, y);
+
+            if (li == 0) {
+                if (qi == selectedIndex)
+                    cout << "> " << lines[li];
+                else
+                    cout << "  " << lines[li];
+            }
+            else {
+                cout << "  " << lines[li];
+            }
+
+            y++;
         }
+
+        if (y >= boxStartY + boxHeight - 1)
+            break;
     }
 
-    // Xóa các dòng còn lại trong khung
-    for (int i = lines.size(); i < maxAnswerLines; i++) {
+    // ===== ANSWER =====
+    int answerWidth = rightBoxW -2;
+    int answerHeight = boxHeight - 2;
+
+    vector<string> lines = wrapText(qaList[selectedIndex].answer, answerWidth);
+
+    for (int i = 0; i < min(answerHeight, (int)lines.size()); i++) {
         setPos(rightBoxX + 2, boxStartY + 1 + i);
-        for (int j = 0; j < maxAnswerWidth; j++) {
-            cout << " ";
-        }
+        cout << safeTruncate(lines[i], answerWidth);
     }
 }
+
 
 void ControlHelp() {
     vector<QAPair> qaList = createQAList();
@@ -242,7 +218,7 @@ void ControlHelp() {
             else if (k == 27) // ESC
                 break;
             else if (k == 13) { // ENTER
-                Sleep(100); // Hiệu ứng delay
+                sleepms(100); // Hiệu ứng delay
                 break; // Thoát khỏi Help
             }
         }

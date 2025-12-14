@@ -10,14 +10,14 @@ void resetGameVariables()
 	currentPlayer = 'X';
 	/*name1 = "Player 1";
 	name2 = "Player 2";*/
-	filename = "caro_save_01.txt";
+	/*filename = "caro_save_01.txt";*/
 	count_moves = 0;
 	count_O = 0;
 	count_X = 0;
 }
 void drawContinueGameScreen(int iscontiue)
 {
-	int type = 3;
+	int type = 2;
 	if(!iscontiue)
 	{
 		type=0;
@@ -50,25 +50,6 @@ void GamePlay(int typegame)
 				board[i][j] = '-';
 		//reset
 		resetGameVariables();
-	}else if(typegame==1)
-	{
-		// load game
-		
-		bool loadSuccess = loadGame();
-		if (loadSuccess)
-		{
-			// Redraw the loaded board
-			loadproductfile();
-		}
-	}if (typegame == 0)
-	{
-		// new game
-		// initialize board
-		for (int i = 0; i < N; i++)
-			for (int j = 0; j < N; j++)
-				board[i][j] = '-';
-		//reset
-		resetGameVariables();
 	}
 	else if (typegame == 1)
 	{
@@ -83,21 +64,18 @@ void GamePlay(int typegame)
 	}
 	system("cls");
 	drawGamePlayScreen(currentPlayer, name1, name2, filename);
-	if (typegame == 1 || typegame == 2)
+	char next_player = check_XO();
+	drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
+	for (int i = 0; i < N; i++)
 	{
-		char next_player = check_XO();
-		drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
-		for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
 		{
-			for (int j = 0; j < N; j++)
-			{
-				if (board[i][j] == '-')continue;
-				count_moves++;
-				int row, col;
-				getxy(row, col, i, j);
-				setPos(row, col);
-				cout << board[i][j];
-			}
+			if (board[i][j] == '-')continue;
+			count_moves++;
+			int row, col;
+			getxy(row, col, i, j);
+			setPos(row, col);
+			cout << board[i][j];
 		}
 	}
 	//GAME CONTINUE IS TYPEGAME==3
@@ -118,7 +96,7 @@ void GamePlay(int typegame)
 			if (check_iswin(i, j, board))
 			{
 				highlightWinningSequence(i, j, board);
-				Sleep(3000);
+				sleepms(3000);
 				updateScore(currentPlayer);
 				system("cls");
 				drawWinStatus(currentPlayer, name1, name2);
@@ -159,7 +137,7 @@ void GamePlay(int typegame)
 		system("cls");
 		
 	}
-	Sleep(200);
+	sleepms(200);
 	count_O = 0;
 	count_X = 0;
 	if (type == -1)ControlGaming(1);
@@ -167,7 +145,6 @@ void GamePlay(int typegame)
 	stopGameplayMusic();
 	playBackgroundMusic();
 		return;
-	
 }
 
 void AiGamePlay(int typegame)
@@ -200,44 +177,21 @@ void AiGamePlay(int typegame)
 			// Redraw the loaded board
 			loadproductfile();
 		}
-	}if (typegame == 0)
-	{
-		// new game
-		// initialize board
-		for (int i = 0; i < N; i++)
-			for (int j = 0; j < N; j++)
-				board[i][j] = '-';
-		//reset
-		resetGameVariables();
-	}
-	else if (typegame == 1)
-	{
-		// load game
-
-		bool loadSuccess = loadGame();
-		if (loadSuccess)
-		{
-			// Redraw the loaded board
-			loadproductfile();
-		}
 	}
 	system("cls");
 	drawGamePlayScreen(currentPlayer, name1, name2, filename);
-	if (typegame == 1 || typegame == 2)
+	char next_player = check_XO();
+	drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
+	for (int i = 0; i < N; i++)
 	{
-		char next_player = check_XO();
-		drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
-		for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
 		{
-			for (int j = 0; j < N; j++)
-			{
-				if (board[i][j] == '-')continue;
-				count_moves++;
-				int row, col;
-				getxy(row, col, i, j);
-				setPos(row, col);
-				cout << board[i][j];
-			}
+			if (board[i][j] == '-')continue;
+			count_moves++;
+			int row, col;
+			getxy(row, col, i, j);
+			setPos(row, col);
+			cout << board[i][j];
 		}
 	}
 	setPos(x, y);
@@ -274,7 +228,7 @@ void AiGamePlay(int typegame)
 			if (check_iswin(ai_row, ai_col, board))
 			{
 				highlightWinningSequence(ai_row, ai_col, board);
-				Sleep(3000);
+				sleepms(3000);
 				updateScore(player_O);
 				system("cls");
 				drawWinStatus(player_O, name1, name2);
@@ -308,7 +262,7 @@ void AiGamePlay(int typegame)
 				if (check_iswin(i, j, board))
 				{
 					highlightWinningSequence(i, j, board);
-					Sleep(3000);
+					sleepms(3000);
 					updateScore(currentPlayer);
 					system("cls");
 					drawWinStatus(currentPlayer, name1, name2);
@@ -350,7 +304,7 @@ void AiGamePlay(int typegame)
 		system("cls");
 		
 	}
-	Sleep(200);
+	sleepms(200);
 	count_O = 0;
 	count_X = 0;
 	if (type == -1)AiControlGaming(1);

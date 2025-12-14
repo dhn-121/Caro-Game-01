@@ -3,6 +3,7 @@
 #include <utility>
 #include <conio.h>
 #include "Graphics.h"
+#include "Sound.h"
 #include <Windows.h>
 void setPos(int , int );
 int isNextMove();
