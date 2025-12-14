@@ -688,7 +688,7 @@ void drawS(int XX, int YY) {
 
 }
 
-void drawV(int XX, int YY) { // 6 * 9
+void drawV(int XX, int YY) {
 	setPos(XX, YY);
 	setColor(0, 0); cout << "  ";
 	setColor(co_theme); cout << u8"╗" << "    ";
@@ -1307,30 +1307,5 @@ void drawDino(int XX, int YY) {
 		setPos(XX - 10 + i, YY + 21);
 		cout << B;
 	}*/
-}
-void drawSTART(int XX, int YY) {
-	drawS(XX - 10, YY);
-	drawT(XX - 2, YY);
-	drawA(XX + 7, YY);
-	drawR(XX + 15, YY);
-	drawT(XX + 23, YY);
-}
-void drawSELECT_MODE(int XX, int YY){
-	drawS(XX - 22, YY);
-	drawE(XX - 14, YY);
-	drawL(XX - 6, YY);
-	drawE(XX + 2, YY);
-	drawC(XX + 10, YY);
-	drawT(XX + 18, YY);
-	drawM(XX + 33, YY);
-	drawO(XX + 44, YY);
-	drawD(XX + 53, YY);
-	drawE(XX + 61, YY);
-}
-void drawLEVEL(int XX, int YY) {
-	drawL(XX - 18, YY);
-	drawE(XX - 10, YY);
-	drawV(XX - 2, YY);
-	drawE(XX + 8, YY);
-	drawL(XX + 16, YY);
+
 }

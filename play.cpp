@@ -10,7 +10,7 @@ void resetGameVariables()
 	currentPlayer = 'X';
 	/*name1 = "Player 1";
 	name2 = "Player 2";*/
-	/*filename = "caro_save_01.txt";*/
+	filename = "caro_save_01.txt";
 	count_moves = 0;
 	count_O = 0;
 	count_X = 0;
