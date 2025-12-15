@@ -81,13 +81,7 @@ int main()
 
 		case 2: // Saved Files
 			system("cls");
-			if (loadactive())
-			{
-				setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 3);
-				cout << "Game loaded successfully! Returning to game...";
-				sleepms(2000);
-				GamePlay(1);
-			}
+			loadGameMenu();
 			//cin.ignore();
 			//cin.get();
 			break;
