@@ -4,8 +4,12 @@ using namespace std;
 
 bool saveGame()
 {
-	//create directory "save" if not exist
-	_mkdir("save");
+	// create directory "save" if not exist
+	int mkdirResult = _mkdir("save");
+	if (mkdirResult != 0 && errno != EEXIST) {
+		cerr << T("Error creating directory 'save'") << endl;
+		return false;
+	}
 
 	// add path "save/" to filename
 	string fullPath = "save/" + filename + ".txt";
@@ -79,7 +83,7 @@ void drawSaveLoadScreen(int Width, int Height)
 
 bool checkFileExists(std::string& filename)
 {
-	string fullPath = "save/" + filename;
+	string fullPath = "save/" + filename+".txt";
 	ifstream inFile(fullPath.c_str());
 	return inFile.good();
 }
@@ -274,8 +278,8 @@ bool loadactive()
 	{
 		setPos((ConsoleWidth - 20) / 2, (ConsoleHeight) / 2 + 2);
 		cout << T("File not found. Try again:          ");
-		setPos(22, (ConsoleHeight - 3) / 2 + 1);
-		cout << "                                                                                       ";
+		setPos(10, (ConsoleHeight) / 2);
+		cout << "                                                                                                    ";
 		if (getfilename(filename) == 0)
 			return 0;
 	}
@@ -289,11 +293,11 @@ void loadGameScreen()
 	//loadactive(load_filename, board, default_player, score_X, score_O);
 	if (loadactive())
 	{
-		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 2);
-		cout << "                                                   ";
+		setPos(10, (ConsoleHeight) / 2);
+		cout << "                                                                                                    ";
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 3);
 		cout << T("Game loaded successfully! Returning to game...");
-		Sleep(2000);
+		sleepms(1000);
 		if (difficulty == 4)
 			GamePlay(1);
 		else
@@ -303,7 +307,7 @@ void loadGameScreen()
 	{
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 2);
 		cout << T("Failed to load game. Returning to current game...");
-		Sleep(2000);
+		sleepms(1000);
 		if (difficulty == 4)
 			GamePlay(3);
 		else
@@ -317,11 +321,11 @@ void loadGameMenu()
 	//loadactive(load_filename, board, default_player, score_X, score_O);
 	if (loadactive())
 	{
-		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 2);
-		cout << "                                                   ";
+		setPos(10, (ConsoleHeight) / 2);
+		cout << "                                                                                                    ";
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 3);
 		cout << T("Game loaded successfully! Returning to game...");
-		Sleep(2000);
+		sleepms(1000);
 		if (difficulty == 4)
 			GamePlay(1);
 		else
@@ -332,20 +336,19 @@ void loadGameMenu()
 void saveGameScreen()
 {
 	// save game
-	std::string save_filename;
 	drawSaveLoadScreen(ConsoleWidth, ConsoleHeight);
 	//getfilename(save_filename);
-	if (getfilename(save_filename) == 0)
+	if (getfilename(filename) == 0)
 	{
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
 		cout << T("Save cancelled. Returning to game...");
-		Sleep(2000);
+		sleepms(1000);
 		GamePlay(3);
 	}
 	saveGame();
 	setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
 	cout << T("Game saved successfully! Returning to menu...");
-	Sleep(2000);
+	sleepms(1000);
 	//GamePlay(currentPlayer, name1, name2, filename, 3);
 	if (difficulty == 4)
 		GamePlay(3);

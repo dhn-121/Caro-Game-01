@@ -218,7 +218,7 @@ void ControlHelp() {
             else if (k == 27) // ESC
                 break;
             else if (k == 13) { // ENTER
-                Sleep(100); // Hiệu ứng delay
+                sleepms(100); // Hiệu ứng delay
                 break; // Thoát khỏi Help
             }
         }

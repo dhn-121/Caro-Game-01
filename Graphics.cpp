@@ -45,7 +45,34 @@ void ShowConsoleCursor(bool showFlag)
 
     SetConsoleCursorInfo(out, &cursorInfo);
 }
+void clearInputBuffer()
+{
+    HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+    FlushConsoleInputBuffer(hIn);
+}
 
+static DWORD oldConsoleMode = 0;
+
+void disableConsoleInput()
+{
+    HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+    GetConsoleMode(hIn, &oldConsoleMode);
+    SetConsoleMode(hIn, 0);
+}
+
+void enableConsoleInput()
+{
+    HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+    SetConsoleMode(hIn, oldConsoleMode);
+}
+void sleepms(int milliseconds)
+{
+    clearInputBuffer();
+    disableConsoleInput();
+    ::Sleep(milliseconds);
+    enableConsoleInput();
+    clearInputBuffer();
+}
 void fixConsoleWindow(int WIDTH, int HEIGHT)
 {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -64,7 +91,7 @@ void fixConsoleWindow(int WIDTH, int HEIGHT)
     // ----------------------------------------------------
 
     // Đặt Tiêu đề Console
-    SetConsoleTitle(TEXT("Tên Ứng Dụng Của Bạn"));
+    SetConsoleTitle(TEXT("Gomoku"));
 
     // Đặt màu nền và chữ
     system("COLOR F0");
@@ -87,6 +114,7 @@ void fixConsoleWindow(int WIDTH, int HEIGHT)
 
     // Ẩn thanh cuộn
     ShowScrollBar(consoleWindow, SB_BOTH, FALSE);
+    //bật tiếng Việt
     SetConsoleOutputCP(65001); // Output UTF-8
     SetConsoleCP(65001);       // Input UTF-8
 }
@@ -214,7 +242,7 @@ void drawLoadingScreen()
     cout << message2;
     setPos(message3_x, message3_y);
     cout << message3;
-
+	sleepms(500);
     setColor(0, 15);
 }
 
@@ -495,7 +523,7 @@ nhapten:
     {
         setPos(input_XX, input_YY + input_height + 1);
         cout << T("Please input your name!");
-        Sleep(1500);
+        sleepms(200);
         goto nhapten;
     }
 
@@ -1177,7 +1205,7 @@ void drawHelpScreen()
 // choice = 0 (PvP), 1 (PvE), 2 (Back)
 void drawGameModeScreen(int choice)
 {
-    system("cls"); // Clear the console screen
+   // system("cls"); // Clear the console screen
     setColor(backgroundcolor, fontcolor);
 
     // Draw the title
@@ -1217,6 +1245,7 @@ void drawGameModeScreen(int choice)
 // Function to control the game mode selection menu logic
 int ControlGameMode()
 {
+	system("cls");
     ShowConsoleCursor(false);
     int choice = 0; // Default selection is the first button (PvP)
     drawGameModeScreen(choice); // Initial drawing
@@ -1277,7 +1306,7 @@ int ControlGameMode()
 
 void drawDifficultyScreen(int selection)
 {
-    system("cls"); // Clear screen
+    //system("cls"); // Clear screen
     setColor(backgroundcolor, fontcolor);
     // 1. Draw Title
     std::string title = T("SELECT DIFFICULTY LEVEL");
@@ -1320,6 +1349,7 @@ void drawDifficultyScreen(int selection)
 // Returns: 0=Easy, 1=Normal, 2=Hard, 3=Back
 int ControlDifficulty()
 {
+	system("cls");
     ShowConsoleCursor(false); // Hide cursor for better UI look
     int selection = 0;
     drawDifficultyScreen(selection);

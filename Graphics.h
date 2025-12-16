@@ -30,6 +30,10 @@ void setColor(int bgcolor, int fgcolor);//fgcolor là dành cho những phần c
 int GetDisplayLength(const std::string& str);
 void drawBox(int x, int y, int w, int h, std::string text);
 void ShowConsoleCursor(bool showFlag);
+void clearInputBuffer();
+void disableConsoleInput();
+void enableConsoleInput();
+void sleepms(int milliseconds);
 void fixConsoleWindow(int WIDTH, int HEIGHT);
 std::string BlankCal(std::string content);
 
