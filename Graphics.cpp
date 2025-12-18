@@ -234,8 +234,10 @@ void drawLoadingScreen()
 	drawMinimaCactus(Xi + 89, ConsoleHeight - 15);   //cây nhỏ thứ hai
 	drawLOADING(ConsoleWidth / 2 - 30, ConsoleHeight / 2 - 14);
     setColor(15, 7);
-	drawCloud(Xi-3, ConsoleHeight - 29);
-	drawCloud(Xi+68, ConsoleHeight - 26);
+	drawCloud(Xi-3, ConsoleHeight - 28);
+	drawCloud(Xi+61, ConsoleHeight - 24);
+    setColor(15,8);
+    drawCrow(Xi + 90, ConsoleHeight - 35);
 	sleepms(3500);
     setColor(0, 15);
 }

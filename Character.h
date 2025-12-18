@@ -54,5 +54,6 @@ void drawB(int XX, int YY);
 	void drawCloud(int XX, int YY);
     void drawMiniCloud(int XX, int YY);
     void drawTricelatop(int XX, int YY);
+    void drawCrow(int XX, int YY);
 
 #endif

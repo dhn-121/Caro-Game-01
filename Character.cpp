@@ -1747,3 +1747,49 @@ void drawTricelatop(int XX, int YY) {   //khủng long 3 sừng
 		setPos(XX + i, YY + 10); cout << D;
 	}
 }
+void drawCrow(int XX, int YY) {
+	const char* A = u8"█ "; // khối 1 ô
+	const char* B = u8"██ ";          // khối 2 ô
+	const char* C = u8"▄";          // khối nửa ô dưới
+	const char* D = u8"▀";          // khối nửa ô trên
+	const char* K = u8"████████ "; // khối 8 ô
+	//dòng 1
+	setPos(XX + 8, YY + 1); cout << C;
+	//dòng 2
+	setPos(XX + 8, YY + 2); cout << B;
+	setPos(XX + 10, YY + 2); cout << C;
+	//dòng 3
+	setPos(XX + 4, YY + 3); cout << C;
+	setPos(XX + 5, YY + 3); cout << B;
+	setPos(XX + 9, YY + 3); cout << B;
+	setPos(XX + 11, YY + 3); cout << A;
+	setPos(XX + 12, YY + 3); cout << C;
+	//dòng 4
+	setPos(XX + 2, YY + 4); cout << C;
+	setPos(XX + 3, YY + 4); cout << B;
+	setPos(XX + 5, YY + 4); cout << B;
+	setPos(XX + 7, YY + 4); cout << A;
+	setPos(XX + 9, YY + 4); cout << B;
+	setPos(XX + 11, YY + 4); cout << B;
+	setPos(XX + 13, YY + 4); cout << A;
+	setPos(XX + 14, YY + 4); cout << C;
+	//dòng 5
+	for (int i = 1; i <= 6; i++) {
+		setPos(XX + i, YY + 5);
+		cout << D;
+	}
+	setPos(XX + 7, YY + 5); cout << K;
+	setPos(XX + 15, YY + 5); cout << C;
+	//dòng 6
+	setPos(XX + 8, YY + 6); cout << D;
+	setPos(XX + 9, YY + 6); cout << K;
+	setPos(XX + 17, YY + 6); cout << B;
+	setPos(XX + 19, YY + 6); cout << D;
+	setPos(XX + 20, YY + 6); cout << D;
+	setPos(XX + 21, YY + 6); cout << D;
+	//dòng 7
+	setPos(XX + 10, YY + 7); cout << D;
+	setPos(XX + 11, YY + 7); cout << K;
+	setPos(XX + 19, YY + 7); cout << D;
+	setPos(XX + 20, YY + 7); cout << D;
+}
