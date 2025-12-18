@@ -28,11 +28,15 @@ bool saveGame()
 		}
 		outFile << endl;
 	}
+	outFile << first_player << endl;
 	outFile << currentPlayer << endl;
 	outFile << score_X << " " << score_O << endl;
+
 	outFile << name1 << endl;
 	outFile << name2 << endl;
+
 	outFile << difficulty << endl;
+
 	outFile.close();
 	cout << T("Game saved successfully to ") << fullPath << endl;
 	return true;
@@ -54,6 +58,7 @@ bool loadGame()
 			inFile >> board[i][j];
 		}
 	}
+	inFile >> first_player;
 	inFile >> currentPlayer;
 	inFile >> score_X >> score_O;
 	inFile.ignore(); // ignore the newline character after score_O

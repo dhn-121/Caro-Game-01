@@ -91,7 +91,7 @@ void fixConsoleWindow(int WIDTH, int HEIGHT)
     // ----------------------------------------------------
 
     // Đặt Tiêu đề Console
-    SetConsoleTitle(TEXT("Tên Ứng Dụng Của Bạn"));
+    SetConsoleTitle(TEXT("Gomoku"));
 
     // Đặt màu nền và chữ
     system("COLOR F0");
@@ -114,6 +114,7 @@ void fixConsoleWindow(int WIDTH, int HEIGHT)
 
     // Ẩn thanh cuộn
     ShowScrollBar(consoleWindow, SB_BOTH, FALSE);
+    //bật tiếng Việt
     SetConsoleOutputCP(65001); // Output UTF-8
     SetConsoleCP(65001);       // Input UTF-8
 }
@@ -222,26 +223,20 @@ std::string BlankCal(const std::string content)
 
 void drawLoadingScreen()
 {
-    system("cls");
-
-    std::string message1 = "CO SO LAP TRINH - HCMUS";
-    std::string message2 = "GROUP 1 - 25CTT3";
-    std::string message3 = "WELCOME TO OUR PROJECT";
-
-    int message1_x = (ConsoleWidth - message1.length()) / 2;
-    int message1_y = ConsoleHeight * 40 / 100;
-    int message2_x = (ConsoleWidth - message2.length()) / 2;
-    int message2_y = ConsoleHeight / 2;
-    int message3_x = (ConsoleWidth - message3.length()) / 2;
-    int message3_y = ConsoleHeight * 60 / 100;
-
-    setPos(message1_x, message1_y);
-    cout << message1;
-    setPos(message2_x, message2_y);
-    cout << message2;
-    setPos(message3_x, message3_y);
-    cout << message3;
-
+    system("cls");	
+    drawGround();
+	renderGround(Xi - 5, Yi + BoardRealHeight - 4);
+	drawMinimaDino(Xi + 30, ConsoleHeight - 20);
+   
+	//drawSpino(Xi + 35, ConsoleHeight - 16);
+	drawMaximaCactus(Xi + 7, ConsoleHeight - 19);    //tọa độ Xi+5+90, cây lớn thứ hai
+	drawMaximaCactus(Xi - 92, ConsoleHeight - 19);   //cây lớn thứ nhất
+	drawMinimaCactus(Xi + 89, ConsoleHeight - 15);   //cây nhỏ thứ hai
+	drawLOADING(ConsoleWidth / 2 - 30, ConsoleHeight / 2 - 14);
+    setColor(15, 7);
+	drawCloud(Xi-3, ConsoleHeight - 29);
+	drawCloud(Xi+68, ConsoleHeight - 26);
+	sleepms(3500);
     setColor(0, 15);
 }
 
@@ -284,6 +279,9 @@ void drawMenuScreen()
 
     drawDino(15, ConsoleHeight - 27);
     drawCactus(Xi - 6, Yi + 1);
+    setColor(15, 7);
+    drawCloud(Xi, Yi);
+    drawCloud(Xi + 75, Yi);
 }
 
 //Nếu được chọn thì ô chọn sẽ có màu đen chữ trắng
@@ -579,48 +577,68 @@ int score_O = 0;
 
 void drawScoreBox(int XX, int YY, int Width, int Height, std::string name1, std::string name2)
 {
-    std::string titleX = BlankCal(T("SCORE OF") + " X");
-    std::string scoreX_str = std::to_string(score_X);
-
-    std::string titleO = BlankCal(T("SCORE OF") + " O");
-    std::string scoreO_str = std::to_string(score_O);
+    // Xác định ai chơi X, ai chơi O
+    int score1, score2;
+    char symbol1, symbol2;
+    
+    if (first_player == 'X') {
+        // name1 chơi X, name2 chơi O
+        symbol1 = 'X';
+        symbol2 = 'O';
+        score1 = score_X;
+        score2 = score_O;
+    } else {
+        // name1 chơi O, name2 chơi X
+        symbol1 = 'O';
+        symbol2 = 'X';
+        score1 = score_O;
+        score2 = score_X;
+    }
+    
+    // Tạo string hiển thị
+    std::string title1 = BlankCal(T("SCORE OF") + std::string(" ") + symbol1);
+    std::string score1_str = std::to_string(score1);
+    
+    std::string title2 = BlankCal(T("SCORE OF") + std::string(" ") + symbol2);
+    std::string score2_str = std::to_string(score2);
 
     // ===== TÍNH VỊ TRÍ CĂN GIỮA =====
-    int titleX_x = XX + 1 + (Width - 2 - titleX.length()) / 2;
+    int title1_x = XX + 1 + (Width - 2 - title1.length()) / 2;
     int name1_x = XX + 1 + (Width - 2 - name1.length()) / 2;    
-    int scoreX_x = XX + 1 + (Width - 2 - scoreX_str.length()) / 2;
+    int score1_x = XX + 1 + (Width - 2 - score1_str.length()) / 2;
 
-    int titleO_x = XX + 1 + (Width - 2 - titleO.length()) / 2;
+    int title2_x = XX + 1 + (Width - 2 - title2.length()) / 2;
     int name2_x = XX + 1 + (Width - 2 - name2.length()) / 2;
-    int scoreO_x = XX + 1 + (Width - 2 - scoreO_str.length()) / 2;
+    int score2_x = XX + 1 + (Width - 2 - score2_str.length()) / 2;
 
     // ===== VỊ TRÍ Y =====
-    int y_titleX = YY + 2;
-    int y_name1 = y_titleX + 1;
-    int y_scoreX = y_name1 + 1;
+    int y_title1 = YY + 2;
+    int y_name1 = y_title1 + 1;
+    int y_score1 = y_name1 + 1;
 
-    int y_titleO = YY + Height - 5;
-    int y_name2 = y_titleO + 1;
-    int y_scoreO = y_name2 + 1;
+    int y_title2 = YY + Height - 5;
+    int y_name2 = y_title2 + 1;
+    int y_score2 = y_name2 + 1;
 
-    // ===== IN NỘI DUNG =====
-    setPos(titleX_x, y_titleX);
-    cout << titleX;
-
-    setPos(scoreX_x, y_scoreX);
-    cout << scoreX_str;
+    // ===== IN NỘI DUNG - PLAYER 1 Ở TRÊN =====
+    setPos(title1_x, y_title1);
+    cout << title1;
 
     setPos(name1_x, y_name1);
     cout << name1;
 
-    setPos(titleO_x, y_titleO);
-    cout << titleO;
+    setPos(score1_x, y_score1);
+    cout << score1_str;
 
-    setPos(scoreO_x, y_scoreO);
-    cout << scoreO_str;
+    // ===== PLAYER 2 Ở DƯỚI =====
+    setPos(title2_x, y_title2);
+    cout << title2;
 
     setPos(name2_x, y_name2);
     cout << name2;
+
+    setPos(score2_x, y_score2);
+    cout << score2_str;
 }
 
 
@@ -658,9 +676,61 @@ void drawGamePlayScreen(char player, std::string name1, std::string name2, std::
     //Hộp Score
     drawBox(Score.XX, Score.YY, Score.Width, Score.Height, "");
     drawScoreBox(Score.XX, Score.YY, Score.Width, Score.Height, name1, name2);
-
-    drawMiniCactus(Xi - 6 + 8, Yi + 1 + 7);
+    setColor(15, 8);
+    drawMaximaCactus(Xi - 6 + 8, Yi + 15);
+    drawMinimaCactus(Xi + 84, Yi + 19);
     drawMiniDino(Xi - 6 + 5, Yi + 1 + 6);
+    setColor(15, 7);
+    drawMiniCloud(Xi + 75, Yi + 12);
+
+    int filelength = filename.length();
+    int fileX = ConsoleWidth / 2 - filelength / 2;
+    int fileY = ConsoleHeight - 2;
+    setPos(fileX, fileY);
+    cout << filename;
+}
+void drawAiGamePlayScreen(char player, std::string name1, std::string name2, std::string filename)
+{
+    system("cls");
+    setColor(backgroundcolor, fontcolor);
+
+    DATA Board;
+    Board.XX = Xi;
+    Board.YY = Yi;
+    setPos(Board.XX, Board.YY);
+    DrawBoard();
+
+    DATA Turn;
+    Turn.Width = ConsoleWidth * 20 / 100;
+    Turn.Height = ConsoleHeight * 35 / 100;
+    Turn.YY = Board.YY;
+    Turn.XX = Board.XX + BoardRealWidth + 4;
+    drawTurnBox(Turn.XX, Turn.YY, Turn.Width, Turn.Height, player, name1, name2);
+
+    TurnData[0] = Turn.XX;
+    TurnData[1] = Turn.YY;
+    TurnData[2] = Turn.Width;
+    TurnData[3] = Turn.Height;
+
+    DATA Score;
+    Score.Width = Turn.Width;
+    Score.Height = Turn.Height;
+    Score.XX = Turn.XX + Turn.Width + 2;
+    Score.YY = Turn.YY;
+
+    //Hộp Score
+    drawBox(Score.XX, Score.YY, Score.Width, Score.Height, "");
+    drawScoreBox(Score.XX, Score.YY, Score.Width, Score.Height, name1, name2);
+    setColor(15, 8);
+    drawMaximaCactus(Xi - 6 + 11, Yi + 15);
+    drawMinimaCactus(Xi + 87, Yi + 19);
+	drawSpino(Xi + 35, Yi +18);
+    for (int i = 60; i <= 108; i++) {
+        setPos(Xi + i, Yi + 26);
+        cout << "▀";
+    }
+    setColor(15, 7);
+    drawMiniCloud(Xi + 75, Yi + 13);
 
     int filelength = filename.length();
     int fileX = ConsoleWidth / 2 - filelength / 2;
@@ -1206,13 +1276,31 @@ void drawGameModeScreen(int choice)
 {
    // system("cls"); // Clear the console screen
     setColor(backgroundcolor, fontcolor);
-
+    setColor(15, 8);
+    drawMaximaCactus(Xi + 5, Yi + 12);
+    drawMinimaCactus(Xi + 87, Yi + 16);
+    // vẽ mặt đất bên dưới 
+    for (int i = 0; i <= 35; i++) {
+        setPos(Xi + i, Yi + 23);
+        cout << "▀";
+    }
+    setColor(15, 7);
+    drawMiniCloud(Xi + 20, Yi + 10);
+    setColor(15, 8);
+    drawMaximaCactus(Xi - 87, Yi + 12);
+    drawMinimaCactus(Xi + 14, Yi + 16);
+    for (int i = 75; i <= 110; i++) {
+        setPos(Xi + i, Yi + 23);
+        cout << "▀";
+    }
+    setColor(15, 7);
+    drawMiniCloud(Xi + 74, Yi + 10);
     // Draw the title
     std::string title = T("SELECT GAME MODE");
     int titleX = (ConsoleWidth - title.length()) / 2;
     int titleY = ConsoleHeight * 30 / 100; // Position 30% down from the top
     setPos(titleX, titleY);
-	drawSELECT_MODE(titleX - 13, titleY - 8);
+	drawSELECT_MODE(titleX - 14, titleY - 8);
 
     int boxW = 20; // Button width
     int boxH = 3;  // Button height
@@ -1339,9 +1427,19 @@ void drawDifficultyScreen(int selection)
             setColor(backgroundcolor, fontcolor);
         drawBox(startX, currentY, boxW, boxH, BlankCal(levels[i]));
     }
-
+    setColor(15, 7);
+    drawCloud(Xi - 1, ConsoleHeight - 29);
+    drawCloud(Xi + 75, ConsoleHeight - 29);
     // Reset color
     setColor(backgroundcolor, fontcolor);
+    // decorate
+    setColor(15, 8); 
+    drawSpino(Xi-15, Yi + 16);
+    for (int i = -1; i <= 35; i++) {
+        setPos(Xi + i, Yi + 24);
+        cout << "▀";
+    }
+    drawTricelatop(Xi+75, Yi+14);
 }
 
 // Function to control Difficulty Selection

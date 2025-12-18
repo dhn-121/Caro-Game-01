@@ -53,6 +53,7 @@ extern int TurnData[4];
 void drawTurnBox(int XX, int YY, int Width, int Height, char player, std::string name1, std::string name2);
 void drawScoreBox(int XX, int YY, int Width, int Height, std::string name1, std::string name2);
 void drawGamePlayScreen(char player, std::string name1, std::string name2, std::string filename);
+void drawAiGamePlayScreen(char player, std::string name1, std::string name2, std::string filename); 
 
 // void drawLoadGameScreen()ı;
 

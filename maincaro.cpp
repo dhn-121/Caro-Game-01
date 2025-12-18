@@ -2,7 +2,7 @@
 int main()
 {	
 	initializeBGM();
-	playBackgroundMusic(); // phát nhạc nền menu
+	 // phát nhạc nền menu
 	// 1. Khởi tạo và Cố định Cửa sổ
 	fixConsoleWindow(ConsoleWidth,ConsoleHeight);
 	// 2. Định nghĩa các biến cần thiết cho game
@@ -22,6 +22,7 @@ int main()
 	score_O = 0;
 	difficulty = 4;
 	drawLoadingScreen();
+	playBackgroundMusic();
 	do
 	{
 		fixConsoleWindow(ConsoleWidth, ConsoleHeight);
@@ -42,6 +43,7 @@ int main()
 			int canplay = 0;
 			if (mode == 0) // PvP
 			{
+				srand((unsigned) time (NULL));
 				canplay = drawNameScreen(name1, name2, mode);
 				if (canplay == 1)
 				{
@@ -56,6 +58,7 @@ int main()
 			}
 			else if (mode == 1) // PvE Mode
 			{
+				srand((unsigned) time (NULL));
 				//int diff = ControlDifficulty();
 				canplay = drawNameScreen(name1, name2, mode);
 				if (canplay == 1)
@@ -82,6 +85,7 @@ int main()
 		case 2: // Saved Files
 			system("cls");
 			loadGameMenu();
+			break;
 			//cin.ignore();
 			//cin.get();
 			break;

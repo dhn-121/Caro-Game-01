@@ -5,9 +5,11 @@ char currentPlayer;
 string name1;
 string name2;
 std::string filename;
+
 void resetGameVariables()
 {
-	currentPlayer = 'X';
+	first_player = RandomFirstPlayer();
+	currentPlayer = first_player;
 	/*name1 = "Player 1";
 	name2 = "Player 2";*/
 	/*filename = "caro_save_01.txt";*/
@@ -15,6 +17,7 @@ void resetGameVariables()
 	count_O = 0;
 	count_X = 0;
 }
+
 void drawContinueGameScreen(int iscontiue)
 {
 	int type = 2;
@@ -31,6 +34,7 @@ void drawContinueGameScreen(int iscontiue)
 		AiGamePlay(type);
 	}
 }
+
 void GamePlay(int typegame)
 {
 	difficulty = 4;
@@ -41,6 +45,7 @@ void GamePlay(int typegame)
 	difficulty = 4;
 	stopBackgroundMusic();
 	playGameplayMusic();
+
 	if (typegame == 0)
 	{
 		// new game
@@ -51,21 +56,38 @@ void GamePlay(int typegame)
 		//reset
 		resetGameVariables();
 	}
+
 	else if (typegame == 1)
 	{
 		// load game
-
 		bool loadSuccess = loadGame();
 		if (loadSuccess)
 		{
 			// Redraw the loaded board
 			loadproductfile();
 		}
+
 	}
+
+	else if (typegame == 2)
+	{
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; i++)
+				board[i][j] = '-';
+		}
+		first_player = (first_player == player_X) ? player_O : player_X;
+		currentPlayer = first_player;
+		count_moves = 0;
+		count_O = 0;
+		count_X = 0;
+	}
+
 	system("cls");
 	drawGamePlayScreen(currentPlayer, name1, name2, filename);
-	char next_player = check_XO();
+	char next_player = check_XO(first_player);
 	drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
+	
 	for (int i = 0; i < N; i++)
 	{
 		for (int j = 0; j < N; j++)
@@ -78,21 +100,25 @@ void GamePlay(int typegame)
 			cout << board[i][j];
 		}
 	}
+
 	//GAME CONTINUE IS TYPEGAME==3
 	setPos(x, y);
 	HighlightPos(x, y, 1);
 	int type = 0;
+
 	while (true)
 	{
 		type = isNextMove();
 		if (type == -1||type== 5||type==6)break;
-		currentPlayer = check_XO();
+		currentPlayer = check_XO(first_player);
+
 		if (type == 0)
 		{
 			int i, j;
 			setPos(x, y);
 			count_moves+=MakeMove(currentPlayer, x, y);
 			getij(i, j, x, y);
+
 			if (check_iswin(i, j, board))
 			{
 				highlightWinningSequence(i, j, board);
@@ -105,6 +131,7 @@ void GamePlay(int typegame)
 				typegame = false;
 				break;
 			}
+
 			else if (check_isdraw(count_moves)) 
 			{
 				system("cls");
@@ -114,9 +141,12 @@ void GamePlay(int typegame)
 				typegame = false;
 				break;
 			}
-			char next_player = check_XO();
+
+			currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+			char next_player = check_XO(currentPlayer);
 			drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
 			setPos(x, y);
+			
 		}
 		else Movexy(x, y, type);
 	}
@@ -152,7 +182,7 @@ void AiGamePlay(int typegame)
 	ShowConsoleCursor(true);
 	// Implementation for AI gameplay mode
 	system("cls");
-	drawGamePlayScreen(currentPlayer, name1, name2, filename);
+	// drawGamePlayScreen(first_player, name1, name2, filename);
 	int x = xbegin;
 	int y = ybegin;
 	stopBackgroundMusic();
@@ -178,10 +208,23 @@ void AiGamePlay(int typegame)
 			loadproductfile();
 		}
 	}
+	else if (typegame == 2)
+	{
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				board[i][j] = '-';
+		first_player = (first_player == player_X) ? player_O : player_X;
+		currentPlayer = first_player;
+		count_moves = 0;
+		count_O = 0;
+		count_X = 0;
+	}
+
 	system("cls");
-	drawGamePlayScreen(currentPlayer, name1, name2, filename);
-	char next_player = check_XO();
+	drawAiGamePlayScreen(currentPlayer, name1, name2, filename);
+	char next_player = check_XO(first_player);
 	drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
+	
 	for (int i = 0; i < N; i++)
 	{
 		for (int j = 0; j < N; j++)
@@ -194,12 +237,14 @@ void AiGamePlay(int typegame)
 			cout << board[i][j];
 		}
 	}
+
 	setPos(x, y);
 	HighlightPos(x, y, 1);
 	int type = 0;
+
 	while (true)
 	{
-		currentPlayer = check_XO();
+		currentPlayer = check_XO(first_player);
 		if(currentPlayer == player_O)
 		{
 			int ai_row, ai_col;
@@ -219,6 +264,7 @@ void AiGamePlay(int typegame)
 
 				// ... (MakeMove, CheckWin, DrawTurnBox logic follows) ...
 			}
+
 			int row, col;
 			getxy(row, col, ai_row, ai_col);
 			HighlightPos(x, y, 0);
@@ -246,7 +292,8 @@ void AiGamePlay(int typegame)
 				typegame = false;
 				break;
 			}
-			char next_player = check_XO();
+			currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+			char next_player = check_XO(currentPlayer);
 			drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
 			setPos(x, y);
 		}
@@ -280,7 +327,8 @@ void AiGamePlay(int typegame)
 					typegame = false;
 					break;
 				}
-				char next_player = check_XO();
+				currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+				char next_player = check_XO(currentPlayer);
 				drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
 				setPos(x, y);
 			}
@@ -311,6 +359,5 @@ void AiGamePlay(int typegame)
 	else AiControlGaming(0);
 	stopGameplayMusic();
 	playBackgroundMusic();
-		return;
-	
+		return;	
 }

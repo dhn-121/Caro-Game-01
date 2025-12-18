@@ -14,6 +14,17 @@ char player_O = 'O';
 int count_X = 0;
 int count_O = 0;
 _Point status[BOARD_SIZE + 5][BOARD_SIZE + 5];
+
+char first_player = 'X';
+
+char RandomFirstPlayer()
+{
+    int first = rand() % 2;
+    if (first == 1)
+        return player_O;
+    return player_X;
+}
+
 //Sau đây là hàm đếm số quân 'X' và 'O'. Nếu số lượng quân X nhiều hơn số lượng quân O thì lượt tiếp theo đến O. Nếu quân X bằng quân O hì lượt tiếp theo là quân X.
 bool ValidMove(int row, int col)
 {
@@ -57,9 +68,21 @@ bool MakeMove(char player, int row, int col)
 }
 
 
-char check_XO()
+char check_XO(char first)
 {
-    if (count_X == count_O)
-        return player_X; //X đi rước
-    return player_O; //O đi trước
+    if (first == 'X')
+    {
+        if (count_X > count_O)
+            return player_O;
+        else if (count_X == count_O)
+            return player_X;
+    }
+    else if (first == 'O')
+    {
+        if (count_O > count_X)
+            return player_X;
+        else if (count_O == count_X)
+            return player_O;
+    }
 }
+

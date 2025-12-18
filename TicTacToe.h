@@ -17,8 +17,11 @@
     extern int count_O;
     #define N  BOARD_SIZE +2
     extern char board[N][N];
+
+    extern char first_player;
+    char RandomFirstPlayer();
     bool ValidMove(int row, int col);
     bool MakeMove(char player, int row, int col);
-    char check_XO();
-    
+    char check_XO(char first);
+
 #endif
