@@ -28,8 +28,6 @@ char RandomFirstPlayer()
 //Sau đây là hàm đếm số quân 'X' và 'O'. Nếu số lượng quân X nhiều hơn số lượng quân O thì lượt tiếp theo đến O. Nếu quân X bằng quân O hì lượt tiếp theo là quân X.
 bool ValidMove(int row, int col)
 {
-   /* if (row < 1 || row > 15 || col < 1 || col > 15)
-        return false;*/
     if (board[row][col] != '-')
         return false;
     return true;

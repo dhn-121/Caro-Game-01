@@ -378,7 +378,6 @@ int ControlMenu()
 //==================== MÀN HÌNH NHẬP TÊN ==========================
 
 
-//Chuyển đổi wstring sâng string
 
 std::string InputName(std::string& input, int XX, int YY, int MAX)
 {
@@ -753,12 +752,6 @@ void updateScore(char winner) {
     }
 }
 
-// Hàm reset điểm (nếu cần)
-void resetScores() {
-    score_X = 0;
-    score_O = 0;
-}
-
 void drawWinStatus(char player, std::string name1, std::string name2)
 {
     setColor(backgroundcolor, fontcolor);
@@ -921,26 +914,18 @@ int ControlGaming(int type)
                 }
                 else if (present_choice == 1) // === PLAY AGAIN ===
                 {
-                    resetScores(); // Reset điểm
-                    // Tạo ván mới
-                    /*GamePlay(Default_Set.sfx_active ? player_X : player_O,
-                        "Player 1 (X)", "Player 2 (O)",
-                        "caro_save_01.txt", 0);*/
-                    currentPlayer = player_X;
-                    // name1 = "Player 1 (X)";
-                    // name2 = "Player 2 (O)";
-                    /*filename = "caro_save_01.txt";*/
+                    resetGameVariables(); // Reset điểm
                     GamePlay(0);
                     return 1;
                 }
                 else if (present_choice == 2) // === HOME ===
                 {
-                    resetScores(); // Reset điểm
+                    resetGameVariables(); // Reset điểm
                     return 0;      // Về menu
                 }
                 break;
             case 27: // ESC -> Về Home
-                resetScores();
+                resetGameVariables();
                 playClickSound();
                 return 0;
             default: continue;
@@ -1004,23 +989,18 @@ int AiControlGaming(int type)
                 }
                 else if (present_choice == 1) // === PLAY AGAIN ===
                 {
-                    resetScores(); // Reset điểm
-                    // Bàn cờ mới
-                    // name1 = "Player 1 (X)";
-                    // name2 = "AI (O)";
-                    /*filename = "caro_save_ai.txt";*/
-                    currentPlayer = player_X;
+                    resetGameVariables(); // Reset điểm
                     AiGamePlay(0);
                     return 1;
                 }
                 else if (present_choice == 2) // === HOME ===
                 {
-                    resetScores(); // Reset điểm
+                    resetGameVariables(); // Reset điểm
                     return 0;      // Về menu
                 }
                 break;
             case 27: // ESC
-                resetScores();
+                resetGameVariables();
                 playClickSound();
                 return 0;
             default: continue;
@@ -1032,18 +1012,6 @@ int AiControlGaming(int type)
         }
     }
 }
-// LOAD GAME SCREEN
-
-// void drawLoadGameScreen()
-// {
-//     DATA Title;
-//     Title.Height = 6;
-//     Title.Width = 73;
-//     Title.XX = ConsoleHeight/2 - Title.Width/2;
-//     Title.YY = ConsoleHeight * 20/100;
-//     drawLOAD_GAME(Title.XX, Title.YY);
-// }
-
 // VẼ SETTINGS GREEN
 
 GameSettings Default_Set;

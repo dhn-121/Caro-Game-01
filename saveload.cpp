@@ -295,7 +295,6 @@ void loadGameScreen()
 {
 	// load game
 	std::string load_filename;
-	//loadactive(load_filename, board, default_player, score_X, score_O);
 	if (loadactive())
 	{
 		setPos(10, (ConsoleHeight) / 2);
@@ -323,7 +322,6 @@ void loadGameMenu()
 {
 	// load game
 	std::string load_filename;
-	//loadactive(load_filename, board, default_player, score_X, score_O);
 	if (loadactive())
 	{
 		setPos(10, (ConsoleHeight) / 2);
@@ -342,7 +340,6 @@ void saveGameScreen()
 {
 	// save game
 	drawSaveLoadScreen(ConsoleWidth, ConsoleHeight);
-	//getfilename(save_filename);
 	if (getfilename(filename) == 0)
 	{
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
@@ -354,7 +351,6 @@ void saveGameScreen()
 	setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
 	cout << T("Game saved successfully! Returning to menu...");
 	sleepms(1000);
-	//GamePlay(currentPlayer, name1, name2, filename, 3);
 	if (difficulty == 4)
 		GamePlay(3);
 	else
