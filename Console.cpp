@@ -1,6 +1,5 @@
-﻿#include "Library.h"
+﻿#include "Console.h"
 using namespace std;
-
 //ham dat vi tri con tro
 void setPos(int x, int y)
 {

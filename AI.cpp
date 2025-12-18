@@ -25,10 +25,6 @@ struct Move {
     Move(int rr = -1, int cc = -1, long long s = 0) : r(rr), c(cc), score(s) {}
 };
 
-// =================================================================================
-// (EASY/NORMAL MODE)
-// =================================================================================
-
 // Mảng điểm cho chế độ Normal
 const long ARR_SCORES[] = { 0, 10, 100, 1000, 10000, 1000000 };
 
@@ -339,7 +335,6 @@ long long minimax_boss(char board[N][N], int depth, long long alpha, long long b
 }
 
 // ================= ENTRY POINT CHO HARD MODE =================
-// Hàm này thay thế getSmartMove cũ
 void getSmartMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer) {
     char humanPlayer = (aiPlayer == 'X') ? 'O' : 'X';
 
@@ -390,22 +385,4 @@ void getSmartMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer) {
 
     bestRow = bestMove.first;
     bestCol = bestMove.second;
-}
-
-// Các hàm phụ trợ cũ cho Minimax (nếu cần giữ để tương thích file .h, 
-// nhưng ở đây ta đã thay thế logic bên trong getSmartMove rồi)
-bool isRelevantMove(int r, int c, char board[N][N]) {
-    // Hàm này giữ lại để file AI.h không bị lỗi link, 
-    // nhưng logic thực tế đã được chuyển vào generateCandidates
-    return true;
-}
-
-long long evaluateBoardState(char board[N][N], char aiPlayer) {
-    char humanPlayer = (aiPlayer == 'X') ? 'O' : 'X';
-    return evaluateBoardBoss(board, aiPlayer, humanPlayer);
-}
-
-long long minimax(char board[N][N], int depth, bool isMaximizing, long long alpha, long long beta, char aiPlayer) {
-    char humanPlayer = (aiPlayer == 'X') ? 'O' : 'X';
-    return minimax_boss(board, depth, alpha, beta, isMaximizing, aiPlayer, humanPlayer);
 }

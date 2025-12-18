@@ -16,6 +16,7 @@
 #include "Character.h"
 #include "AI.h"
 #include "help.h"
+#include "language.h"
 
 // Standard library headers
 #include <iostream>

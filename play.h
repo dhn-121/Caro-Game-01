@@ -6,7 +6,7 @@ using namespace std;
 void drawContinueGameScreen(int iscontinue);
 void GamePlay(int typegame);
 void AiGamePlay(int typegame);
-
+void runcaro();
 
 extern int score_X;
 extern int score_O;
