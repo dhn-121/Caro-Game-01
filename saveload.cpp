@@ -31,7 +31,7 @@ bool saveGame()
 	outFile << first_player << endl;
 	outFile << currentPlayer << endl;
 	outFile << score_X << " " << score_O << endl;
-
+	outFile << count_X << " " << count_O << endl;
 	outFile << name1 << endl;
 	outFile << name2 << endl;
 
@@ -61,6 +61,7 @@ bool loadGame()
 	inFile >> first_player;
 	inFile >> currentPlayer;
 	inFile >> score_X >> score_O;
+	inFile >> count_X >> count_O;
 	inFile.ignore(); // ignore the newline character after score_O
 	std::getline(inFile, name1);
 	std::getline(inFile, name2);
@@ -254,26 +255,6 @@ bool getfilename(std::string& filename)
 	return customInput(filename, 100);
 }
 
-void loadproductfile()
-{
-	bool loadSuccess = loadGame();
-	if (loadSuccess)
-	{
-		// Redraw the loaded board
-		for (int i = 0; i < N; i++)
-		{
-			for (int j = 0; j < N; j++)
-			{
-				if (board[i][j] == '-')continue;
-				if (board[i][j] == 'X')
-					count_X++;
-				else if (board[i][j] == 'O')
-					count_O++;
-			}
-		}
-	}
-}
-
 bool loadactive()
 {
 	drawSaveLoadScreen(ConsoleWidth, ConsoleHeight);
@@ -288,6 +269,7 @@ bool loadactive()
 		if (getfilename(filename) == 0)
 			return 0;
 	}
+	loadGame();
 	return 1;
 }
 
@@ -345,7 +327,10 @@ void saveGameScreen()
 		setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);
 		cout << T("Save cancelled. Returning to game...");
 		sleepms(1000);
-		GamePlay(3);
+		if (difficulty == 4)
+			GamePlay(3);
+		else
+			AiGamePlay(3);
 	}
 	saveGame();
 	setPos((ConsoleWidth) / 2 - 20, (ConsoleHeight) / 2 + 5);

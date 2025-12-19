@@ -52,18 +52,6 @@ void GamePlay(int typegame)
 		resetGameVariables();
 	}
 
-	else if (typegame == 1)
-	{
-		// load game
-		bool loadSuccess = loadGame();
-		if (loadSuccess)
-		{
-			// Redraw the loaded board
-			loadproductfile();
-		}
-
-	}
-
 	system("cls");
 	drawGamePlayScreen(currentPlayer, name1, name2, filename);
 	char next_player = check_XO(first_player);
@@ -85,9 +73,10 @@ void GamePlay(int typegame)
 	setPos(x, y);
 	HighlightPos(x, y, 1);
 	int type = 0;
-	currentPlayer = check_XO(first_player);
+	
 	while (true)
 	{
+		currentPlayer = check_XO(first_player);
 		type = isNextMove();
 		if (type == -1||type== 5||type==6)break;
 		
@@ -129,7 +118,7 @@ void GamePlay(int typegame)
 		}
 		else Movexy(x, y, type);
 	}
-	
+	currentPlayer = check_XO(first_player);
 	if(type==6)
 	{
 		loadGameScreen();
@@ -167,16 +156,6 @@ void AiGamePlay(int typegame)
 		// new game
 		//reset
 		resetGameVariables();
-	}
-	else if (typegame == 1)
-	{
-		// load game
-		bool loadSuccess = loadGame();
-		if (loadSuccess)
-		{
-			// Redraw the loaded board
-			loadproductfile();
-		}
 	}
 
 	system("cls");
@@ -267,7 +246,7 @@ void AiGamePlay(int typegame)
 			drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], currentPlayer, name1, name2);
 			setPos(x, y);
 	}
-	
+	currentPlayer = check_XO(first_player);
 	if (type == 6)
 	{
 		loadGameScreen();
