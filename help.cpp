@@ -205,7 +205,8 @@ void ControlHelp() {
         int key = _getch();
         if (key == 0 || key == 224 || key == -32) {
             int k = _getch();
-            if (k == 72) { // up
+            if (k == 72) { // 
+
                 selectedIndex--;
                 if (selectedIndex < 0) selectedIndex = qaList.size() - 1;
                 displayHelp(qaList, selectedIndex);

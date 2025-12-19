@@ -1,5 +1,5 @@
 ﻿#include "play.h"
-
+//#include "Library.h"
 int difficulty;
 char currentPlayer;
 string name1;
@@ -288,7 +288,7 @@ void AiGamePlay(int typegame)
 	else AiControlGaming(0);
 	stopGameplayMusic();
 	playBackgroundMusic();
-		return;	
+	return;	
 }
 
 void runcaro()

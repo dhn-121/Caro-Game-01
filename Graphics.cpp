@@ -582,19 +582,19 @@ void drawScoreBox(int XX, int YY, int Width, int Height, std::string name1, std:
     int score1, score2;
     char symbol1, symbol2;
     
-    if (first_player == 'X') {
+    //if (first_player == 'X') {
         // name1 chơi X, name2 chơi O
         symbol1 = 'X';
         symbol2 = 'O';
         score1 = score_X;
         score2 = score_O;
-    } else {
-        // name1 chơi O, name2 chơi X
-        symbol1 = 'O';
-        symbol2 = 'X';
-        score1 = score_O;
-        score2 = score_X;
-    }
+    //} else {
+    //    // name1 chơi O, name2 chơi X
+    //    symbol1 = 'O';
+    //    symbol2 = 'X';
+    //    score1 = score_O;
+    //    score2 = score_X;
+    //}
     
     // Tạo string hiển thị
     std::string title1 = BlankCal(T("SCORE OF") + std::string(" ") + symbol1);
@@ -750,6 +750,11 @@ void updateScore(char winner) {
     else if (winner == 'O') {
         score_O++;
     }
+}
+
+void resetScores() {
+    score_X = 0;
+    score_O = 0;
 }
 
 void drawWinStatus(char player, std::string name1, std::string name2)
@@ -914,18 +919,18 @@ int ControlGaming(int type)
                 }
                 else if (present_choice == 1) // === PLAY AGAIN ===
                 {
-                    resetGameVariables(); // Reset điểm
+                    resetScores(); // Reset điểm
                     GamePlay(0);
                     return 1;
                 }
                 else if (present_choice == 2) // === HOME ===
                 {
-                    resetGameVariables(); // Reset điểm
+                    resetScores(); // Reset điểm
                     return 0;      // Về menu
                 }
                 break;
             case 27: // ESC -> Về Home
-                resetGameVariables();
+                resetScores();
                 playClickSound();
                 return 0;
             default: continue;
@@ -989,18 +994,18 @@ int AiControlGaming(int type)
                 }
                 else if (present_choice == 1) // === PLAY AGAIN ===
                 {
-                    resetGameVariables(); // Reset điểm
+                    resetScores(); // Reset điểm
                     AiGamePlay(0);
                     return 1;
                 }
                 else if (present_choice == 2) // === HOME ===
                 {
-                    resetGameVariables(); // Reset điểm
+                    resetScores(); // Reset điểm
                     return 0;      // Về menu
                 }
                 break;
             case 27: // ESC
-                resetGameVariables();
+                resetScores();
                 playClickSound();
                 return 0;
             default: continue;

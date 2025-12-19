@@ -63,6 +63,7 @@ int ControlGaming(int type);
 int AiControlGaming(int type);
 bool isGameSelected(int idx, bool isSelected, int type);
 void updateScore(char player);
+void resetScore();
 struct GameSettings
 {
     bool sfx_active = true;
