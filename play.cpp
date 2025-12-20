@@ -310,6 +310,9 @@ void AiGamePlay(int typegame)
 //	currentPlayer = check_XO(first_player);
 //	while (true)
 //	{
+//		//thiết lập độ khó cho 2 AI
+//		if (currentPlayer == player_X)difficulty = 2;
+//			else difficulty = 2;	
 //		//if(currentPlayer == player_O)
 //		{
 //			int ai_row, ai_col;

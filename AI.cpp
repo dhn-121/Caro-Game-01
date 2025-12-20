@@ -236,7 +236,7 @@ long long evaluateMoveScore(char board[N][N], int r, int c, char aiChar, char hu
     board[r][c] = '-';
 
     // Tổng điểm = Công + Thủ * Hệ số (Ưu tiên thủ)
-    return total + totalBlock * 2;
+    return total + totalBlock;
 }
 
 // Đánh giá toàn bộ bàn cờ (Leaf node evaluation)
@@ -278,7 +278,7 @@ long long evaluateBoardBoss(char board[N][N], char aiChar, char humanChar) {
         }
     }
 
-    return attack - defense ; 
+    return attack - defense * 2; // AI sợ thua nên trọng số thủ cao hơn
 }
 
 // Tìm các nước đi ứng viên (Chỉ tìm xung quanh các quân đã đánh)
@@ -553,5 +553,4 @@ void getSmartMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer) {
 
     bestRow = bestMove.first;
     bestCol = bestMove.second;
-
 }
