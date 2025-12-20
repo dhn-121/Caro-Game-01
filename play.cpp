@@ -155,6 +155,7 @@ void AiGamePlay(int typegame)
 	{
 		// new game
 		//reset
+		resetAI();
 		resetGameVariables();
 	}
 
@@ -283,6 +284,7 @@ void AiGamePlay(int typegame)
 //	{
 //		// new game
 //		//reset
+//		resetAI();
 //		resetGameVariables();
 //	}
 //
@@ -494,4 +496,5 @@ void runcaro()
 	system("cls");
 	setPos(0, 0);
 	cout << "Exit Game. Goodbye!" << endl;
+
 }
