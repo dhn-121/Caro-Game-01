@@ -157,6 +157,9 @@ void AiGamePlay(int typegame)
 		//reset
 		resetAI();
 		resetGameVariables();
+	}else if(typegame == 1)
+	{
+		resetAI();
 	}
 
 	system("cls");
@@ -286,6 +289,9 @@ void AiGamePlay(int typegame)
 //		//reset
 //		resetAI();
 //		resetGameVariables();
+//	}else if(typegame == 1)
+//	{
+//		resetAI();
 //	}
 //
 //	system("cls");
@@ -498,3 +504,4 @@ void runcaro()
 	cout << "Exit Game. Goodbye!" << endl;
 
 }
+
