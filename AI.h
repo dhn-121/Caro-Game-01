@@ -11,7 +11,8 @@ void getBestMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer);
 void getEasyMove(char board[N][N], int& row, int& col);
 void getSmartMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer);
 void getBestMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer);
-
+void resetAI();
 
 #endif
+
 
