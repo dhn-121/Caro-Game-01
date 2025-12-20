@@ -21,11 +21,11 @@ void resetGameVariables()
 void drawContinueGameScreen(int iscontiue)
 {
 	int type = 2;
-	if(!iscontiue)
+	if (!iscontiue)
 	{
-		type=0;
+		type = 0;
 	}
-	if (difficulty==4)
+	if (difficulty == 4)
 	{
 		GamePlay(type);
 	}
@@ -56,7 +56,7 @@ void GamePlay(int typegame)
 	drawGamePlayScreen(currentPlayer, name1, name2, filename);
 	char next_player = check_XO(first_player);
 	drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
-	
+
 	for (int i = 0; i < N; i++)
 	{
 		for (int j = 0; j < N; j++)
@@ -73,20 +73,20 @@ void GamePlay(int typegame)
 	setPos(x, y);
 	HighlightPos(x, y, 1);
 	int type = 0;
-	
+
 	while (true)
 	{
 		currentPlayer = check_XO(first_player);
 		type = isNextMove();
-		if (type == -1||type== 5||type==6)break;
-		
+		if (type == -1 || type == 5 || type == 6)break;
+
 		if (type == 0)
 		{
 			int i, j;
 			setPos(x, y);
 			if (MakeMove(currentPlayer, x, y) == 0)continue;
 			count_moves++;
-			
+
 			getij(i, j, x, y);
 
 			if (check_iswin(i, j, board))
@@ -102,7 +102,7 @@ void GamePlay(int typegame)
 				break;
 			}
 
-			else if (check_isdraw(count_moves)) 
+			else if (check_isdraw(count_moves))
 			{
 				system("cls");
 				drawDrawStatus();
@@ -114,17 +114,17 @@ void GamePlay(int typegame)
 			currentPlayer = check_XO(first_player);
 			drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], currentPlayer, name1, name2);
 			setPos(x, y);
-			
+
 		}
 		else Movexy(x, y, type);
 	}
 	currentPlayer = check_XO(first_player);
-	if(type==6)
+	if (type == 6)
 	{
 		loadGameScreen();
 		return;
 	}
-	else if(type==5)
+	else if (type == 5)
 	{
 		saveGameScreen();
 		return;
@@ -132,14 +132,14 @@ void GamePlay(int typegame)
 	else if (type == -1)
 	{
 		system("cls");
-		
+
 	}
 	sleepms(200);
 	if (type == -1)ControlGaming(1);
 	else ControlGaming(0);
 	stopGameplayMusic();
 	playBackgroundMusic();
-		return;
+	return;
 }
 
 void AiGamePlay(int typegame)
@@ -162,7 +162,7 @@ void AiGamePlay(int typegame)
 	drawAiGamePlayScreen(currentPlayer, name1, name2, filename);
 	char next_player = check_XO(first_player);
 	drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
-	
+
 	for (int i = 0; i < N; i++)
 	{
 		for (int j = 0; j < N; j++)
@@ -182,7 +182,7 @@ void AiGamePlay(int typegame)
 	currentPlayer = check_XO(first_player);
 	while (true)
 	{
-		if(currentPlayer == player_O)
+		if (currentPlayer == player_O)
 		{
 			int ai_row, ai_col;
 			if (currentPlayer == player_O) // AI's turn
@@ -216,35 +216,35 @@ void AiGamePlay(int typegame)
 			if (type != 0)Movexy(x, y, type);
 		}
 		if (type != 0)continue;
-			
-			if (MakeMove(currentPlayer, x, y) == 0)continue;
-			int i, j;
-			count_moves++;
-			getij(i, j, x, y);
-			if (check_iswin(i, j, board))
-			{
-				highlightWinningSequence(i, j, board);
-				sleepms(3000);
-				updateScore(currentPlayer);
-				system("cls");
-				drawWinStatus(currentPlayer, name1, name2);
-				stopGameplayMusic();
-				playWinSound();
-				typegame = false;
-				break;
-			}
-			else if (check_isdraw(count_moves))
-			{
-				system("cls");
-				drawDrawStatus();
-				stopGameplayMusic();
-				playDrawSound();
-				typegame = false;
-				break;
-			}
-			currentPlayer = check_XO(first_player);
-			drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], currentPlayer, name1, name2);
-			setPos(x, y);
+
+		if (MakeMove(currentPlayer, x, y) == 0)continue;
+		int i, j;
+		count_moves++;
+		getij(i, j, x, y);
+		if (check_iswin(i, j, board))
+		{
+			highlightWinningSequence(i, j, board);
+			sleepms(3000);
+			updateScore(currentPlayer);
+			system("cls");
+			drawWinStatus(currentPlayer, name1, name2);
+			stopGameplayMusic();
+			playWinSound();
+			typegame = false;
+			break;
+		}
+		else if (check_isdraw(count_moves))
+		{
+			system("cls");
+			drawDrawStatus();
+			stopGameplayMusic();
+			playDrawSound();
+			typegame = false;
+			break;
+		}
+		currentPlayer = check_XO(first_player);
+		drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], currentPlayer, name1, name2);
+		setPos(x, y);
 	}
 	currentPlayer = check_XO(first_player);
 	if (type == 6)
@@ -260,16 +260,143 @@ void AiGamePlay(int typegame)
 	if (type == -1)
 	{
 		system("cls");
-		
+
 	}
 	sleepms(200);
 	if (type == -1)AiControlGaming(1);
 	else AiControlGaming(0);
 	stopGameplayMusic();
 	playBackgroundMusic();
-	return;	
+	return;
 }
-
+// debug 2 AI chơi với nhau
+//void AiGamePlay(int typegame)
+//{
+//	ShowConsoleCursor(true);
+//	// Implementation for AI gameplay mode
+//	system("cls");
+//	int x = xbegin;
+//	int y = ybegin;
+//	stopBackgroundMusic();
+//	playGameplayMusic();
+//	if (typegame == 0)
+//	{
+//		// new game
+//		//reset
+//		resetGameVariables();
+//	}
+//
+//	system("cls");
+//	drawAiGamePlayScreen(currentPlayer, name1, name2, filename);
+//	char next_player = check_XO(first_player);
+//	drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], next_player, name1, name2);
+//
+//	for (int i = 0; i < N; i++)
+//	{
+//		for (int j = 0; j < N; j++)
+//		{
+//			if (board[i][j] == '-')continue;
+//			count_moves++;
+//			int row, col;
+//			getxy(row, col, i, j);
+//			setPos(row, col);
+//			cout << board[i][j];
+//		}
+//	}
+//
+//	setPos(x, y);
+//	HighlightPos(x, y, 1);
+//	int type = 0;
+//	currentPlayer = check_XO(first_player);
+//	while (true)
+//	{
+//		//if(currentPlayer == player_O)
+//		{
+//			int ai_row, ai_col;
+//			//if (currentPlayer == player_O) // AI's turn
+//			{
+//
+//				// Choose the brain based on difficulty level
+//				if (difficulty == 0) {
+//					getEasyMove(board, ai_row, ai_col); // Easy Mode: Random
+//				}
+//				else if (difficulty == 1) {
+//					getBestMove(board, ai_row, ai_col, currentPlayer); // Normal Mode: Heuristic/Greedy
+//				}
+//				else {
+//					getSmartMove(board, ai_row, ai_col, currentPlayer); // Hard Mode: Minimax/Alpha-Beta
+//				}
+//
+//			}
+//
+//			int row, col;
+//			getxy(row, col, ai_row, ai_col);
+//			HighlightPos(x, y, 0);
+//			x = row;
+//			y = col;
+//			type = 0;
+//			sleepms(10);
+//		}
+//		/*else
+//		{
+//			type = isNextMove();
+//			if (type == -1 || type == 5 || type == 6)break;
+//			if (type != 0)Movexy(x, y, type);
+//		}*/
+//		if (type != 0)continue;
+//
+//		if (MakeMove(currentPlayer, x, y) == 0)continue;
+//		int i, j;
+//		count_moves++;
+//		getij(i, j, x, y);
+//		if (check_iswin(i, j, board))
+//		{
+//			highlightWinningSequence(i, j, board);
+//			sleepms(3000);
+//			updateScore(currentPlayer);
+//			system("cls");
+//			drawWinStatus(currentPlayer, name1, name2);
+//			stopGameplayMusic();
+//			playWinSound();
+//			typegame = false;
+//			break;
+//		}
+//		else if (check_isdraw(count_moves))
+//		{
+//			system("cls");
+//			drawDrawStatus();
+//			stopGameplayMusic();
+//			playDrawSound();
+//			typegame = false;
+//			break;
+//		}
+//		currentPlayer = check_XO(first_player);
+//		drawTurnBox(TurnData[0], TurnData[1], TurnData[2], TurnData[3], currentPlayer, name1, name2);
+//		setPos(x, y);
+//	}
+//	currentPlayer = check_XO(first_player);
+//	if (type == 6)
+//	{
+//		loadGameScreen();
+//		return;
+//	}
+//	else if (type == 5)
+//	{
+//		saveGameScreen();
+//		return;
+//	}
+//	if (type == -1)
+//	{
+//		system("cls");
+//
+//	}
+//	sleepms(200);
+//	if (type == -1)AiControlGaming(1);
+//	else AiControlGaming(0);
+//	stopGameplayMusic();
+//	playBackgroundMusic();
+//	return;
+//}
 void runcaro()
 {
 	initializeBGM();

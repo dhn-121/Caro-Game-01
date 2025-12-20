@@ -12,11 +12,11 @@ using namespace std;
 
 // Điểm số cho các chuỗi liên tiếp (0, 1, 2, 3, 4, 5 quân)
 // Tăng theo cấp số nhân để AI biết sợ khi đối thủ sắp thắng
-const long long SCORE_BY_COUNT[] = { 0, 10, 200, 5000, 200000, 1000000000LL };
+const long long SCORE_BY_COUNT[] = {0, 10, 200, 8000, 500000, 1000000000LL};
 
 const int SEARCH_RADIUS = 2;       // Bán kính tìm kiếm quanh các quân cờ đã đánh
 const int MAX_CANDIDATES = 15;     // Giới hạn số nước đi tốt nhất để tính toán (Top-K)
-const int MINIMAX_DEPTH = 4;       // Độ sâu suy nghĩ (3 hoặc 4 là ổn với cấu trúc này)
+const int MINIMAX_DEPTH = 5;       // Độ sâu suy nghĩ (5 là ổn với cấu trúc này)
 
 // Cấu trúc lưu nước đi để sắp xếp
 struct Move {
@@ -122,7 +122,39 @@ void getEasyMove(char board[N][N], int& row, int& col) {
 inline bool inBounds(int r, int c) {
     return r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE;
 }
+//HỆ THỐNG ADAPTIVE DEPTH
+int getAdaptiveDepth(char board[N][N]) {
+    int pieceCount = 0;
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            if (board[i][j] != '-') pieceCount++;
+        }
+    }
 
+    // Điều chỉnh depth dựa trên số quân cờ
+    if (pieceCount < 10) return 5;        // Đầu game: Suy nghĩ sâu
+    else if (pieceCount < 30) return 4;   // Giữa game: Cân bằng
+    else if (pieceCount < 60) return 3;   // Muộn game: Giảm depth
+    else return 2;                        // Rất muộn: Chỉ nhìn 2 bước
+}
+//TRANSPOSITION TABLE (CACHE KẾT QUẢ)
+struct TranspositionEntry {
+    long long score;
+    int depth;
+};
+
+unordered_map<string, TranspositionEntry> transTable;
+
+// Hash bàn cờ thành string để lưu cache
+string hashBoard(char board[N][N]) {
+    string hash = "";
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            hash += board[i][j];
+        }
+    }
+    return hash;
+}
 // Kiểm tra thắng thua nhanh
 bool isWin(char board[N][N], int r, int c, char player) {
     const int dirs[4][2] = { {0,1},{1,0},{1,1},{1,-1} };
@@ -211,19 +243,41 @@ long long evaluateMoveScore(char board[N][N], int r, int c, char aiChar, char hu
 long long evaluateBoardBoss(char board[N][N], char aiChar, char humanChar) {
     long long attack = 0, defense = 0;
 
-    // Chỉ quét những ô có quân cờ để tối ưu
+    // Chỉ quét trong vùng có quân cờ (bỏ qua vùng trống)
+    int minR = BOARD_SIZE, maxR = 0, minC = BOARD_SIZE, maxC = 0;
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            if (board[i][j] == aiChar) {
-                const int dirs[4][2] = { {0,1},{1,0},{1,1},{1,-1} };
-                for (int d = 0; d < 4; ++d) attack += scoreDirectionBoss(board, i, j, dirs[d][0], dirs[d][1], aiChar);
-            }
-            else if (board[i][j] == humanChar) {
-                const int dirs[4][2] = { {0,1},{1,0},{1,1},{1,-1} };
-                for (int d = 0; d < 4; ++d) defense += scoreDirectionBoss(board, i, j, dirs[d][0], dirs[d][1], humanChar);
+            if (board[i][j] != '-') {
+                minR = min(minR, i);
+                maxR = max(maxR, i);
+                minC = min(minC, j);
+                maxC = max(maxC, j);
             }
         }
     }
+
+    // Mở rộng vùng quét thêm 2 ô
+    minR = max(0, minR - 2);
+    maxR = min(BOARD_SIZE - 1, maxR + 2);
+    minC = max(0, minC - 2);
+    maxC = min(BOARD_SIZE - 1, maxC + 2);
+
+    // Chỉ tính điểm trong vùng này
+    for (int i = minR; i <= maxR; i++) {
+        for (int j = minC; j <= maxC; j++) {
+            if (board[i][j] == aiChar) {
+                const int dirs[4][2] = { {0,1},{1,0},{1,1},{1,-1} };
+                for (int d = 0; d < 4; ++d)
+                    attack += scoreDirectionBoss(board, i, j, dirs[d][0], dirs[d][1], aiChar);
+            }
+            else if (board[i][j] == humanChar) {
+                const int dirs[4][2] = { {0,1},{1,0},{1,1},{1,-1} };
+                for (int d = 0; d < 4; ++d)
+                    defense += scoreDirectionBoss(board, i, j, dirs[d][0], dirs[d][1], humanChar);
+            }
+        }
+    }
+
     return attack - defense * 2; // AI sợ thua nên trọng số thủ cao hơn
 }
 
@@ -232,14 +286,16 @@ vector<pair<int, int>> generateCandidates(char board[N][N]) {
     bool mark[BOARD_SIZE][BOARD_SIZE] = { false };
     vector<pair<int, int>> candidates;
 
+    // Ưu tiên các ô gần quân cờ gần đây nhất
     bool anyStone = false;
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
             if (board[i][j] != '-') {
                 anyStone = true;
-                // Quét bán kính xung quanh quân cờ
+                // CHỈ quét bán kính 2 để giảm candidates
                 for (int dr = -SEARCH_RADIUS; dr <= SEARCH_RADIUS; ++dr) {
                     for (int dc = -SEARCH_RADIUS; dc <= SEARCH_RADIUS; ++dc) {
+                        if (dr == 0 && dc == 0) continue;
                         int nr = i + dr, nc = j + dc;
                         if (inBounds(nr, nc) && board[nr][nc] == '-' && !mark[nr][nc]) {
                             mark[nr][nc] = true;
@@ -251,10 +307,10 @@ vector<pair<int, int>> generateCandidates(char board[N][N]) {
         }
     }
 
-    // Nếu bàn cờ trống, đánh vào giữa
     if (!anyStone) {
         candidates.push_back({ BOARD_SIZE / 2, BOARD_SIZE / 2 });
     }
+
     return candidates;
 }
 
@@ -282,12 +338,23 @@ vector<pair<int, int>> selectTopCandidates(char board[N][N], vector<pair<int, in
 }
 
 // Hàm Minimax đệ quy với Alpha-Beta Pruning
-long long minimax_boss(char board[N][N], int depth, long long alpha, long long beta, bool maximizingPlayer, char aiChar, char humanChar) {
+long long minimax_boss(char board[N][N], int depth, long long alpha, long long beta, bool maximizingPlayer, char aiChar, char humanChar,bool useCache = true) {
+    // Kiểm tra cache
+    if (useCache && depth > 0) {
+        string hash = hashBoard(board);
+        if (transTable.find(hash) != transTable.end()) {
+            TranspositionEntry& entry = transTable[hash];
+            if (entry.depth >= depth) {
+                return entry.score;  // Dùng kết quả đã tính
+            }
+        }
+    }
+
     if (depth == 0) return evaluateBoardBoss(board, aiChar, humanChar);
 
-    // 1. Tạo và lọc nước đi
     vector<pair<int, int>> raw = generateCandidates(board);
     if (raw.empty()) return 0;
+
     vector<pair<int, int>> candidates = selectTopCandidates(board, raw, aiChar, humanChar);
 
     if (maximizingPlayer) {
@@ -296,19 +363,25 @@ long long minimax_boss(char board[N][N], int depth, long long alpha, long long b
             int r = mv.first, c = mv.second;
             board[r][c] = aiChar;
 
-            // Check win ngay lập tức
             if (isWin(board, r, c, aiChar)) {
                 board[r][c] = '-';
                 return SCORE_BY_COUNT[5];
             }
 
-            long long eval = minimax_boss(board, depth - 1, alpha, beta, false, aiChar, humanChar);
-            board[r][c] = '-'; // Backtrack
+            long long eval = minimax_boss(board, depth - 1, alpha, beta, false, aiChar, humanChar, useCache);
+            board[r][c] = '-';
 
-            maxEval = std::max(maxEval, eval);
-            alpha = std::max(alpha, eval);
-            if (beta <= alpha) break; // Beta Cut-off
+            maxEval = max(maxEval, eval);
+            alpha = max(alpha, eval);
+            if (beta <= alpha) break;  // Pruning
         }
+
+        // Lưu cache
+        if (useCache) {
+            string hash = hashBoard(board);
+            transTable[hash] = { maxEval, depth };
+        }
+
         return maxEval;
     }
     else {
@@ -317,19 +390,25 @@ long long minimax_boss(char board[N][N], int depth, long long alpha, long long b
             int r = mv.first, c = mv.second;
             board[r][c] = humanChar;
 
-            // Check human win
             if (isWin(board, r, c, humanChar)) {
                 board[r][c] = '-';
                 return -SCORE_BY_COUNT[5];
             }
 
-            long long eval = minimax_boss(board, depth - 1, alpha, beta, true, aiChar, humanChar);
-            board[r][c] = '-'; // Backtrack
+            long long eval = minimax_boss(board, depth - 1, alpha, beta, true, aiChar, humanChar, useCache);
+            board[r][c] = '-';
 
-            minEval = std::min(minEval, eval);
-            beta = std::min(beta, eval);
-            if (beta <= alpha) break; // Alpha Cut-off
+            minEval = min(minEval, eval);
+            beta = min(beta, eval);
+            if (beta <= alpha) break;  // Pruning
         }
+
+        // Lưu cache
+        if (useCache) {
+            string hash = hashBoard(board);
+            transTable[hash] = { minEval, depth };
+        }
+
         return minEval;
     }
 }
@@ -338,48 +417,137 @@ long long minimax_boss(char board[N][N], int depth, long long alpha, long long b
 void getSmartMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer) {
     char humanPlayer = (aiPlayer == 'X') ? 'O' : 'X';
 
-    // 1. Lấy danh sách nước đi tiềm năng
+    auto startTime = chrono::high_resolution_clock::now();
+
+    // Xóa cache cũ nếu quá lớn (tránh memory leak)
+    if (transTable.size() > 100000) {
+        transTable.clear();
+    }
+
+    // Tính adaptive depth dựa trên số quân cờ
+    int adaptiveDepth = getAdaptiveDepth(board);
+
     vector<pair<int, int>> raw = generateCandidates(board);
 
-    // Nếu bàn cờ trống hoặc không có nước đi
     if (raw.empty()) {
         bestRow = BOARD_SIZE / 2;
         bestCol = BOARD_SIZE / 2;
         return;
     }
 
-    // 2. Lọc Top K nước đi tốt nhất để tính Minimax
+    // ========== BƯỚC 1: KIỂM TRA THẮNG NGAY ==========
+    for (auto& mv : raw) {
+        int r = mv.first, c = mv.second;
+        board[r][c] = aiPlayer;
+        if (isWin(board, r, c, aiPlayer)) {
+            board[r][c] = '-';
+            bestRow = r;
+            bestCol = c;
+            return;
+        }
+        board[r][c] = '-';
+    }
+
+    // ========== BƯỚC 2: CHẶN NƯỚC THẮNG ĐỐI THỦ ==========
+    for (auto& mv : raw) {
+        int r = mv.first, c = mv.second;
+        board[r][c] = humanPlayer;
+        if (isWin(board, r, c, humanPlayer)) {
+            board[r][c] = '-';
+            bestRow = r;
+            bestCol = c;
+            return;
+        }
+        board[r][c] = '-';
+    }
+
+    // ========== BƯỚC 3: PHÁT HIỆN MỐI ĐE DỌA 4 QUÂN ==========
+    struct ThreatMove {
+        int r, c;
+        int count;
+        int openEnds;
+        bool operator<(const ThreatMove& other) const {
+            if (count != other.count) return count > other.count;
+            return openEnds > other.openEnds;
+        }
+    };
+
+    vector<ThreatMove> threats;
+
+    for (auto& mv : raw) {
+        int r = mv.first, c = mv.second;
+        board[r][c] = humanPlayer;
+
+        const int dirs[4][2] = { {0,1},{1,0},{1,1},{1,-1} };
+        for (int d = 0; d < 4; ++d) {
+            int dr = dirs[d][0], dc = dirs[d][1];
+            int cnt = 1, openEnds = 0;
+
+            for (int k = 1; k < 5; k++) {
+                int nr = r + dr * k, nc = c + dc * k;
+                if (!inBounds(nr, nc)) break;
+                if (board[nr][nc] == humanPlayer) cnt++;
+                else {
+                    if (board[nr][nc] == '-') openEnds++;
+                    break;
+                }
+            }
+
+            for (int k = 1; k < 5; k++) {
+                int nr = r - dr * k, nc = c - dc * k;
+                if (!inBounds(nr, nc)) break;
+                if (board[nr][nc] == humanPlayer) cnt++;
+                else {
+                    if (board[nr][nc] == '-') openEnds++;
+                    break;
+                }
+            }
+
+            if ((cnt >= 4 && openEnds >= 1) || (cnt == 3 && openEnds == 2)) {
+                threats.push_back({ r, c, cnt, openEnds });
+                break;
+            }
+        }
+        board[r][c] = '-';
+    }
+
+    if (!threats.empty()) {
+        sort(threats.begin(), threats.end());
+        bestRow = threats[0].r;
+        bestCol = threats[0].c;
+        return;
+    }
+
+    // ========== BƯỚC 4: MINIMAX VỚI ADAPTIVE DEPTH ==========
     vector<pair<int, int>> candidates = selectTopCandidates(board, raw, aiPlayer, humanPlayer);
 
     long long bestVal = -LLONG_MAX;
-    pair<int, int> bestMove = candidates[0]; // Mặc định chọn cái đầu tiên nếu tính toán fail
+    pair<int, int> bestMove = candidates[0];
 
-    // 3. Chạy vòng lặp Minimax cho từng candidate
     for (auto& mv : candidates) {
-        int r = mv.first;
-        int c = mv.second;
+        int r = mv.first, c = mv.second;
 
         board[r][c] = aiPlayer;
 
-        // Nếu nước này thắng luôn thì chọn ngay
-        if (isWin(board, r, c, aiPlayer)) {
-            board[r][c] = '-';
-            bestRow = r; bestCol = c;
-            return;
-        }
+        // Sử dụng adaptive depth thay vì cố định
+        long long val = minimax_boss(board, adaptiveDepth - 1, -LLONG_MAX, LLONG_MAX,
+            false, aiPlayer, humanPlayer, true);
 
-        // Gọi để quy
-        long long val = minimax_boss(board, MINIMAX_DEPTH - 1, -LLONG_MAX, LLONG_MAX, false, aiPlayer, humanPlayer);
-
-        // Cộng thêm điểm heuristic cơ bản để phân biệt các nước đi có cùng điểm Minimax
         long long base = evaluateMoveScore(board, r, c, aiPlayer, humanPlayer);
         val += base / 10;
 
-        board[r][c] = '-'; // Hoàn tác
+        board[r][c] = '-';
 
         if (val > bestVal) {
             bestVal = val;
             bestMove = { r, c };
+        }
+
+        // TIME LIMIT: Nếu đã tính quá 5 giây, dừng ngay
+        auto currentTime = chrono::high_resolution_clock::now();
+        auto elapsed = chrono::duration_cast<chrono::milliseconds>(currentTime - startTime).count();
+        if (elapsed > 5000) {  // 5 giây
+            break;
         }
     }
 
