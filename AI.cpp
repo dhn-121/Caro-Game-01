@@ -553,4 +553,8 @@ void getSmartMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer) {
 
     bestRow = bestMove.first;
     bestCol = bestMove.second;
+
+}
+void resetAI() {
+    transTable.clear();
 }
