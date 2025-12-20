@@ -278,7 +278,7 @@ long long evaluateBoardBoss(char board[N][N], char aiChar, char humanChar) {
         }
     }
 
-    return attack - defense * 2; // AI sợ thua nên trọng số thủ cao hơn
+    return attack - defense ; 
 }
 
 // Tìm các nước đi ứng viên (Chỉ tìm xung quanh các quân đã đánh)
@@ -553,4 +553,5 @@ void getSmartMove(char board[N][N], int& bestRow, int& bestCol, char aiPlayer) {
 
     bestRow = bestMove.first;
     bestCol = bestMove.second;
+
 }
