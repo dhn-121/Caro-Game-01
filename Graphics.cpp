@@ -224,6 +224,7 @@ std::string BlankCal(const std::string content)
 void drawLoadingScreen()
 {
     system("cls");	
+	ShowConsoleCursor(false);
     drawGround();
 	renderGround(Xi - 5, Yi + BoardRealHeight - 4);
 	drawMinimaDino(Xi + 30, ConsoleHeight - 20);
