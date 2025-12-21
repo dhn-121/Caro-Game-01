@@ -232,13 +232,13 @@ void drawLoadingScreen()
 	drawMaximaCactus(Xi + 7, ConsoleHeight - 19);    //tọa độ Xi+5+90, cây lớn thứ hai
 	drawMaximaCactus(Xi - 92, ConsoleHeight - 19);   //cây lớn thứ nhất
 	drawMinimaCactus(Xi + 89, ConsoleHeight - 15);   //cây nhỏ thứ hai
-	drawLOADING(ConsoleWidth / 2 - 30, ConsoleHeight / 2 - 14);
     setColor(15, 7);
 	drawCloud(Xi-3, ConsoleHeight - 28);
 	drawCloud(Xi+61, ConsoleHeight - 24);
     setColor(15,8);
     drawCrow(Xi + 90, ConsoleHeight - 35);
-	sleepms(3500);
+    setColor(15, 0);
+    drawLOADING(ConsoleWidth / 2 - 30, ConsoleHeight / 2 - 14);
     setColor(0, 15);
 }
 

@@ -1427,7 +1427,7 @@ void drawMinimaCactus(int XX, int YY) {
 	//dòng 6
 	setPos(XX + 3, YY + 6); cout << P;
 }
-void drawDot(int XX, int YY, int co_txt=0) {
+void drawDot(int XX, int YY, int co_txt) {
 	setPos(XX, YY + 4);
 	setColor(co_txt, 0); cout << "  ";
 	setColor(15, co_txt); cout << u8"╗";
@@ -1442,9 +1442,20 @@ void drawLOADING(int XX, int YY) {
 	drawI(XX + 34, YY);
 	drawN(XX + 37, YY);
 	drawG(XX + 47, YY);
-	drawDot(XX + 56, YY, 0);
-	drawDot(XX + 59, YY, 0);
-	drawDot(XX + 62, YY, 0);
+	int milisecond = 2000;
+	for (int i = 0; i < milisecond / 500; i++)
+	{
+		drawDot(XX + 56, YY, 0);
+		Sleep(500);
+		drawDot(XX + 59, YY, 0);
+		Sleep(500);
+		drawDot(XX + 62, YY, 0);
+		Sleep(500);
+		drawDot(XX + 56, YY, 15);
+		drawDot(XX + 59, YY, 15);
+		drawDot(XX + 62, YY, 15);	
+		Sleep(50);
+	}
 }
 void drawSpino(int XX, int YY) {
 	const char* A = u8"█ "; // khối 1 ô
