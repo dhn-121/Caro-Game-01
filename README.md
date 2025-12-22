@@ -1,8 +1,7 @@
-ĐỒ ÁN CARO GAME NHÓM 1 - 25CTT3
+ĐỒ ÁN CARO GAME NHÓM 1 - 25CTT3\\
+GV HƯỚNG DẪN: TS. TRƯƠNG TOÀN THỊNH\\
 
-GV HƯỚNG DẪN: TS. TRƯƠNG TOÀN THỊNH
-
-Các thành viên tham gia dự án
+Các thành viên tham gia dự án\\
 
 25120159 - Phạm Hoàng Tường An
 
